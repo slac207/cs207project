@@ -40,6 +40,6 @@ class TimeSeries:
             abridged_data = "["+str(self.data[0])+","+str(self.data[1])+",...,"+str(self.data[-2])+","+ str(self.data[-1])+"]"
             return abridged_data 
         else:
-            return self.data       
+            return '{}'.format(self.data)       
         
       
