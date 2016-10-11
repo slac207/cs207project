@@ -57,7 +57,6 @@ class TimeSeries:
         if len(self.__values) > 10:
             return 'Length: {} [({},{}), ... ,({},{})]'.format(len(self.__values), self.__times[0], self.__values[0], self.__times[-1],self.__values[-1]) 
         else:
-            
             return 'Length: {} [{}]'.format(len(self.__values), ','.join([str(z) for z in zip(self.__times, self.__values)]))      
         
     def __iter__(self):
