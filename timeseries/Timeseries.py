@@ -1,4 +1,3 @@
-#
 class TimeSeries:
     
     def __init__(self, values, times=None):
