@@ -1,8 +1,6 @@
 from pytest import raises
 from lazy import lazy_add, lazy_mul, LazyOperation, lazy
 
-#import lazy
-
 def test_type():
     assert isinstance(lazy_add(2,3),LazyOperation)==True
     assert isinstance(lazy_mul(2,3),LazyOperation)==True
