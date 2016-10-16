@@ -1,3 +1,5 @@
+import lazy
+
 class TimeSeries:
     
     def __init__(self, values, times=None):
@@ -313,3 +315,12 @@ class TimeSeries:
         """           
         for i,j in zip(self.__times,self.__values):
             yield i,j
+    
+    @lazy.lazy
+    def identity(self):
+        return self
+    
+    @property
+    def lazy(self):
+        return self.identity()
+    
