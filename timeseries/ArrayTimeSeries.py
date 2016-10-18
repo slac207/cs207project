@@ -22,6 +22,14 @@ class ArrayTimeSeries(TimeSeries):
     ArrayTimeSeries(Length: 334, Contents:[([  0 999]), ... ,([333 999])])
     >>> print(ap)
     Length: 334 [([  0 999]), ... ,([333 999])]
+    
+    Now test non-uniform time series 
+    >>> a = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
+    >>> a
+    ArrayTimeSeries(Length: 5, Contents:[[ 1.  0.],[ 2.5  5. ],[  3.  10.],[ 3.5  8. ],[ 4.  7.]])
+    >>> print(a)
+    Length: 5 [[ 1.  0.],[ 2.5  5. ],[  3.  10.],[ 3.5  8. ],[ 4.  7.]]
+    
     """
     def __init__(self,values,times=None):
         TimeSeries.__init__(self,values,times) 
@@ -48,3 +56,4 @@ class ArrayTimeSeries(TimeSeries):
     def __iteritems__(self):
         for i,j in self._values:
             yield i,j                    
+
