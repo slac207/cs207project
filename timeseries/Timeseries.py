@@ -1,7 +1,7 @@
 import lazy
+import numpy as np
 
 class TimeSeries:
-    
     def __init__(self, values, times=None):
         """
         Stores a single, ordered set of numerical data.
@@ -33,11 +33,11 @@ class TimeSeries:
            -
         """
         if times == None:
-            self.__times = range(0,len(values))
+            self._times = range(0,len(values))
         else:
-            self.__times = [x for x in times]
+            self._times = [x for x in times]
             
-        self.__values = [x for x in values]
+        self._values = [x for x in values]
         
         
     def __len__(self):
@@ -67,7 +67,7 @@ class TimeSeries:
            -
            -
         """        
-        return len(self.__values)
+        return len(self._values)
     
     
     def __getitem__(self, time):
@@ -100,7 +100,7 @@ class TimeSeries:
            -
         """        
         try:
-            return self.__values[self.__times.index(time)]
+            return self._values[self._times.index(time)]
         except IndexError:
             raise("Index out of bounds.")
         
@@ -137,7 +137,7 @@ class TimeSeries:
            -
         """         
         try:
-            self.__values[self.__times.index(time)] = value
+            self._values[self._times.index(time)] = value
         except IndexError:
             raise("Index out of bounds.")
         
@@ -179,10 +179,16 @@ class TimeSeries:
         """           
         class_name = type(self).__name__
         print(type(self))
-        if len(self.__values) > 10:
-            return '{}(Length: {}, Contents:[({},{}), ... ,({},{})])'.format(class_name, len(self.__values), self.__times[0], self.__values[0], self.__times[-1],self.__values[-1]) 
+        if len(self._values) > 10:
+            if np.ndim(self._values)==1:
+                return '{}(Length: {}, Contents:[({},{}), ... ,({},{})])'.format(class_name, len(self._values), self._times[0], self._values[0], self._times[-1],self._values[-1]) 
+            else:
+                return '{}(Length: {}, Contents:[({}), ... ,({})])'.format(class_name, len(self._values), self._values[0], self._values[-1])                 
         else:
-            return '{}(Length: {}, Contents:[{}])'.format(class_name, len(self.__values), ','.join([str(z) for z in zip(self.__times, self.__values)]))      
+            if np.ndim(self._values)==1:               
+                return '{}(Length: {}, Contents:[{}])'.format(class_name, len(self._values), ','.join([str(z) for z in zip(self._times, self._values)]))      
+            else:
+                return '{}(Length: {}, Contents:[{}])'.format(class_name, len(self._values), ','.join([str(z) for z in self._values]))                      
         
     def __str__(self):
         """
@@ -219,10 +225,16 @@ class TimeSeries:
            -
         """           
         class_name = type(self).__name__
-        if len(self.__values) > 10:
-            return 'Length: {} [({},{}), ... ,({},{})]'.format(len(self.__values), self.__times[0], self.__values[0], self.__times[-1],self.__values[-1]) 
+        if len(self._values) > 10:
+            if np.ndim(self._values)==1:
+                return 'Length: {} [({},{}), ... ,({},{})]'.format(len(self._values), self._times[0], self._values[0], self._times[-1],self._values[-1]) 
+            else:
+                return 'Length: {} [({}), ... ,({})]'.format(len(self._values), self._values[0],self._values[-1]) 
         else:
-            return 'Length: {} [{}]'.format(len(self.__values), ','.join([str(z) for z in zip(self.__times, self.__values)]))      
+            if np.ndim(self._values)==1:
+                return 'Length: {} [{}]'.format(len(self._values), ','.join([str(z) for z in zip(self._times, self._values)]))      
+            else:
+                return 'Length: {} [{}]'.format(len(self._values), ','.join([str(z) for z in  self._values]))                      
         
     def __iter__(self):
         """
@@ -253,7 +265,7 @@ class TimeSeries:
            - 
            -
         """            
-        for i in self.__values:
+        for i in self._values:
             yield i
             
     def __itertimes__(self):
@@ -283,7 +295,7 @@ class TimeSeries:
            - 
            -
         """           
-        for i in self.__times:
+        for i in self._times:
             yield i    
             
     def __iteritems__(self):
@@ -313,7 +325,7 @@ class TimeSeries:
            - 
            -
         """           
-        for i,j in zip(self.__times,self.__values):
+        for i,j in zip(self._times,self._values):
             yield i,j
     
     @lazy.lazy
@@ -379,3 +391,4 @@ class TimeSeries:
 
         return self.identity()
     
+
