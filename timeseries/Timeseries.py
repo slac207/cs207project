@@ -1,4 +1,6 @@
+import lazy
 import numpy as np
+
 class TimeSeries:
     def __init__(self, values, times=None):
         """
@@ -325,3 +327,68 @@ class TimeSeries:
         """           
         for i,j in zip(self._times,self._values):
             yield i,j
+    
+    @lazy.lazy
+    def identity(self):
+        """
+        Lazy implementation of the identity function
+        
+        Parameters
+        ----------
+        self  : a TimeSeries instance.
+
+        Returns
+        -------
+        self  : a TimeSeries instance
+        
+        Notes
+        -----
+        PRE: 
+           - 
+           -
+        POST: 
+           - 
+           -
+        INVARIANTS: 
+           -
+           -
+        WARNINGS:
+           - 
+           -
+        """   
+        return self
+    
+    @property
+    def lazy(self):
+        """
+        Lazy identity property.  
+        self.lazy returns a LazyOperation instance of self.identity(), so that  
+        self.lazy.eval() is self.  
+        
+        Parameters
+        ----------
+        self  : a TimeSeries instance.
+
+        Returns
+        -------
+        self.identity()  : a LazyOperation instance
+        
+        Notes
+        -----
+        PRE: 
+           - 
+           -
+        POST: 
+           - 
+           -
+        INVARIANTS: 
+           -
+           -
+        WARNINGS:
+           - 
+           -
+        """   
+
+        return self.identity()
+    
+
