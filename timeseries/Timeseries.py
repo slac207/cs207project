@@ -1,5 +1,6 @@
 import lazy
 import numpy as np
+import numbers
 
 class TimeSeries:
     def __init__(self, values, times=None):
@@ -391,4 +392,93 @@ class TimeSeries:
 
         return self.identity()
     
+    def __pos__(self):
+        #TimeSeries instance with
+        # no change to the values or times
+        return self
+        
+    def __neg__(self):
+        # TimeSeries instance with
+        # negated values 
+        # and no change to the times
+        cls = type(self)
+        return cls((-v for v in self._values),self._times)
+        
+    def __abs__(self):
+        # TimeSeries instance with 
+        # absolute value of the values
+        # and no change to the times
+        cls = type(self)
+        return cls((abs(v) for v in self._values),self._times)
+    
+    def __bool__(self):
+        # False only if all values are zero
+        return bool(any(self._values))
+        
+    def __add__(self, rhs):
+        # If rhs is Real, add it to all elements of values.
+        # If it is a TimeSeries instance with the same times,
+        # add it element-by-element.
+        # Return a TimeSeries instance with the same times but the new values
+        cls = type(self)
+        try:
+            if isinstance(rhs, numbers.Real):
+                return cls((a + rhs for a in self._values),self._times) 
+            elif isinstance(rhs,cls):
+                if (len(self)==len(rhs)) and self._eqtimes(rhs): 
+                    return cls((a + b for a, b in zip(self._values,rhs._values)),self._times)
+                else:
+                    raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
+            else:
+                return NotImplemented
+        except TypeError:
+            return NotImplemented
+            
+    def __sub__(self, rhs):
+        # If rhs is Real, subtract it from all elements of values.
+        # If it is a TimeSeries instance with the same times,
+        # subtract it element-by-element.
+        # Return a TimeSeries instance with the same times but the new values
+        try:
+            return self + (-rhs)
+        except TypeError:
+            return NotImplemented
+    
+    def __mul__(self, rhs):
+        # If rhs is Real, multiply it by all elements of values.
+        # If it is a TimeSeries instance with the same times,
+        # multiply it element-by-element.
+        # Return a TimeSeries instance with the same times but the new values
+        cls = type(self)
+        try:
+            if isinstance(rhs, numbers.Real):
+                return cls((a*rhs for a in self._values),self._times) 
+            elif isinstance(rhs,cls):
+                if (len(self)==len(rhs)) and self._eqtimes(rhs): 
+                    return cls((a*b for a, b in zip(self._values,rhs._values)),self._times)
+                else:
+                    raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
+            else:
+                return NotImplemented
+        except TypeError:
+            return NotImplemented
+    
+    def _eqtimes(self,rhs):
+        # Test equality of the time components of two TimeSeries instances
+        return len(self._times)==len(rhs._times) and all(a==b for a,b in zip(self._times,rhs._times))
 
+    def _eqvalues(self,rhs):
+        # Test equality of the values components of two TimeSeries instances
+        return len(self._values)==len(rhs._values) and all(a==b for a,b in zip(self._values,rhs._values))
+        
+    def __eq__(self,rhs):
+        # True if the times and values are the same; 
+        # Otherwise, False
+        cls = type(self)
+        if isinstance(rhs, cls):
+            return self._eqtimes(rhs) and self._eqvalues(rhs)
+        #elif isinstance(rhs, numbers.Real):
+        #    return all(v==rhs for v in self._values)
+        else:
+            return False
+            
