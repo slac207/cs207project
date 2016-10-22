@@ -157,5 +157,9 @@ class TimeSeriesTest(unittest.TestCase):
         with raises(TypeError):
             assert 'a'*self.ts
 
-
-unittest.main()
+if __name__=='__main__':
+    try:
+        unittest.main() # Run unit tests
+    except SystemExit as inst:
+        if inst.args[0] is True: # If error raised by sys.exit(True) when tests failed
+            raise
