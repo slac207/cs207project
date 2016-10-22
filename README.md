@@ -22,6 +22,7 @@ According to  [PEP 8](https://www.python.org/dev/peps/pep-0008/#code-lay-out) **
 > for all public modules, functions, classes, and methods. Docstrings are not necessary for non-public methods, but you should have a comment that describes what the method does. This comment should appear after the `def` line.
 
 At our October 21 group meeting, we decided to make sure we have comments
+
 1. at the start of a class definition (to explain the purpose of the class) 
 2. within the constructor (i.e., the `__init__()` definition (to explain nonobvious aspects of object construction)
 3. at the start of user-facing functions (to explain nonobvious aspects of function construction)
