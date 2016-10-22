@@ -1,4 +1,4 @@
-from Timeseries import TimeSeries
+from TimeSeries import TimeSeries
 import numpy as np
 
 class ArrayTimeSeries(TimeSeries):
