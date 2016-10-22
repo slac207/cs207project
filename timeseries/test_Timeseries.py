@@ -6,10 +6,6 @@ from Timeseries import TimeSeries
 import collections
 
 class TimeSeriesTest(unittest.TestCase):
-    def setUp(self):
-        self.ts = TimeSeries(range(0,4),range(1,5))
-        
-class LazyTest(unittest.TestCase):
 
     def setUp(self):
         self.ts = TimeSeries(range(0,4),range(1,5))
