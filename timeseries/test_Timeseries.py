@@ -5,8 +5,9 @@ import numpy as np
 from Timeseries import TimeSeries
 import collections
 
-
-class MyTest(unittest.TestCase):
+class TimeSeriesTest(unittest.TestCase):
+    
+class LazyTest(unittest.TestCase):
 
     def setUp(self):
         self.ts = TimeSeries(range(0,4),range(1,5))

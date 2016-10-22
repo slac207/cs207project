@@ -19,7 +19,7 @@ class ArrayTimeSeries(TimeSeries):
     >>> ap[0]
     array([  0, 999])
     >>> ap
-    ArrayTimeSeries(Length: 334, Contents:[([  0 999]), ... ,([333 999])])
+    ArrayTimeSeries(Length: 334, Times: range(0, 334), Values: array([[  0, ...  [333, 999]]))
     >>> print(ap)
     Length: 334 [([  0 999]), ... ,([333 999])]
 
