@@ -4,7 +4,6 @@ import numbers
 import reprlib
 
 class TimeSeries:
-    
     """
     Purpose of the class.
     Things the user should keep in mind when using an instance
@@ -62,7 +61,16 @@ class TimeSeries:
         return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr) 
         
         
-    def __str__(self):          
+    def __str__(self):
+        """
+        Returns a string representation of a TimeSeries instance, of the form
+        
+        "TimeSeries with 'n' elements (Times: 't', Values: 'v')"
+        
+        where n is the length of `self`
+              t displays the first three elements of _times
+              v displays the first three elements of _values
+        """
         r = reprlib.Repr()
         r.maxlist = 3       # max elements displayed for lists
         cls = type(self).__name__
