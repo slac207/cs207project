@@ -20,20 +20,9 @@ class TimeSeries:
         times  : a sequence (optional)
            time associated with each observation in `values`.
         
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           -
-           -
+        >>> t = TimeSeries([1,2,3])
+        >>> t = TimeSeries([1,2,3],[0,2,4])
+
         """
         if times == None:
             self._times = range(0,len(values))
@@ -43,29 +32,27 @@ class TimeSeries:
         self._values = [x for x in values]
         
         
-    def __len__(self):
+    def __len__(self):     
         return len(self._values)
     
     
-    def __getitem__(self, time):
-        # reports the data value located at `self[time]`, where `self` is a TimeSeries instance.
-        # note: `time` is a list index, not an actual observed time in the series.
+    def __getitem__(self, index):
+        # returns tuple (time, value) corresponding to the data located at 
+        #     `_times[index]` and `_values[index]`.
         try:
-            return self._values[self._times.index(time)]
+            return (self._times[index], self._values[index])
         except IndexError:
             raise("Index out of bounds.")
         
     
-    def __setitem__(self, time, value):
-        # sets the data value located at `self[time]` to `value`, 
-        #     where `self` is a TimeSeries instance.
-        # note: `time` is a list index, not an actual observed time in the series.
+    def __setitem__(self, index, value):
+        # sets `_values[index]` to `value`
         try:
-            self._values[self._times.index(time)] = value
+            self._values[index] = value
         except IndexError:
             raise("Index out of bounds.")
         
-        
+
     def __repr__(self):   
         r = reprlib.Repr()
         r.maxlist = 3       # max elements displayed for lists
@@ -75,9 +62,9 @@ class TimeSeries:
         return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), timesStr, timesStr) 
         
         
-    def __str__(self):
+    def __str__(self):          
         r = reprlib.Repr()
-        r.maxlist = 3       # max elements displayed for lists        
+        r.maxlist = 3       # max elements displayed for lists
         cls = type(self).__name__
         timesStr  = r.repr(self._times)
         timesStr = r.repr(self._values)
@@ -90,10 +77,10 @@ class TimeSeries:
             
     def __itertimes__(self):        
         for i in self._times:
-            yield i    
+            yield i             
+  
             
-            
-    def __iteritems__(self):          
+    def __itertimes__(self):          
         for i,j in zip(self._times,self._values):
             yield i,j
     
@@ -105,6 +92,15 @@ class TimeSeries:
     
     @property
     def lazy(self):
+        """
+        Lazy identity property.  
+        self.lazy returns a LazyOperation instance of self.identity(), so that  
+        self.lazy.eval() is self.  
+        
+        Returns
+        -------
+        self.identity()  : a LazyOperation instance
+        """   
         return self.identity()
     
     
@@ -198,4 +194,3 @@ class TimeSeries:
         #    return all(v==rhs for v in self._values)
         else:
             return False
-            
