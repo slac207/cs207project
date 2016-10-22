@@ -18,20 +18,9 @@ class TimeSeries:
         -------
         Nothing (for now).
         
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           -
-           -
+        >>> t = TimeSeries([1,2,3])
+        >>> t = TimeSeries([1,2,3],[0,2,4])
+
         """
         if times == None:
             self._times = range(0,len(values))
@@ -53,92 +42,48 @@ class TimeSeries:
         -------
         An integer representing the length of the instance.
         
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           -
-           -
         """        
         return len(self._values)
     
     
-    def __getitem__(self, time):
+    def __getitem__(self, index):
         """
-        Reports the data value located at `self[time]`, where
-           `self` is a TimeSeries instance.
+        Reports the data value located at the given index in
+        values and times, where `self` is a TimeSeries instance.
         
         Parameters
         ----------
         self  : a TimeSeries instance.
-        time  : time associated with the desired data value.
+        index  : index to look up.
 
         Returns
         -------
-        The data value associated with `self[time]`.
+        Tuple of (time, value) for the index given. 
         
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           - Assumes the user knows the appropriate type of `time`.
-           -
         """        
         try:
-            return self._values[self._times.index(time)]
+            return (self._times[index], self._values[index])
         except IndexError:
             raise("Index out of bounds.")
         
     
-    def __setitem__(self, time, value):
+    def __setitem__(self, index, value):
         """
-        Assigns the data value `value` to `self[time]`, where
+        Assigns the data value `value` to the given index of values, where
            `self` is a TimeSeries instance.
         
         Parameters
         ----------
         self  : a TimeSeries instance.
-        time  : time associated with the desired data value.
-        value : the data value being associated with `time`.
+        index  : index associated with the desired data value.
+        value : the data value being set.
 
         Returns
         -------
         Nothing (for now).
-        
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           - Assumes the user knows the appropriate type of `time`
-                and `value`.
-           -
         """         
         try:
-            self._values[self._times.index(time)] = value
+            self._values[index] = value
         except IndexError:
             raise("Index out of bounds.")
         
@@ -161,35 +106,15 @@ class TimeSeries:
 
         Returns
         -------
-        Nothing (for now).
+        A string
         
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           - 
-           -
         """           
-        class_name = type(self).__name__
-        print(type(self))
-        if len(self._values) > 10:
-            if np.ndim(self._values)==1:
-                return '{}(Length: {}, Contents:[({},{}), ... ,({},{})])'.format(class_name, len(self._values), self._times[0], self._values[0], self._times[-1],self._values[-1]) 
-            else:
-                return '{}(Length: {}, Contents:[({}), ... ,({})])'.format(class_name, len(self._values), self._values[0], self._values[-1])                 
-        else:
-            if np.ndim(self._values)==1:               
-                return '{}(Length: {}, Contents:[{}])'.format(class_name, len(self._values), ','.join([str(z) for z in zip(self._times, self._values)]))      
-            else:
-                return '{}(Length: {}, Contents:[{}])'.format(class_name, len(self._values), ','.join([str(z) for z in self._values]))                      
+        r = reprlib.Repr()
+        r.maxlist = 3       # max elements displayed for lists
+        cls = type(self).__name__
+        timesStr  = r.repr(self._times)
+        timesStr = r.repr(self._values)
+        return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), timesStr, timesStr)                
         
     def __str__(self):
         """
@@ -208,35 +133,17 @@ class TimeSeries:
 
         Returns
         -------
-        Nothing (for now).
+        A string.
         
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           - 
-           -
         """           
-        class_name = type(self).__name__
-        if len(self._values) > 10:
-            if np.ndim(self._values)==1:
-                return 'Length: {} [({},{}), ... ,({},{})]'.format(len(self._values), self._times[0], self._values[0], self._times[-1],self._values[-1]) 
-            else:
-                return 'Length: {} [({}), ... ,({})]'.format(len(self._values), self._values[0],self._values[-1]) 
-        else:
-            if np.ndim(self._values)==1:
-                return 'Length: {} [{}]'.format(len(self._values), ','.join([str(z) for z in zip(self._times, self._values)]))      
-            else:
-                return 'Length: {} [{}]'.format(len(self._values), ','.join([str(z) for z in  self._values]))                      
-        
+        r = reprlib.Repr()
+        r.maxlist = 3       # max elements displayed for lists        
+        cls = type(self).__name__
+        timesStr  = r.repr(self._times)
+        timesStr = r.repr(self._values)
+        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, timesStr)   
+    
+    
     def __iter__(self):
         """
         Called when an iterator is required for a container. 
@@ -250,21 +157,6 @@ class TimeSeries:
         A new iterator object that can iterate over all the objects in the
            container. For mappings, it should iterate over the keys of the 
            container.
-        
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           - 
-           -
         """            
         for i in self._values:
             yield i
@@ -277,24 +169,6 @@ class TimeSeries:
         ----------
         self  : a TimeSeries instance.
 
-        Returns
-        -------
-        Nothing (for now).
-        
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           - 
-           -
         """           
         for i in self._times:
             yield i    
@@ -311,20 +185,6 @@ class TimeSeries:
         -------
         Nothing (for now).
         
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           - 
-           -
         """           
         for i,j in zip(self._times,self._values):
             yield i,j
@@ -342,20 +202,6 @@ class TimeSeries:
         -------
         self  : a TimeSeries instance
         
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           - 
-           -
         """   
         return self
     
@@ -373,21 +219,6 @@ class TimeSeries:
         Returns
         -------
         self.identity()  : a LazyOperation instance
-        
-        Notes
-        -----
-        PRE: 
-           - 
-           -
-        POST: 
-           - 
-           -
-        INVARIANTS: 
-           -
-           -
-        WARNINGS:
-           - 
-           -
         """   
 
         return self.identity()
@@ -482,3 +313,4 @@ class TimeSeries:
         else:
             return False
             
+        
