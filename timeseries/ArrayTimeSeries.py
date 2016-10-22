@@ -26,7 +26,7 @@ class ArrayTimeSeries(TimeSeries):
     Now test non-uniform time series
     >>> a = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
     >>> a
-    ArrayTimeSeries(Length: 5, Contents:[[ 1.  0.],[ 2.5  5. ],[  3.  10.],[ 3.5  8. ],[ 4.  7.]])
+    ArrayTimeSeries(Length: 5, Times: [1, 2.5, 3, ...], Values: array([[  1. ... 4. ,   7. ]]))
     >>> print(a)
     Length: 5 [[ 1.  0.],[ 2.5  5. ],[  3.  10.],[ 3.5  8. ],[ 4.  7.]]
 
