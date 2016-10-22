@@ -51,7 +51,7 @@ class TimeSeries:
             self._values[index] = value
         except IndexError:
             raise("Index out of bounds.")
-
+        
 
     def __repr__(self):   
         r = reprlib.Repr()
@@ -79,7 +79,7 @@ class TimeSeries:
         for i in self._times:
             yield i             
   
-
+            
     def __itertimes__(self):          
         for i,j in zip(self._times,self._values):
             yield i,j
