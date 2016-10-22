@@ -58,8 +58,8 @@ class TimeSeries:
         r.maxlist = 3       # max elements displayed for lists
         cls = type(self).__name__
         timesStr  = r.repr(self._times)
-        timesStr = r.repr(self._values)
-        return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), timesStr, timesStr) 
+        valuesStr = r.repr(self._values)
+        return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr) 
         
         
     def __str__(self):          
@@ -67,8 +67,8 @@ class TimeSeries:
         r.maxlist = 3       # max elements displayed for lists
         cls = type(self).__name__
         timesStr  = r.repr(self._times)
-        timesStr = r.repr(self._values)
-        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, timesStr)                     
+        valuesStr = r.repr(self._values)
+        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)                     
         
     def __iter__(self):           
         for i in self._values:
@@ -87,6 +87,7 @@ class TimeSeries:
     
     @lazy.lazy
     def identity(self): 
+        # lazy implementation of the identity function
         return self
     
     

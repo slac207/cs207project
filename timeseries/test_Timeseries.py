@@ -2,7 +2,7 @@ from pytest import raises
 import unittest
 import lazy
 import numpy as np
-from Timeseries import TimeSeries
+from TimeSeries import TimeSeries
 import collections
 
 
