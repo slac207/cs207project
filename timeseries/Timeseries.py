@@ -38,8 +38,12 @@ class TimeSeries:
     def __getitem__(self, index):
         # returns tuple (time, value) corresponding to the data located at
         #     `_times[index]` and `_values[index]`.
+        # returns tuple (time, value) corresponding to the data located at
+        #     `_times[index]` and `_values[index]`.
+        # returns value corresponding to the data located at
+        #  `_values[index]`.
         try:
-            return (self._times[index], self._values[index])
+            return self._values[index]
         except IndexError:
             raise("Index out of bounds.")
 
@@ -76,21 +80,53 @@ class TimeSeries:
         cls = type(self).__name__
         timesStr  = r.repr(self._times)
         valuesStr = r.repr(self._values)
+<<<<<<< HEAD
         return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
 
     def __iter__(self):
+||||||| merged common ancestors
+        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
+
+    def __iter__(self):
+=======
+        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
+
+    def iter(self):
+>>>>>>> 535524f36d65d20801a602aa2230a86738371255
         for i in self._values:
+<<<<<<< HEAD
             yield i
 
 
     def __itertimes__(self):
-        for i in self._times:
+||||||| merged common ancestors
             yield i
-  
+
+
+    def __itertimes__(self):
+=======
+            yield i
+
+    def itertimes(self):
+>>>>>>> 535524f36d65d20801a602aa2230a86738371255
+        for i in self._times:
+<<<<<<< HEAD
+            yield i
+
 
     def __iteritems__(self):
+            yield i
+
+
+    def __itertimes__(self):
+            yield i
+
+    def iteritems(self):
         for i,j in zip(self._times,self._values):
             yield i,j
+
+
+
 
 
     @lazy.lazy
@@ -202,4 +238,6 @@ class TimeSeries:
         # elif isinstance(rhs, numbers.Real):
         #    return all(v==rhs for v in self._values)
         else:
+            return False
+            return False
             return False
