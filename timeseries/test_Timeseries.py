@@ -2,7 +2,7 @@ from pytest import raises
 import unittest
 import lazy
 import numpy as np
-from TimeSeries import TimeSeries
+from Timeseries import TimeSeries
 import collections
 
 
@@ -32,26 +32,25 @@ class MyTest(unittest.TestCase):
         assert len(self.ts) == 4
         
     def test_getitem(self):
-        assert self.ts[3] == (4,3)
+        assert self.ts[3] == 3
     
     def test_setitem(self):
         t = TimeSeries([1,2,3])
         t[1] = 5
-        assert t[1] == (1,5)
+        assert t[1] == 5
         
     def test_iter(self):
-        assert isinstance(iter(self.ts), collections.Iterable) == True
-        assert list(iter(self.ts)) == [0,1,2,3]
+        assert isinstance(self.ts.iter(), collections.Iterable) == True       
+        assert list(self.ts.iter()) == [0,1,2,3]
     
     def test_itertimes(self):
-        assert isinstance(self.ts.__itertimes__(), collections.Iterable) == True
-        assert list(self.ts.__itertimes__()) == [1,2,3,4] 
+        assert isinstance(self.ts.itertimes(), collections.Iterable) == True
+        assert list(self.ts.itertimes()) == [1,2,3,4] 
         
     def test_iteritems(self):
-        assert isinstance(self.ts.__iteritems__(), collections.Iterable) == True
-        assert list(self.ts.__iteritems__()) == [(1, 0), (2, 1), (3, 2), (4, 3)]       
+        assert isinstance(self.ts.iteritems(), collections.Iterable) == True
+        assert list(self.ts.iteritems()) == [(1, 0), (2, 1), (3, 2), (4, 3)]       
 
-    
     def test_lazy(self):
         'lazy property should be an instance of LazyOperation'
         assert isinstance(self.ts.lazy,lazy.LazyOperation)==True

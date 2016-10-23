@@ -36,10 +36,10 @@ class TimeSeries:
     
     
     def __getitem__(self, index):
-        # returns tuple (time, value) corresponding to the data located at 
-        #     `_times[index]` and `_values[index]`.
+        # returns value corresponding to the data located at 
+        #  `_values[index]`.
         try:
-            return (self._times[index], self._values[index])
+            return self._values[index]
         except IndexError:
             raise("Index out of bounds.")
         
@@ -78,20 +78,17 @@ class TimeSeries:
         valuesStr = r.repr(self._values)
         return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)                     
         
-    def __iter__(self):           
+    def iter(self):           
         for i in self._values:
-            yield i
+            yield i      
             
-            
-    def __itertimes__(self):        
+    def itertimes(self):        
         for i in self._times:
             yield i             
-  
             
-    def __itertimes__(self):          
+    def iteritems(self):          
         for i,j in zip(self._times,self._values):
             yield i,j
-    
     
     @lazy.lazy
     def identity(self): 
@@ -203,3 +200,4 @@ class TimeSeries:
         #    return all(v==rhs for v in self._values)
         else:
             return False
+        
