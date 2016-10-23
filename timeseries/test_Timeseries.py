@@ -38,9 +38,13 @@ class TimeSeriesTest(unittest.TestCase):
         assert len(self.ts) == 4
 
     def test_getitem(self):
+        with raises(IndexError):
+            self.ts[200]
         assert self.ts[3] == 3
 
     def test_setitem(self):
+        with raises(IndexError):
+            self.ts[200] = 0
         t = TimeSeries([1,2,3])
         t[1] = 5
         assert t[1] == 5
@@ -103,9 +107,11 @@ class TimeSeriesTest(unittest.TestCase):
         self.ts3 = TimeSeries(range(10))
         self.ts4 = TimeSeries(range(10))
         self.ts5 = TimeSeries(range(9))
+        self.ts6 = [0,1,2]
         assert self.ts3==self.ts4
         assert self.ts3 is not self.ts4
         assert self.ts3!=self.ts5
+        assert self.ts3 != self.ts6
 
     def test_bool(self):
         assert not bool(TimeSeries([0,0,0]))
