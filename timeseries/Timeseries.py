@@ -83,16 +83,29 @@ class TimeSeries:
         for i in self._values:
             yield i
 
+    def __contains__(self,item):
+        return item in self._values
 
     def itertimes(self):
         for i in self._times:
             yield i
 
-
     def iteritems(self):
         for i,j in zip(self._times,self._values):
             yield i,j
 
+    def itervalues(self):
+        for j in self._values:
+            yield j
+
+    def items(self):
+        return list(zip(self._times,self._values))
+
+    def values(self):
+        return np.array(self._values)
+
+    def times(self):
+        return np.array(self._times)
 
     @lazy.lazy
     def identity(self):
