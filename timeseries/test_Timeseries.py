@@ -39,12 +39,13 @@ class TimeSeriesTest(unittest.TestCase):
 
     def test_getitem(self):
         with raises(IndexError):
-            self.ts[200]
+            self.ts[12]
         assert self.ts[3] == 3
 
     def test_setitem(self):
         with raises(IndexError):
-            self.ts[200] = 0
+            self.ts.__setitem__(200,0)    
+
         t = TimeSeries([1,2,3])
         t[1] = 5
         assert t[1] == 5

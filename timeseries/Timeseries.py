@@ -41,7 +41,7 @@ class TimeSeries:
         try:
             return self._values[index]
         except IndexError:
-            raise("Index out of bounds.")
+            raise IndexError("Index out of bounds.")
 
 
     def __setitem__(self, index, value):
@@ -49,7 +49,7 @@ class TimeSeries:
         try:
             self._values[index] = value
         except IndexError:
-            raise("Index out of bounds.")
+            raise IndexError("Index out of bounds.")
 
 
     def __repr__(self):
