@@ -82,42 +82,20 @@ class TimeSeries:
         valuesStr = r.repr(self._values)
         return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
 
-    def __iter__(self):
-        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
 
     def __iter__(self):
-        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
-
-    def iter(self):
         for i in self._values:
             yield i
 
-
-    def __itertimes__(self):
-            yield i
-
-
-    def __itertimes__(self):
-            yield i
 
     def itertimes(self):
         for i in self._times:
             yield i
 
 
-    def __iteritems__(self):
-            yield i
-
-
-    def __itertimes__(self):
-            yield i
-
     def iteritems(self):
         for i,j in zip(self._times,self._values):
             yield i,j
-
-
-
 
 
     @lazy.lazy
@@ -135,7 +113,7 @@ class TimeSeries:
 
         Returns
         -------
-        self.identity()  : a LazyOperation instance
+        self.identity() : a LazyOperation instance
         """
         return self.identity()
 
@@ -229,6 +207,4 @@ class TimeSeries:
         # elif isinstance(rhs, numbers.Real):
         #    return all(v==rhs for v in self._values)
         else:
-            return False
-            return False
             return False
