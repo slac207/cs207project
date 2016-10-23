@@ -7,6 +7,7 @@ import collections
 
 class TimeSeriesTest(unittest.TestCase):
 
+    """ Test time series methods """
     def setUp(self):
         self.ts = TimeSeries(range(0,4),range(1,5))
 
@@ -27,6 +28,12 @@ class TimeSeriesTest(unittest.TestCase):
         t = TimeSeries((2,3))
         t = TimeSeries(())
 
+    def test_string(self):
+        assert str(TimeSeries((2,3))) == "TimeSeries with 2 elements (Times: range(0, 2), Values: [2, 3])"
+
+    def test_repr(self):
+        assert repr(TimeSeries((2,3))) == "TimeSeries(Length: 2, Times: range(0, 2), Values: [2, 3])"
+
     def test_length(self):
         assert len(self.ts) == 4
 
@@ -44,12 +51,11 @@ class TimeSeriesTest(unittest.TestCase):
 
     def test_itertimes(self):
         assert isinstance(self.ts.__itertimes__(), collections.Iterable) == True
-        #assert list(self.ts.__itertimes__()) == [1,2,3,4]
+        assert list(self.ts.__itertimes__()) == [1,2,3,4]
 
-    #def test_iteritems(self):
-    #    assert isinstance(self.ts.__iteritems__(), collections.Iterable) == True
-    #    assert list(self.ts.__iteritems__()) == [(1, 0), (2, 1), (3, 2), (4, 3)]
-
+    def test_iteritems(self):
+        assert isinstance(self.ts.__iteritems__(), collections.Iterable) == True
+        assert list(self.ts.__iteritems__()) == [(1, 0), (2, 1), (3, 2), (4, 3)]
 
     def test_lazy(self):
         'lazy property should be an instance of LazyOperation'
