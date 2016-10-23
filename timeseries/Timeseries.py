@@ -80,37 +80,28 @@ class TimeSeries:
         cls = type(self).__name__
         timesStr  = r.repr(self._times)
         valuesStr = r.repr(self._values)
-<<<<<<< HEAD
         return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
 
     def __iter__(self):
-||||||| merged common ancestors
         return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
 
     def __iter__(self):
-=======
         return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
 
     def iter(self):
->>>>>>> 535524f36d65d20801a602aa2230a86738371255
         for i in self._values:
-<<<<<<< HEAD
             yield i
 
 
     def __itertimes__(self):
-||||||| merged common ancestors
             yield i
 
 
     def __itertimes__(self):
-=======
             yield i
 
     def itertimes(self):
->>>>>>> 535524f36d65d20801a602aa2230a86738371255
         for i in self._times:
-<<<<<<< HEAD
             yield i
 
 
