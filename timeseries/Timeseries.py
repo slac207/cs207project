@@ -36,10 +36,6 @@ class TimeSeries:
 
 
     def __getitem__(self, index):
-        # returns tuple (time, value) corresponding to the data located at
-        #     `_times[index]` and `_values[index]`.
-        # returns tuple (time, value) corresponding to the data located at
-        #     `_times[index]` and `_values[index]`.
         # returns value corresponding to the data located at
         #  `_values[index]`.
         try:
