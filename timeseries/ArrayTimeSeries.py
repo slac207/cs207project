@@ -17,8 +17,8 @@ class ArrayTimeSeries(TimeSeries):
     >>> ap[0] = 999
     >>> ap[0]
     999
-    >>> ap
-    ArrayTimeSeries(Length: 334, Times: array([  0,  ...97, 998, 999]), Values: array([999,  ...93, 996, 999]))
+    >>> repr(ap)
+    'ArrayTimeSeries(Length: 334, Times: array([  0,  ...97, 998, 999]), Values: array([999,  ...93, 996, 999]))'
     >>> print(ap)
     ArrayTimeSeries with 334 elements (Times: array([  0,  ...97, 998, 999]), Values: array([999,  ...93, 996, 999]))
     >>> len(ap)
@@ -70,4 +70,12 @@ class ArrayTimeSeries(TimeSeries):
     
     
 
-
+#threes=range(0,1000,3)
+#times = range(0,1000,1)
+#ap=ArrayTimeSeries(times,threes)
+#ap[0] = 999
+#ap[0]
+##999
+#print("HERE",repr(ap))
+##ArrayTimeSeries(Length: 334, Times: array([  0,  ...97, 998, 999]), Values: array([999,  ...93, 996, 999]))
+#print(ap)

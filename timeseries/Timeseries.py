@@ -69,7 +69,6 @@ class TimeSeries:
         cls = type(self).__name__
         timesStr  = r.repr(self._times)
         valuesStr = r.repr(self._values)
-        print(self._values,valuesStr)
         return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
 
 
