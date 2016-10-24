@@ -15,6 +15,12 @@ class ArrayTimeSeriesTest(unittest.TestCase):
 
     def test_input_list(self):
         t = ArrayTimeSeries(values=[1,2,3,4],times=[10,20,30,40])
+        
+    def test_input_nonseq(self):
+        with raises(TypeError):
+            t = ArrayTimeSeries(3)
+        with raises(TypeError):
+            t = ArrayTimeSeries(range(0,2),3)        
 
     def test_len(self):
         assert len(self.ats) == 5
@@ -24,7 +30,7 @@ class ArrayTimeSeriesTest(unittest.TestCase):
     #    assert self.ats[2.5] == 5
 
     def test_setitem(self):
-        self.ats[3.5] = 100
+        self.ats[0] = 100
 
     # No iter method! We need to add this.
     #def test_iter(self):
@@ -58,6 +64,12 @@ class TimeSeriesTest(unittest.TestCase):
     def test_input_tuple(self):
         t = TimeSeries((2,3))
         t = TimeSeries(())
+        
+    def test_input_nonseq(self):
+        with raises(TypeError):
+            t = TimeSeries(3)
+        with raises(TypeError):
+            t = TimeSeries(range(0,2),3)
 
     def test_string(self):
         assert str(TimeSeries((2,3))) == "TimeSeries with 2 elements (Times: range(0, 2), Values: [2, 3])"

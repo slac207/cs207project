@@ -40,7 +40,7 @@ class ArrayTimeSeries(TimeSeries):
 
     """
     def __init__(self,times,values):
-        TimeSeries.__init__(self,values,times)
+        TimeSeries.__init__(self,values,times)        
         self._times = np.array(times)
         self._values = np.array(values)
 
