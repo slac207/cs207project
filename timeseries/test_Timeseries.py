@@ -15,32 +15,49 @@ class ArrayTimeSeriesTest(unittest.TestCase):
 
     def test_input_list(self):
         t = ArrayTimeSeries(values=[1,2,3,4],times=[10,20,30,40])
-        
+
+    def test_input_string(self):
+        t = ArrayTimeSeries('abcd',[0,10,20,30])
+        t = ArrayTimeSeries('abcd','edsa')
+
     def test_input_nonseq(self):
         with raises(TypeError):
             t = ArrayTimeSeries(3)
         with raises(TypeError):
-            t = ArrayTimeSeries(range(0,2),3)        
+            t = ArrayTimeSeries(range(0,2),3)
+
+    def test_input_tuple(self):
+        t = ArrayTimeSeries((2,3),(1,2))
+        t = ArrayTimeSeries((),())
 
     def test_len(self):
         assert len(self.ats) == 5
 
-    # This one is failing. Why does get item return both time and value?
-    #def test_getitem(self):
-    #    assert self.ats[2.5] == 5
+    def test_getitem(self):
+        with raises(IndexError):
+            self.ats[12]
+        assert self.ats[2] == 10
 
     def test_setitem(self):
-        self.ats[0] = 100
+        self.ats[4] = 100
+        with raises(IndexError):
+            self.ats[6] = 203
 
-    # No iter method! We need to add this.
-    #def test_iter(self):
-        #assert list(iter(self.ats))
+    def test_iter(self):
+        assert isinstance(iter(self.ats), collections.Iterable) == True
+        assert list(iter(self.ats)) == [0,5,10,8,7]
 
     def test_iteritems(self):
+        assert isinstance(self.ats.iteritems(), collections.Iterable) == True
         assert list(self.ats.iteritems()) == [(1.0, 0.0), (2.5, 5.0), (3.0, 10.0), (3.5, 8.0), (4.0, 7.0)]
 
     def test_itertimes(self):
+        assert isinstance(self.ats.itertimes(), collections.Iterable) == True
         assert list(self.ats.itertimes()) == [1.0,2.5,3.0,3.5,4.0]
+
+    def test_string_repr(self):
+        assert str(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries with 2 elements (Times: array([2, 3]), Values: array([1, 2]))"
+        assert repr(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries(Length: 2, Times: array([2, 3]), Values: array([1, 2]))"
 
 class TimeSeriesTest(unittest.TestCase):
 
@@ -64,7 +81,7 @@ class TimeSeriesTest(unittest.TestCase):
     def test_input_tuple(self):
         t = TimeSeries((2,3))
         t = TimeSeries(())
-        
+
     def test_input_nonseq(self):
         with raises(TypeError):
             t = TimeSeries(3)
@@ -105,21 +122,21 @@ class TimeSeriesTest(unittest.TestCase):
         assert isinstance(self.ts.iteritems(), collections.Iterable) == True
         assert list(self.ts.iteritems()) == [(1, 0), (2, 1), (3, 2), (4, 3)]
         assert self.ts[3] == 3
-        
+
     def test_contains(self):
         assert self.ts.__contains__(2) == True
-        assert self.ts.__contains__(15) == False    
-        
+        assert self.ts.__contains__(15) == False
+
     def test_itervalues(self):
         assert isinstance(self.ts.itervalues(), collections.Iterable) == True
-        assert list(self.ts.itervalues()) == [0,1,2,3]       
-        
+        assert list(self.ts.itervalues()) == [0,1,2,3]
+
     def test_times(self):
         assert (self.ts.times() == [1,2,3,4]).all()
-        
+
     def test_items(self):
         assert self.ts.items() == [(1, 0), (2, 1), (3, 2), (4, 3)]
-        
+
     def test_values(self):
         assert (self.ts.values() == [0,1,2,3]).all()
 
