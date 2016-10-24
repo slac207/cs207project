@@ -51,12 +51,10 @@ class TimeSeriesTest(unittest.TestCase):
         assert t[1] == 5
 
     def test_iter(self):
-
         assert isinstance(iter(self.ts), collections.Iterable) == True
         assert list(iter(self.ts)) == [0,1,2,3]
 
     def test_itertimes(self):
-
         assert isinstance(self.ts.itertimes(), collections.Iterable) == True
         assert list(self.ts.itertimes()) == [1,2,3,4]
 
@@ -64,6 +62,23 @@ class TimeSeriesTest(unittest.TestCase):
         assert isinstance(self.ts.iteritems(), collections.Iterable) == True
         assert list(self.ts.iteritems()) == [(1, 0), (2, 1), (3, 2), (4, 3)]
         assert self.ts[3] == 3
+        
+    def test_contains(self):
+        assert self.ts.__contains__(2) == True
+        assert self.ts.__contains__(15) == False    
+        
+    def test_itervalues(self):
+        assert isinstance(self.ts.itervalues(), collections.Iterable) == True
+        assert list(self.ts.itervalues()) == [0,1,2,3]       
+        
+    def test_times(self):
+        assert (self.ts.times() == [1,2,3,4]).all()
+        
+    def test_items(self):
+        assert self.ts.items() == [(1, 0), (2, 1), (3, 2), (4, 3)]
+        
+    def test_values(self):
+        assert (self.ts.values() == [0,1,2,3]).all()
 
     def test_lazy(self):
         'lazy property should be an instance of LazyOperation'
