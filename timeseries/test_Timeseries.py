@@ -249,8 +249,8 @@ class TimeSeriesTest(unittest.TestCase):
             assert 'a'*self.ts
 
 if __name__=='__main__':
-    try:
-        unittest.main() # Run unit tests
-    except SystemExit as inst:
-        if inst.args[0] is True: # If error raised by sys.exit(True) when tests failed
-            raise
+    try:  # pragma: no cover
+        unittest.main()  # pragma: no cover
+    except SystemExit as inst:  # pragma: no cover
+        if inst.args[0] is True:  # pragma: no cover
+            raise  # pragma: no cover
