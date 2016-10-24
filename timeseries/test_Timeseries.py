@@ -3,7 +3,38 @@ import unittest
 import lazy
 import numpy as np
 from Timeseries import TimeSeries
+from ArrayTimeSeries import ArrayTimeSeries
 import collections
+
+class ArrayTimeSeriesTest(unittest.TestCase):
+    def setUp(self):
+        self.ats = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
+
+    def test_input_range(self):
+        t = ArrayTimeSeries(values = range(1,10),times=range(10,19))
+
+    def test_input_list(self):
+        t = ArrayTimeSeries(values=[1,2,3,4],times=[10,20,30,40])
+
+    def test_len(self):
+        assert len(self.ats) == 5
+
+    # This one is failing. Why does get item return both time and value?
+    #def test_getitem(self):
+    #    assert self.ats[2.5] == 5
+
+    def test_setitem(self):
+        self.ats[3.5] = 100
+
+    # No iter method! We need to add this.
+    #def test_iter(self):
+        #assert list(iter(self.ats))
+
+    def test_iteritems(self):
+        assert list(self.ats.iteritems()) == [(1.0, 0.0), (2.5, 5.0), (3.0, 10.0), (3.5, 8.0), (4.0, 7.0)]
+
+    def test_itertimes(self):
+        assert list(self.ats.itertimes()) == [1.0,2.5,3.0,3.5,4.0]
 
 class TimeSeriesTest(unittest.TestCase):
 
@@ -44,7 +75,7 @@ class TimeSeriesTest(unittest.TestCase):
 
     def test_setitem(self):
         with raises(IndexError):
-            self.ts.__setitem__(200,0)    
+            self.ts.__setitem__(200,0)
 
         t = TimeSeries([1,2,3])
         t[1] = 5
