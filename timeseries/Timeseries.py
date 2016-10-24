@@ -23,9 +23,20 @@ class TimeSeries:
         >>> t = TimeSeries([1,2,3],[0,2,4])
 
         """
+        #test whether values is a sequence
+        try:
+            iter(values)
+        except TypeError:
+            raise TypeError("Non sequence passed into constructor")
+                
         if times == None:
             self._times = range(0,len(values))
         else:
+            #test if times is a sequence 
+            try:
+                iter(times)
+            except TypeError:
+                raise TypeError("Non sequence passed into constructor")            
             self._times = [x for x in times]
 
         self._values = [x for x in values]
@@ -222,4 +233,5 @@ class TimeSeries:
         #    return all(v==rhs for v in self._values)
         else:
             return False
+
 
