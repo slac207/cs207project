@@ -80,11 +80,13 @@ class TimeSeries:
 
 
     def __iter__(self):
+        #iterate over values
         for i in self._values:
             yield i
 
     def __contains__(self,item):
         return item in self._values
+         
 
     def itertimes(self):
         for i in self._times:
@@ -99,12 +101,15 @@ class TimeSeries:
             yield j
 
     def items(self):
+        #returns a list of time, value pairs
         return list(zip(self._times,self._values))
 
     def values(self):
+        #returns a numpy array of values
         return np.array(self._values)
 
     def times(self):
+        #returns a numpy array of times
         return np.array(self._times)
 
     @lazy.lazy
@@ -217,3 +222,4 @@ class TimeSeries:
         #    return all(v==rhs for v in self._values)
         else:
             return False
+
