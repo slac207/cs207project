@@ -3,8 +3,7 @@ import numpy as np
 
 class ArrayTimeSeries(TimeSeries):
     """
-    It is a new class ArrayTimeSeries which inherits from TimeSeries
-    class and uses numpy arrays to store the data internally.
+    Inherits from TimeSeries; uses numpy arrays to store time and values data internally.
 
     Parameters
     ----------
@@ -30,7 +29,7 @@ class ArrayTimeSeries(TimeSeries):
     [0, 1, 2, 3]
     >>> list(ap.iteritems())
     [(0, 5), (1, 6), (2, 7), (3, 8)]
-    
+
     #Now test non-uniform time series
     >>> a = ArrayTimeSeries(times=[1,2.5,3,3.5,4],values=[0,5,10,8,7], )
     >>> a
@@ -40,7 +39,7 @@ class ArrayTimeSeries(TimeSeries):
 
     """
     def __init__(self,times,values):
-        TimeSeries.__init__(self,values,times)        
+        TimeSeries.__init__(self,values,times)
         self._times = np.array(times)
         self._values = np.array(values)
 
@@ -61,14 +60,14 @@ class ArrayTimeSeries(TimeSeries):
 
     def __iter__(self):
         return super().__iter__()
-        
+
     def itertimes(self):
         return super().itertimes()
 
     def iteritems(self):
         return super().iteritems()
-    
-    
+
+
 
 #threes=range(0,1000,3)
 #times = range(0,1000,1)
