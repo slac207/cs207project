@@ -51,7 +51,7 @@ class ArrayTimeSeries(TimeSeries):
         return len(self._values)
 
     def itertimes(self):
-        super().itertimes()
+        return super().itertimes()
 
     def iteritems(self):
         for i,j in self._values:
