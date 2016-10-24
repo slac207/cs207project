@@ -50,9 +50,9 @@ class ArrayTimeSeries(TimeSeries):
     def __len__(self):
         return len(self._values)
 
-    def __itertimes__(self):
-        super().__itertimes__()
+    def itertimes(self):
+        super().itertimes()
 
-    def __iteritems__(self):
+    def iteritems(self):
         for i,j in self._values:
             yield i,j
