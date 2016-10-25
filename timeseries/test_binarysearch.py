@@ -13,7 +13,7 @@ class MyTest(unittest.TestCase):
     
     #test showing that sorted array is necessary- 3 is present but returns -1
     def test_sorted(self):
-        self.assertEqual(binary_search([2,1,5,3,6],3),-1)
+        self.assertEqual(binary_search([2,1,5,3,6],3),(1, 2))
     
     #test for searching in an empty array
     def test_empty(self):
