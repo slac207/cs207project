@@ -67,6 +67,13 @@ class TimeSeriesTest(unittest.TestCase):
 
     def tearDown(self):
         del self.ts
+        
+    def test_input_monotone_increasing(self):
+        with raises(TypeError):
+            t = TimeSeries([1,2,3],[3,1,3])
+        with raises(TypeError):
+            t = TimeSeries([1,2,3],[3,1,4])
+            
 
     def test_input_range(self):
         t = TimeSeries(range(0,5))
@@ -140,6 +147,13 @@ class TimeSeriesTest(unittest.TestCase):
     def test_values(self):
         assert (self.ts.values() == [0,1,2,3]).all()
 
+    def test_interpolate(self):
+        a = TimeSeries(times=[0,5,10],values=[1,2,3])
+        b = TimeSeries(times=[2.5,7.5],values=[100,-100])
+        assert(a.interpolate([1]) == TimeSeries(times=[1],values=[1.2]))
+        assert(a.interpolate(b.itertimes()) == TimeSeries(times=[2.5,7.5],values=[1.5,2.5]))
+        assert(a.interpolate([-100,100]) == TimeSeries(times=[-100,100],values=[1,3]))   
+        
     def test_lazy(self):
         'lazy property should be an instance of LazyOperation'
         assert isinstance(self.ts.lazy,lazy.LazyOperation)==True

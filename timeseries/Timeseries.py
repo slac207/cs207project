@@ -2,6 +2,7 @@ import lazy
 import numpy as np
 import numbers
 import reprlib
+from binarysearch import binary_search
 
 class TimeSeries:
     """
@@ -18,9 +19,10 @@ class TimeSeries:
            data used to populate time series instance.
         times  : a sequence (optional)
            time associated with each observation in `values`.
-
-        >>> t = TimeSeries([1,2,3])
-        >>> t = TimeSeries([1,2,3],[0,2,4])
+        
+        Notes:
+        ------
+        PRE: times (if provided) must be montonically increasing
 
         """
         #test whether values is a sequence
@@ -35,10 +37,26 @@ class TimeSeries:
             #test if times is a sequence 
             try:
                 iter(times)
+                self._times = [x for x in times]
             except TypeError:
                 raise TypeError("Non sequence passed into constructor")            
-            self._times = [x for x in times]
-
+        
+        #check monotonically inceasing
+        seen = set()
+        try:
+            maxval = self._times[0]
+        except:
+            maxval = None
+            
+        for x in self._times:
+            if x in seen or x < maxval:
+                raise TypeError("Times must be a monotonically increasing container")  
+            elif x not in seen:
+                seen.add(x) 
+                if x > maxval:
+                    maxval = x
+            
+        
         self._values = [x for x in values]
 
 
@@ -122,6 +140,40 @@ class TimeSeries:
     def times(self):
         #returns a numpy array of times
         return np.array(self._times)
+    
+    def interpolate(self,times_to_interpolate):
+        """
+        Produces new TimeSeries with linearly interpolated values using
+        piecewise-linear functions with stationary boundary conditions
+        
+        Parameters:
+        -----------
+        self: TimeSeries instance
+        times_to_interpolate: sorted sequence of times to be interpolated
+        
+        Returns:
+        --------
+        TimeSeries instance with interpolated times
+        
+        """
+        
+        times_to_interpolate = sorted(times_to_interpolate)
+        tms = []
+        def interp_helper(t):
+            tms.append(t)
+            #if the time is less than all the times we have
+            if t <= self._times[0]:
+                return self._values[0]
+            #if the time is greater than all the times we have
+            elif t >= self._times[-1]:
+                return self._values[-1]
+            else:
+                left_idx,right_idx = binary_search(self._times,t)
+                m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
+                return (t-self._times[left_idx])*m + self._values[left_idx]
+        
+        interpolated_values = [interp_helper(t) for t in times_to_interpolate] 
+        return self.__class__(times=tms, values=interpolated_values)
 
     @lazy.lazy
     def identity(self):
@@ -233,5 +285,7 @@ class TimeSeries:
         #    return all(v==rhs for v in self._values)
         else:
             return False
+
+
 
 
