@@ -68,13 +68,10 @@ class TimeSeriesTest(unittest.TestCase):
     def tearDown(self):
         del self.ts
         
-    def test_input_monotone_increasing(self):
+    def test_input_diff_len(self):
         with raises(TypeError):
-            t = TimeSeries([1,2,3],[3,1,3])
-        with raises(TypeError):
-            t = TimeSeries([1,2,3],[3,1,4])
+            t = TimeSeries([1,2,3],[3,1,3,4])
             
-
     def test_input_range(self):
         t = TimeSeries(range(0,5))
 
