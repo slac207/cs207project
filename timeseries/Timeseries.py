@@ -9,6 +9,10 @@ class TimeSeries:
     Purpose of the class.
     Things the user should keep in mind when using an instance
         of this object.
+        
+    Notes:
+    ------
+    PRE: times must be a monotonically increasing sequence 
     """
 
     def __init__(self, values, times=None):
@@ -19,10 +23,6 @@ class TimeSeries:
            data used to populate time series instance.
         times  : a sequence (optional)
            time associated with each observation in `values`.
-        
-        Notes:
-        ------
-        PRE: times (if provided) must be montonically increasing
 
         """
         #test whether values is a sequence
@@ -30,6 +30,8 @@ class TimeSeries:
             iter(values)
         except TypeError:
             raise TypeError("Non sequence passed into constructor")
+        self._values = [x for x in values]
+        
                 
         if times == None:
             self._times = range(0,len(values))
@@ -38,27 +40,13 @@ class TimeSeries:
             try:
                 iter(times)
                 self._times = [x for x in times]
+                if len(self._times) != len(self._values):
+                    raise TypeError("Times and Values must be same length")                
             except TypeError:
                 raise TypeError("Non sequence passed into constructor")            
-        
-        #check monotonically inceasing
-        seen = set()
-        try:
-            maxval = self._times[0]
-        except:
-            maxval = None
-            
-        for x in self._times:
-            if x in seen or x < maxval:
-                raise TypeError("Times must be a monotonically increasing container")  
-            elif x not in seen:
-                seen.add(x) 
-                if x > maxval:
-                    maxval = x
             
         
-        self._values = [x for x in values]
-
+        
 
     def __len__(self):
         return len(self._values)
@@ -157,7 +145,6 @@ class TimeSeries:
         
         """
         
-        times_to_interpolate = sorted(times_to_interpolate)
         tms = []
         def interp_helper(t):
             tms.append(t)
