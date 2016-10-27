@@ -45,8 +45,6 @@ class TimeSeries:
             except TypeError:
                 raise TypeError("Non sequence passed into constructor")            
             
-        
-        
 
     def __len__(self):
         return len(self._values)
@@ -103,7 +101,6 @@ class TimeSeries:
 
     def __contains__(self,item):
         return item in self._values
-         
 
     def itertimes(self):
         for i in self._times:
