@@ -7,292 +7,148 @@ from ArrayTimeSeries import ArrayTimeSeries
 import numbers
 import collections
 
-class ArrayTimeSeriesTest(unittest.TestCase):
-    def setUp(self):
-        self.ats = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
-
-    def test_input_range(self):
-        t = ArrayTimeSeries(values = range(1,10),times=range(10,19))
-
-    def test_input_list(self):
-        t = ArrayTimeSeries(values=[1,2,3,4],times=[10,20,30,40])
-        
-    def test_input_diff_len(self):
-        with raises(TypeError):
-            t = ArrayTimeSeries([1,2,3],[3,1,3,4])    
-
-    def test_input_string(self):
-        t = ArrayTimeSeries('abcd',[0,10,20,30])
-        t = ArrayTimeSeries('abcd','edsa')
-
-    def test_input_nonseq(self):
-        with raises(TypeError):
-            t = ArrayTimeSeries(3)
-        with raises(TypeError):
-            t = ArrayTimeSeries(range(0,2),3)
-
-    def test_input_tuple(self):
-        t = ArrayTimeSeries((2,3),(1,2))
-        t = ArrayTimeSeries((),())
-
-    def test_len(self):
-        assert len(self.ats) == 5
-
-    def test_getitem(self):
-        with raises(IndexError):
-            self.ats[12]
-        assert self.ats[2] == 10
-
-    def test_setitem(self):
-        self.ats[4] = 100
-        with raises(IndexError):
-            self.ats[6] = 203
-
-    def test_iter(self):
-        assert isinstance(iter(self.ats), collections.Iterable) == True
-        assert list(iter(self.ats)) == [0,5,10,8,7]
-
-    def test_iteritems(self):
-        assert isinstance(self.ats.iteritems(), collections.Iterable) == True
-        assert list(self.ats.iteritems()) == [(1.0, 0.0), (2.5, 5.0), (3.0, 10.0), (3.5, 8.0), (4.0, 7.0)]
-
-    def test_itertimes(self):
-        assert isinstance(self.ats.itertimes(), collections.Iterable) == True
-        assert list(self.ats.itertimes()) == [1.0,2.5,3.0,3.5,4.0]
-
-    def test_string_repr(self):
-        assert str(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries with 2 elements (Times: array([2, 3]), Values: array([1, 2]))"
-        assert repr(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries(Length: 2, Times: array([2, 3]), Values: array([1, 2]))"
-    
-    def test_contains(self):
-        assert self.ats.__contains__(5) == True
-        assert self.ats.__contains__(15) == False 
-        
-    def test_itervalues(self):
-        assert isinstance(self.ats.itervalues(), collections.Iterable) == True
-        assert list(self.ats.itervalues()) == [0,5,10,8,7]
-
-    def test_times(self):
-        assert (self.ats.times() == [1,2.5,3,3.5,4]).all()
-
-    def test_items(self):
-        assert self.ats.items() == [(1.0, 0), (2.5, 5), (3.0, 10), (3.5, 8), (4.0, 7)]
-
-    def test_values(self):
-        assert (self.ats.values() == [0,5,10,8,7]).all()
-
-    def test_interpolate(self):
-        a = ArrayTimeSeries(times=[0,5,10],values=[1,2,3])
-        b = ArrayTimeSeries(times=[2.5,7.5],values=[100,-100])
-        assert(a.interpolate([1]) == ArrayTimeSeries(times=[1],values=[1.2]))
-        assert(a.interpolate(b.itertimes()) == ArrayTimeSeries(times=[2.5,7.5],values=[1.5,2.5]))
-        assert(a.interpolate([-100,100]) == ArrayTimeSeries(times=[-100,100],values=[1,3]))   
-        
-    def test_lazy(self):
-        'lazy property should be an instance of LazyOperation'
-        assert isinstance(self.ats.lazy,lazy.LazyOperation)==True
-        'self.ts.lazy.eval() should be the same as self.ts'
-        assert self.ats is self.ats.lazy.eval()
-
-    def test_lazy_smoketest(self):
-        '''An involved use of lazy operations on the lazy property
-        to ensure the layers can work together'''
-        @lazy.lazy
-        def check_length(a,b):
-            return len(a)==len(b)
-        thunk = check_length(ArrayTimeSeries(values=range(0,4),times=range(1,5)).lazy, ArrayTimeSeries(values=range(1,5),times=range(2,6)).lazy)
-        assert thunk.eval()==True
-
-    def test_pos(self):
-        # Values should be the same
-        assert np.all((+self.ats)._values==self.ats._values)
-        # Times should be the same
-        assert np.all((+self.ats)._times==list(self.ats._times))
-        # A new instance should be created that is equal to the old.
-        assert +self.ats==self.ats
-
-    def test_neg(self):
-        # Values should be negated
-        assert np.all((-self.ats)._values==[-v for v in self.ats._values])
-        # Times should be the same
-        assert np.all((-self.ats)._times==list(self.ats._times))
-        # Negating twice should return to the start
-        assert -(-self.ats)==self.ats
-
-    def test_abs(self):
-        # absolute value of an instance with negative and positive values
-        # should have only positive values
-        self.ts2 = ArrayTimeSeries(values=range(-10,10),times=range(-10,10))
-        assert min(abs(self.ts2)._values)>=0
-        # Times should be the same
-        assert np.all(abs(self.ts2)._times == list(self.ts2._times))
-
-    def test_eq(self):
-        self.ts3 = ArrayTimeSeries(values=range(10),times=range(10))
-        self.ts4 = ArrayTimeSeries(values=range(10),times=range(10))
-        self.ts5 = ArrayTimeSeries(values=range(9),times=range(9))
-        self.ts6 = [0,1,2]
-        assert self.ts3==self.ts4
-        assert self.ts3 is not self.ts4
-        assert self.ts3!=self.ts5
-        assert self.ts3 != self.ts6
-
-    def test_bool(self):
-        assert not bool(ArrayTimeSeries(values=[0,0,0],times=range(3)))
-        assert bool(ArrayTimeSeries(values=[0,0,1],times=range(3)))
-        assert bool(ArrayTimeSeries(values=[-1,0,0],times=range(3)))
-
-
-    def test_add(self):
-        self.ts_long = ArrayTimeSeries(values=range(9),times=range(9))
-        assert self.ats+self.ats==ArrayTimeSeries(values=(2*v for v in self.ats._values),times=self.ats._times)
-        # Addition with a constant is defined
-        assert self.ats+5==ArrayTimeSeries(values=(5+v for v in self.ats._values),times=self.ats._times)
-        # Different-length timeseries should return a value error
-        with raises(ValueError):
-            self.ats+self.ts_long
-        # Time series with different values should return a value error
-        with raises(ValueError):
-
-            self.ats+ArrayTimeSeries(range(0,4),range(0,4))
-        # addition with other types is not implemented
-        with raises(TypeError):
-            assert self.ats+'a'
-        with raises(TypeError):
-            assert 'a'+self.ats
-
-    def test_sub(self):
-        self.ats_long = ArrayTimeSeries(values=range(9),times=range(9))
-        assert self.ats-self.ats==ArrayTimeSeries(values=(0 for v in self.ats._values),times=self.ats._times)
-        assert self.ats-self.ats==self.ats+(-self.ats)
-        # Subtraction with a constant is defined
-        assert self.ats-5==ArrayTimeSeries(values=(v-5 for v in self.ats._values),times=self.ats._times)
-        # Different-length timeseries should return a value error
-        with raises(ValueError):
-            self.ats-self.ats_long
-        # Time series with different values should return a value error
-        with raises(ValueError):
-            self.ats-ArrayTimeSeries(values=range(0,4),times=range(0,4))
-        # subtraction with other types is not implemented
-        with raises(TypeError):
-            assert self.ats-'a'
-        with raises(TypeError):
-            assert 'a'-self.ats
-
-    def test_mul(self):
-        self.ts_long = ArrayTimeSeries(range(9),range(9))
-        assert self.ats*self.ats==ArrayTimeSeries(values=(v**2 for v in self.ats._values),times=self.ats._times)
-        # Multiplication with a constant is defined
-        assert self.ats*5==ArrayTimeSeries(values=(5*v for v in self.ats._values),times=self.ats._times)
-        # Different-length timeseries should return a value error
-        with raises(ValueError):
-            self.ats*self.ts_long
-        # Time series with different values should return a value error
-        with raises(ValueError):
-            self.ats*ArrayTimeSeries(values=range(0,4),times=range(0,4))
-        # multiplication with other types is not implemented
-        with raises(TypeError):
-            assert self.ats*'a'
-        with raises(TypeError):
-            assert 'a'*self.ats    
-
 class TimeSeriesTest(unittest.TestCase):
 
     """ Test time series methods """
     def setUp(self):
         self.ts = TimeSeries(range(0,4),range(1,5))
+        self.ats = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
 
     def tearDown(self):
         del self.ts
-        
+        del self.ats
+
     def test_input_diff_len(self):
         with raises(TypeError):
             t = TimeSeries([1,2,3],[3,1,3,4])
-            
+        with raises(TypeError):
+            t = ArrayTimeSeries([1,2,3],[3,1,3,4])
+
     def test_input_range(self):
         t = TimeSeries(range(0,5))
+        t = ArrayTimeSeries(values = range(1,10),times=range(10,19))
 
     def test_input_string(self):
         t = TimeSeries('abcd')
+        t = ArrayTimeSeries('abcd',[0,10,20,30])
+        t = ArrayTimeSeries('abcd','edsa')
 
     def test_input_list(self):
         t = TimeSeries([3,4,5])
         t = TimeSeries([])
+        t = ArrayTimeSeries(values=[1,2,3,4],times=[10,20,30,40])
 
     def test_input_tuple(self):
         t = TimeSeries((2,3))
         t = TimeSeries(())
+        t = ArrayTimeSeries((2,3),(1,2))
+        t = ArrayTimeSeries((),())
 
     def test_input_nonseq(self):
         with raises(TypeError):
             t = TimeSeries(3)
         with raises(TypeError):
             t = TimeSeries(range(0,2),3)
+        with raises(TypeError):
+            t = ArrayTimeSeries(3)
+        with raises(TypeError):
+            t = ArrayTimeSeries(range(0,2),3)
 
     def test_string(self):
         assert str(TimeSeries((2,3))) == "TimeSeries with 2 elements (Times: range(0, 2), Values: [2, 3])"
+        assert str(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries with 2 elements (Times: array([2, 3]), Values: array([1, 2]))"
 
     def test_repr(self):
         assert repr(TimeSeries((2,3))) == "TimeSeries(Length: 2, Times: range(0, 2), Values: [2, 3])"
+        assert repr(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries(Length: 2, Times: array([2, 3]), Values: array([1, 2]))"
 
     def test_length(self):
         assert len(self.ts) == 4
+        assert len(self.ats) == 5
 
     def test_getitem(self):
         with raises(IndexError):
             self.ts[12]
         assert self.ts[3] == 3
+        with raises(IndexError):
+            self.ats[12]
+        assert self.ats[2] == 10
 
     def test_setitem(self):
         with raises(IndexError):
             self.ts.__setitem__(200,0)
-
         t = TimeSeries([1,2,3])
         t[1] = 5
         assert t[1] == 5
+        ats = ArrayTimeSeries(times=[1,2,3],values=[3,6,8])
+        ats[2] = 100
+        assert ats[2] == 100
+        with raises(IndexError):
+            self.ats[6] = 203
 
     def test_iter(self):
         assert isinstance(iter(self.ts), collections.Iterable) == True
         assert list(iter(self.ts)) == [0,1,2,3]
+        assert isinstance(iter(self.ats), collections.Iterable) == True
+        assert list(iter(self.ats)) == [0,5,10,8,7]
 
     def test_itertimes(self):
         assert isinstance(self.ts.itertimes(), collections.Iterable) == True
         assert list(self.ts.itertimes()) == [1,2,3,4]
+        assert isinstance(self.ats.itertimes(), collections.Iterable) == True
+        assert list(self.ats.itertimes()) == [1.0,2.5,3.0,3.5,4.0]
 
     def test_iteritems(self):
         assert isinstance(self.ts.iteritems(), collections.Iterable) == True
         assert list(self.ts.iteritems()) == [(1, 0), (2, 1), (3, 2), (4, 3)]
         assert self.ts[3] == 3
+        assert isinstance(self.ats.iteritems(), collections.Iterable) == True
+        assert list(self.ats.iteritems()) == [(1.0, 0.0), (2.5, 5.0), (3.0, 10.0), (3.5, 8.0), (4.0, 7.0)]
 
     def test_contains(self):
         assert self.ts.__contains__(2) == True
         assert self.ts.__contains__(15) == False
+        assert self.ats.__contains__(5) == True
+        assert self.ats.__contains__(15) == False
 
     def test_itervalues(self):
         assert isinstance(self.ts.itervalues(), collections.Iterable) == True
         assert list(self.ts.itervalues()) == [0,1,2,3]
+        assert isinstance(self.ats.itervalues(), collections.Iterable) == True
+        assert list(self.ats.itervalues()) == [0,5,10,8,7]
 
     def test_times(self):
         assert (self.ts.times() == [1,2,3,4]).all()
+        assert (self.ats.times() == [1,2.5,3,3.5,4]).all()
 
     def test_items(self):
         assert self.ts.items() == [(1, 0), (2, 1), (3, 2), (4, 3)]
+        assert self.ats.items() == [(1.0, 0), (2.5, 5), (3.0, 10), (3.5, 8), (4.0, 7)]
 
     def test_values(self):
         assert (self.ts.values() == [0,1,2,3]).all()
+        assert (self.ats.values() == [0,5,10,8,7]).all()
 
     def test_interpolate(self):
         a = TimeSeries(times=[0,5,10],values=[1,2,3])
         b = TimeSeries(times=[2.5,7.5],values=[100,-100])
         assert(a.interpolate([1]) == TimeSeries(times=[1],values=[1.2]))
         assert(a.interpolate(b.itertimes()) == TimeSeries(times=[2.5,7.5],values=[1.5,2.5]))
-        assert(a.interpolate([-100,100]) == TimeSeries(times=[-100,100],values=[1,3]))   
-        
+        assert(a.interpolate([-100,100]) == TimeSeries(times=[-100,100],values=[1,3]))
+
+        a = ArrayTimeSeries(times=[0,5,10],values=[1,2,3])
+        b = ArrayTimeSeries(times=[2.5,7.5],values=[100,-100])
+        assert(a.interpolate([1]) == ArrayTimeSeries(times=[1],values=[1.2]))
+        assert(a.interpolate(b.itertimes()) == ArrayTimeSeries(times=[2.5,7.5],values=[1.5,2.5]))
+        assert(a.interpolate([-100,100]) == ArrayTimeSeries(times=[-100,100],values=[1,3]))
+
     def test_lazy(self):
         'lazy property should be an instance of LazyOperation'
         assert isinstance(self.ts.lazy,lazy.LazyOperation)==True
+        assert isinstance(self.ats.lazy,lazy.LazyOperation)==True
         'self.ts.lazy.eval() should be the same as self.ts'
         assert self.ts is self.ts.lazy.eval()
+        assert self.ats is self.ats.lazy.eval()
 
     def test_lazy_smoketest(self):
         '''An involved use of lazy operations on the lazy property
@@ -302,6 +158,11 @@ class TimeSeriesTest(unittest.TestCase):
             return len(a)==len(b)
         thunk = check_length(TimeSeries(range(0,4),range(1,5)).lazy, TimeSeries(range(1,5),range(2,6)).lazy)
         assert thunk.eval()==True
+        @lazy.lazy
+        def check_length(a,b):
+            return len(a)==len(b)
+        thunk = check_length(ArrayTimeSeries(values=range(0,4),times=range(1,5)).lazy, ArrayTimeSeries(values=range(1,5),times=range(2,6)).lazy)
+        assert thunk.eval()==True
 
     def test_pos(self):
         # Values should be the same
@@ -310,6 +171,12 @@ class TimeSeriesTest(unittest.TestCase):
         assert (+self.ts)._times==list(self.ts._times)
         # A new instance should be created that is equal to the old.
         assert +self.ts==self.ts
+        # Values should be the same
+        assert np.all((+self.ats)._values==self.ats._values)
+        # Times should be the same
+        assert np.all((+self.ats)._times==list(self.ats._times))
+        # A new instance should be created that is equal to the old.
+        assert +self.ats==self.ats
 
     def test_neg(self):
         # Values should be negated
@@ -318,6 +185,13 @@ class TimeSeriesTest(unittest.TestCase):
         assert (-self.ts)._times==list(self.ts._times)
         # Negating twice should return to the start
         assert -(-self.ts)==self.ts
+        # Values should be negated
+        assert np.all((-self.ats)._values==[-v for v in self.ats._values])
+        # Times should be the same
+        assert np.all((-self.ats)._times==list(self.ats._times))
+        # Negating twice should return to the start
+        assert -(-self.ats)==self.ats
+
 
     def test_abs(self):
         # absolute value of an instance with negative and positive values
@@ -326,6 +200,12 @@ class TimeSeriesTest(unittest.TestCase):
         assert min(abs(self.ts2)._values)>=0
         # Times should be the same
         assert abs(self.ts2)._times == list(self.ts2._times)
+        # absolute value of an instance with negative and positive values
+        # should have only positive values
+        self.ts2 = ArrayTimeSeries(values=range(-10,10),times=range(-10,10))
+        assert min(abs(self.ts2)._values)>=0
+        # Times should be the same
+        assert np.all(abs(self.ts2)._times == list(self.ts2._times))
 
     def test_eq(self):
         self.ts3 = TimeSeries(range(10))
@@ -336,11 +216,22 @@ class TimeSeriesTest(unittest.TestCase):
         assert self.ts3 is not self.ts4
         assert self.ts3!=self.ts5
         assert self.ts3 != self.ts6
+        self.ts3 = ArrayTimeSeries(values=range(10),times=range(10))
+        self.ts4 = ArrayTimeSeries(values=range(10),times=range(10))
+        self.ts5 = ArrayTimeSeries(values=range(9),times=range(9))
+        self.ts6 = [0,1,2]
+        assert self.ts3==self.ts4
+        assert self.ts3 is not self.ts4
+        assert self.ts3!=self.ts5
+        assert self.ts3 != self.ts6
 
     def test_bool(self):
         assert not bool(TimeSeries([0,0,0]))
         assert bool(TimeSeries([0,0,1]))
         assert bool(TimeSeries([-1,0,0]))
+        assert not bool(ArrayTimeSeries(values=[0,0,0],times=range(3)))
+        assert bool(ArrayTimeSeries(values=[0,0,1],times=range(3)))
+        assert bool(ArrayTimeSeries(values=[-1,0,0],times=range(3)))
 
 
     def test_add(self):
@@ -360,6 +251,22 @@ class TimeSeriesTest(unittest.TestCase):
             assert self.ts+'a'
         with raises(TypeError):
             assert 'a'+self.ts
+        self.ts_long = ArrayTimeSeries(values=range(9),times=range(9))
+        assert self.ats+self.ats==ArrayTimeSeries(values=(2*v for v in self.ats._values),times=self.ats._times)
+        # Addition with a constant is defined
+        assert self.ats+5==ArrayTimeSeries(values=(5+v for v in self.ats._values),times=self.ats._times)
+        # Different-length timeseries should return a value error
+        with raises(ValueError):
+            self.ats+self.ts_long
+        # Time series with different values should return a value error
+        with raises(ValueError):
+
+            self.ats+ArrayTimeSeries(range(0,4),range(0,4))
+        # addition with other types is not implemented
+        with raises(TypeError):
+            assert self.ats+'a'
+        with raises(TypeError):
+            assert 'a'+self.ats
 
     def test_sub(self):
         self.ts_long = TimeSeries(range(9))
@@ -379,6 +286,23 @@ class TimeSeriesTest(unittest.TestCase):
         with raises(TypeError):
             assert 'a'-self.ts
 
+        self.ats_long = ArrayTimeSeries(values=range(9),times=range(9))
+        assert self.ats-self.ats==ArrayTimeSeries(values=(0 for v in self.ats._values),times=self.ats._times)
+        assert self.ats-self.ats==self.ats+(-self.ats)
+        # Subtraction with a constant is defined
+        assert self.ats-5==ArrayTimeSeries(values=(v-5 for v in self.ats._values),times=self.ats._times)
+        # Different-length timeseries should return a value error
+        with raises(ValueError):
+            self.ats-self.ats_long
+        # Time series with different values should return a value error
+        with raises(ValueError):
+            self.ats-ArrayTimeSeries(values=range(0,4),times=range(0,4))
+        # subtraction with other types is not implemented
+        with raises(TypeError):
+            assert self.ats-'a'
+        with raises(TypeError):
+            assert 'a'-self.ats
+
     def test_mul(self):
         self.ts_long = TimeSeries(range(9))
         assert self.ts*self.ts==TimeSeries((v**2 for v in self.ts._values),self.ts._times)
@@ -395,6 +319,22 @@ class TimeSeriesTest(unittest.TestCase):
             assert self.ts*'a'
         with raises(TypeError):
             assert 'a'*self.ts
+
+        self.ts_long = ArrayTimeSeries(range(9),range(9))
+        assert self.ats*self.ats==ArrayTimeSeries(values=(v**2 for v in self.ats._values),times=self.ats._times)
+        # Multiplication with a constant is defined
+        assert self.ats*5==ArrayTimeSeries(values=(5*v for v in self.ats._values),times=self.ats._times)
+        # Different-length timeseries should return a value error
+        with raises(ValueError):
+            self.ats*self.ts_long
+        # Time series with different values should return a value error
+        with raises(ValueError):
+            self.ats*ArrayTimeSeries(values=range(0,4),times=range(0,4))
+        # multiplication with other types is not implemented
+        with raises(TypeError):
+            assert self.ats*'a'
+        with raises(TypeError):
+            assert 'a'*self.ats
 
 if __name__=='__main__':
     try:  # pragma: no cover
