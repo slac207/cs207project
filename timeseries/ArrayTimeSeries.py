@@ -1,7 +1,9 @@
 from Timeseries import TimeSeries
 import numpy as np
+import numbers
+import timeSeriesABC
 
-class ArrayTimeSeries(TimeSeries):
+class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
     """
     Inherits from TimeSeries; uses numpy arrays to store time and values data internally.
 
@@ -10,71 +12,173 @@ class ArrayTimeSeries(TimeSeries):
     values : a sequence- data used to populate time series instance.
     times  : a sequence- time associated with each observation in `values`.
 
-    >>> threes=range(0,1000,3)
-    >>> times = range(0,1000,1)
-    >>> ap=ArrayTimeSeries(times,threes)
-    >>> ap[0] = 999
-    >>> ap[0]
-    999
-    >>> repr(ap)
-    'ArrayTimeSeries(Length: 334, Times: array([  0,  ...97, 998, 999]), Values: array([999,  ...93, 996, 999]))'
-    >>> print(ap)
-    ArrayTimeSeries with 334 elements (Times: array([  0,  ...97, 998, 999]), Values: array([999,  ...93, 996, 999]))
-    >>> len(ap)
-    334
-    >>> ap = ap=ArrayTimeSeries([0,1,2,3],[5,6,7,8])
-    >>> list(iter(ap))
-    [5, 6, 7, 8]
-    >>> list(ap.itertimes())
-    [0, 1, 2, 3]
-    >>> list(ap.iteritems())
-    [(0, 5), (1, 6), (2, 7), (3, 8)]
-
-    #Now test non-uniform time series
-    >>> a = ArrayTimeSeries(times=[1,2.5,3,3.5,4],values=[0,5,10,8,7], )
-    >>> a
-    ArrayTimeSeries(Length: 5, Times: array([ 1. , ...,  3.5,  4. ]), Values: array([ 0,  5, 10,  8,  7]))
-    >>> print(a)
-    ArrayTimeSeries with 5 elements (Times: array([ 1. , ...,  3.5,  4. ]), Values: array([ 0,  5, 10,  8,  7]))
-
+    Notes:
+    ------
+    PRE: times must be a monotonically increasing sequence
+    
     """
     def __init__(self,times,values):
-        TimeSeries.__init__(self,values,times)
-        self._times = np.array(times)
-        self._values = np.array(values)
+        """
+        Parameters
+        ----------
+        times  : a sequence 
+           time associated with each observation in `values`.
+        values : a sequence
+           data used to populate time series instance.
+        
+        Examples:
+        --------
+        >>> ats = ArrayTimeSeries(times=[0,1,2],values=[10,20,30])
+        """         
+        
+        # test whether values is a sequence
+        try:
+            self._times = np.array([_ for _ in times])
+            self._values = np.array([_ for _ in values])
+        except TypeError:
+            raise TypeError("Non sequence passed into constructor")
+            
+        # make sure that times and values are the same length
+        if np.size(self._times) != np.size(self._values):
+            raise TypeError("Times and Values must be same length")             
+         
+       
 
     def __getitem__(self,index):
         try:
-            return self._values[index]
+            return np.take(self._values,index) # faster than regular indexing
         except IndexError:
             raise IndexError("Index out of bounds")
 
     def __setitem__(self,index,value):
         try:
-            self._values[index] = value
+            np.put(self._values, index, value)
         except IndexError:
             raise IndexError("Index out of bounds")
 
     def __len__(self):
-        return super().__len__()
+        return np.size(self._values)    
+    
+    def values(self):
+        # returns a numpy array of values
+        return self._values
+    
+    def times(self):
+        # returns a numpy array of times
+        return self._times
+    
+    def interpolate(self,times_to_interpolate):
+        """
+        Produces new ArrayTimeSeries with linearly interpolated values using
+        piecewise-linear functions with stationary boundary conditions.
+        Uses the numpy searchsorted() function.
+        
+        Parameters:
+        -----------
+        self: ArrayTimeSeries instance
+        times_to_interpolate: sorted sequence of times to be interpolated
+        
+        Returns:
+        --------
+        ArrayTimeSeries instance with interpolated times
+        
+        Examples:
+        --------
+        >>> ats = ArrayTimeSeries(times=[0,1,2],values=[40,20,30])
+        >>> ats.interpolate([0.5,1.5,3])
+        ArrayTimeSeries(Length: 3, Times: array([ 0.5,  1.5,  3. ]), Values: array([ 30.,  25.,  30.]))
+        
+        """
+        
+        def binary_search_np(times,t):
+            # uses numpy searchsorted to perform binary search
+            idx = np.searchsorted(times,t)
+            if np.take(times,idx) == t:
+                return self._values[t]
+            else:
+                left_idx,right_idx = idx-1, idx
+                m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
+                return (t-self._times[left_idx])*m + self._values[left_idx]                
 
-    def __iter__(self):
-        return super().__iter__()
+        tms = []
+        def interp_helper(t):
+            # interpolates a given time value
+            tms.append(t)
+            # if the time is less than all the times we have
+            if t <= self._times[0]:
+                return self._values[0]
+            # if the time is greater than all the times we have
+            elif t >= self._times[-1]:
+                return self._values[-1]
+            else:
+                return binary_search_np(self._times,t)
+        
+        interpolated_values = [interp_helper(t) for t in times_to_interpolate] 
+        return self.__class__(times=tms, values=interpolated_values)
+    
 
-    def itertimes(self):
-        return super().itertimes()
-
-    def iteritems(self):
-        return super().iteritems()
-
+    def __neg__(self):
+        # returns: ArrayTimeSeries instance with negated values and no change to the times
+        cls = type(self)
+        return cls(self._times,self._values*-1)
 
 
-#threes=range(0,1000,3)
-#times = range(0,1000,1)
-#ap=ArrayTimeSeries(times,threes)
-#ap[0] = 999
-#ap[0]
-##999
-#print("HERE",repr(ap))
-##ArrayTimeSeries(Length: 334, Times: array([  0,  ...97, 998, 999]), Values: array([999,  ...93, 996, 999]))
-#print(ap)
+    def __abs__(self):
+        # returns: new ArrayTimeSeries instance with absolute value of the values
+        # and no change to the times
+        cls = type(self)
+        return cls(self._times,abs(self._values))
+
+
+    def __bool__(self):
+        # returns: bool `False` iff all `_values` are zero
+        return np.count_nonzero(self._values) > 0   
+    
+    
+    def __add__(self, rhs):
+        # if rhs is Real, add it to all elements of `_values`.
+        # if rhs is a TimeSeries instance with the same times, add it element-by-element.
+        # returns: a new TimeSeries instance with the same times but updated `_values`.
+        cls = type(self)
+        if isinstance(rhs, numbers.Real):
+            return cls(values=self._values+rhs,times=self._times)
+        elif isinstance(rhs,cls):
+            if (len(self)==len(rhs)) and self._eqtimes(rhs):
+                return cls(values=self._values+rhs._values,times=self._times)
+            else:
+                raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points.')
+        else:
+            return NotImplemented  
+        
+    
+    def __mul__(self, rhs):
+        # if rhs is Real, multiply it by all elements of `_values`.
+        # if rhs is a TimeSeries instance with the same times, multiply it element-by-element.
+        # returns: a new TimeSeries instance with the same times but updated `_values`.
+        cls = type(self)
+        if isinstance(rhs, numbers.Real):
+            return cls(values=rhs*self._values,times=self._times)
+        elif isinstance(rhs,cls):
+            if (len(self)==len(rhs)) and self._eqtimes(rhs):
+                return cls(values=self._values*rhs._values,times=self._times)
+            else:
+                raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
+        else:
+            return NotImplemented
+        
+    def _eqtimes(self,rhs):
+        # test equality of the time components of two TimeSeries instances
+        return np.array_equal(self._times, rhs._times)
+    
+    def _eqvalues(self,rhs):
+        # test equality of the values components of two TimeSeries instances
+        return np.array_equal(self._values, rhs._values)
+       
+    def __eq__(self,rhs):
+        # True if the times and values are the same; otherwise, False
+        if isinstance(rhs, type(self)) or isinstance(self, type(rhs)):
+            return self._eqtimes(rhs) and self._eqvalues(rhs)
+        # elif isinstance(rhs, numbers.Real):
+        #    return all(v==rhs for v in self._values)
+        else:
+            return False
