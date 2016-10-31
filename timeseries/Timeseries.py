@@ -153,7 +153,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         pcls = SizedContainerTimeSeriesInterface
         if isinstance(rhs, numbers.Real):
             return cls((a + rhs for a in self._values),self._times)
-        elif isinstance(rhs,TimeSeries):
+        elif isinstance(rhs,pcls):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
                 return cls((a + b for a, b in zip(self._values,rhs._values)),self._times)
             else:
