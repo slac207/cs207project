@@ -379,6 +379,7 @@ class TimeSeriesTest(unittest.TestCase):
         with raises(TypeError):
             assert 'a'*self.ats
 
+
 if __name__=='__main__':
     try:  # pragma: no cover
         unittest.main()  # pragma: no cover
