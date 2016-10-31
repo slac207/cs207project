@@ -25,7 +25,7 @@ class TimeSeries:
            time associated with each observation in `values`.
 
         """
-        #test whether values is a sequence
+        # test whether values is a sequence
         try:
             iter(values)
         except TypeError:
@@ -36,7 +36,7 @@ class TimeSeries:
         if times == None:
             self._times = range(0,len(values))
         else:
-            #test if times is a sequence 
+            # test if times is a sequence 
             try:
                 iter(times)
                 self._times = [x for x in times]
@@ -56,7 +56,7 @@ class TimeSeries:
         try:
             return self._values[index]
         except IndexError:
-            raise IndexError("Index out of bounds.")
+            raise IndexError("Index out of bounds")
 
 
     def __setitem__(self, index, value):
@@ -64,7 +64,7 @@ class TimeSeries:
         try:
             self._values[index] = value
         except IndexError:
-            raise IndexError("Index out of bounds.")
+            raise IndexError("Index out of bounds")
 
 
     def __repr__(self):

@@ -4,9 +4,8 @@ import lazy
 
 class TimeSeriesInterface(abc.ABC):
     """
-    TO DO
+    Documentation of the interface.
     """
-    
     
     def __iter__(self):
         # iterate over values
@@ -60,4 +59,9 @@ class TimeSeriesInterface(abc.ABC):
         -------
         self.identity() : a LazyOperation instance
         """
-        return self.identity()        
+        return self.identity() 
+        
+
+
+class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
+                   

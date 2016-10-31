@@ -29,17 +29,18 @@ class ArrayTimeSeries(TimeSeries):
         --------
         >>> ats = ArrayTimeSeries(times=[0,1,2],values=[10,20,30])
         """
+
+        # make sure that times and values are the same length
+        if np.size(self._times) != np.size(self._values):
+            raise TypeError("Times and Values must be same length")          
         
-        #test whether values is a sequence
+        # test whether values is a sequence
         try:
             self._times = np.array([_ for _ in times])
             self._values = np.array([_ for _ in values])
         except TypeError:
             raise TypeError("Non sequence passed into constructor")
-        
-        #make sure that times and values are the same length
-        if np.size(self._times) != np.size(self._values):
-            raise TypeError("Times and Values must be same length")           
+         
        
 
     def __getitem__(self,index):
