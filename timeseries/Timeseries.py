@@ -115,7 +115,14 @@ class TimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         return self.__class__(times=tms, values=interpolated_values)
 
 
-
+    def __eq__(self,rhs):
+        # True if the times and values are the same; otherwise, False
+        if isinstance(rhs, type(self)) or isinstance(self, type(rhs)):
+            return self._eqtimes(rhs) and self._eqvalues(rhs)
+        # elif isinstance(rhs, numbers.Real):
+        #    return all(v==rhs for v in self._values)
+        else:
+            return False
 
 
 
@@ -167,3 +174,13 @@ class TimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
         else:
             return NotImplemented
+        
+        
+    def _eqtimes(self,rhs):
+        # test equality of the time components of two TimeSeries instances
+        return len(self._times)==len(rhs._times) and all(a==b for a,b in zip(self._times,rhs._times))
+
+
+    def _eqvalues(self,rhs):
+        # test equality of the values components of two TimeSeries instances
+        return len(self._values)==len(rhs._values) and all(a==b for a,b in zip(self._values,rhs._values))

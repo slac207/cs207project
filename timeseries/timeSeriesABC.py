@@ -1,5 +1,6 @@
 import abc
 import lazy
+import reprlib
 
 
 class TimeSeriesInterface(abc.ABC):
@@ -176,4 +177,10 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
     def __mul__(self):
         """
         TO DO
-        """               
+        """   
+        
+    @abc.abstractmethod    
+    def __eq__(self,rhs):
+        """
+        TO DO
+        """   

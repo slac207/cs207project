@@ -29,11 +29,7 @@ class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         Examples:
         --------
         >>> ats = ArrayTimeSeries(times=[0,1,2],values=[10,20,30])
-        """
-
-        # make sure that times and values are the same length
-        if np.size(self._times) != np.size(self._values):
-            raise TypeError("Times and Values must be same length")          
+        """         
         
         # test whether values is a sequence
         try:
@@ -41,6 +37,10 @@ class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
             self._values = np.array([_ for _ in values])
         except TypeError:
             raise TypeError("Non sequence passed into constructor")
+            
+        # make sure that times and values are the same length
+        if np.size(self._times) != np.size(self._values):
+            raise TypeError("Times and Values must be same length")             
          
        
 
@@ -174,4 +174,11 @@ class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         # test equality of the values components of two TimeSeries instances
         return np.array_equal(self._values, rhs._values)
        
-
+    def __eq__(self,rhs):
+        # True if the times and values are the same; otherwise, False
+        if isinstance(rhs, type(self)) or isinstance(self, type(rhs)):
+            return self._eqtimes(rhs) and self._eqvalues(rhs)
+        # elif isinstance(rhs, numbers.Real):
+        #    return all(v==rhs for v in self._values)
+        else:
+            return False
