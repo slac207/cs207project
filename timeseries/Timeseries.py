@@ -3,8 +3,9 @@ import numpy as np
 import numbers
 import reprlib
 from binarysearch import binary_search
+import timeSeriesABC
 
-class TimeSeries:
+class TimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
     """
     Purpose of the class.
     Things the user should keep in mind when using an instance
@@ -66,47 +67,18 @@ class TimeSeries:
         except IndexError:
             raise IndexError("Index out of bounds")
 
-
-    def __repr__(self):
-        r = reprlib.Repr()
-        r.maxlist = 3       # max elements displayed for lists
-        cls = type(self).__name__
-        timesStr  = r.repr(self._times)
-        valuesStr = r.repr(self._values)
-        return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
-
-
-    def __str__(self):
-        """
-        Returns a string representation of a TimeSeries instance, of the form
-
-        "TimeSeries with 'n' elements (Times: 't', Values: 'v')"
-
-        where n is the length of `self`
-              t displays the first three elements of _times
-              v displays the first three elements of _values
-        """
-        r = reprlib.Repr()
-        r.maxlist = 3       # max elements displayed for lists
-        cls = type(self).__name__
-        timesStr  = r.repr(self._times)
-        valuesStr = r.repr(self._values)
-        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
-
     
-    def __contains__(self,item):
-        return item in self._values
 
-    def items(self):
-        #returns a list of time, value pairs
-        return list(zip(self._times,self._values))
+
+
+
 
     def values(self):
-        #returns a numpy array of values
+        #  a numpy array of values
         return np.array(self._values)
 
     def times(self):
-        #returns a numpy array of times
+        # returns a numpy array of times
         return np.array(self._times)
     
     def interpolate(self,times_to_interpolate):
@@ -144,9 +116,7 @@ class TimeSeries:
 
 
 
-    def __pos__(self):
-        # returns: TimeSeries instance with no change to the values or times
-        return self
+
 
 
     def __neg__(self):
@@ -183,13 +153,6 @@ class TimeSeries:
             return NotImplemented
 
 
-    def __sub__(self, rhs):
-        # if rhs is Real, subtract it from all elements of `_values`.
-        # if rhs is a TimeSeries instance with the same times, subtract it element-by-element.
-        # returns: a new TimeSeries instance with the same times but updated `_values`.
-        return self + (-rhs)
-
-
     def __mul__(self, rhs):
         # if rhs is Real, multiply it by all elements of `_values`.
         # if rhs is a TimeSeries instance with the same times, multiply it element-by-element.
@@ -204,24 +167,3 @@ class TimeSeries:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
         else:
             return NotImplemented
-
-
-    def _eqtimes(self,rhs):
-        # test equality of the time components of two TimeSeries instances
-        return len(self._times)==len(rhs._times) and all(a==b for a,b in zip(self._times,rhs._times))
-
-
-    def _eqvalues(self,rhs):
-        # test equality of the values components of two TimeSeries instances
-        return len(self._values)==len(rhs._values) and all(a==b for a,b in zip(self._values,rhs._values))
-
-
-    def __eq__(self,rhs):
-        # True if the times and values are the same; otherwise, False
-        cls = type(self)
-        if isinstance(rhs, cls):
-            return self._eqtimes(rhs) and self._eqvalues(rhs)
-        # elif isinstance(rhs, numbers.Real):
-        #    return all(v==rhs for v in self._values)
-        else:
-            return False
