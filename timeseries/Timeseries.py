@@ -9,10 +9,10 @@ class TimeSeries:
     Purpose of the class.
     Things the user should keep in mind when using an instance
         of this object.
-        
+
     Notes:
     ------
-    PRE: times must be a monotonically increasing sequence 
+    PRE: times must be a monotonically increasing sequence
     """
 
     def __init__(self, values, times=None):
@@ -31,20 +31,20 @@ class TimeSeries:
         except TypeError:
             raise TypeError("Non sequence passed into constructor")
         self._values = [x for x in values]
-        
-                
+
+
         if times == None:
             self._times = range(0,len(values))
         else:
-            #test if times is a sequence 
+            #test if times is a sequence
             try:
                 iter(times)
                 self._times = [x for x in times]
                 if len(self._times) != len(self._values):
-                    raise TypeError("Times and Values must be same length")                
+                    raise TypeError("Times and Values must be same length")
             except TypeError:
-                raise TypeError("Non sequence passed into constructor")            
-            
+                raise TypeError("Non sequence passed into constructor")
+
 
     def __len__(self):
         return len(self._values)
@@ -125,23 +125,23 @@ class TimeSeries:
     def times(self):
         #returns a numpy array of times
         return np.array(self._times)
-    
+
     def interpolate(self,times_to_interpolate):
         """
         Produces new TimeSeries with linearly interpolated values using
         piecewise-linear functions with stationary boundary conditions
-        
+
         Parameters:
         -----------
         self: TimeSeries instance
         times_to_interpolate: sorted sequence of times to be interpolated
-        
+
         Returns:
         --------
         TimeSeries instance with interpolated times
-        
+
         """
-        
+
         tms = []
         def interp_helper(t):
             tms.append(t)
@@ -155,8 +155,8 @@ class TimeSeries:
                 left_idx,right_idx = binary_search(self._times,t)
                 m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
                 return (t-self._times[left_idx])*m + self._values[left_idx]
-        
-        interpolated_values = [interp_helper(t) for t in times_to_interpolate] 
+
+        interpolated_values = [interp_helper(t) for t in times_to_interpolate]
         return self.__class__(times=tms, values=interpolated_values)
 
     @lazy.lazy
@@ -253,14 +253,9 @@ class TimeSeries:
 
     def __eq__(self,rhs):
         # True if the times and values are the same; otherwise, False
-        cls = type(self)
-        if isinstance(rhs, cls):
+        if isinstance(rhs, type(self)) or isinstance(self, type(rhs)):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
         # elif isinstance(rhs, numbers.Real):
         #    return all(v==rhs for v in self._values)
         else:
             return False
-
-
-
-
