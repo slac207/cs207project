@@ -396,6 +396,19 @@ class TimeSeriesTest(unittest.TestCase):
         with raises(TypeError):
             assert 'a'*self.ts
 
+            
+    def test_combo(self):
+        print("COMBO")
+        self.ats = ArrayTimeSeries(values=range(10), times=range(10))
+        self.ts = TimeSeries(values=range(10))
+        print("ADDING",self.ts + self.ats)
+        print(self.ats + self.ts)
+        print(self.ts - self.ats)
+        print(self.ats - self.ts)
+        print(self.ts*self.ats)
+        print(self.ats*self.ts)
+        print("HELLO",self.ats == self.ts, self.ats == self.ts)
+
 if __name__=='__main__':
     try:  # pragma: no cover
         unittest.main()  # pragma: no cover

@@ -140,7 +140,7 @@ class ArrayTimeSeries(TimeSeries):
         cls = type(self)
         if isinstance(rhs, numbers.Real):
             return cls(values=self._values+rhs,times=self._times)
-        elif isinstance(rhs,cls):
+        elif isinstance(rhs,TimeSeries):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
                 return cls(values=self._values+rhs._values,times=self._times)
             else:
@@ -156,7 +156,7 @@ class ArrayTimeSeries(TimeSeries):
         cls = type(self)
         if isinstance(rhs, numbers.Real):
             return cls(values=rhs*self._values,times=self._times)
-        elif isinstance(rhs,cls):
+        elif isinstance(rhs,TimeSeries):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
                 return cls(values=self._values*rhs._values,times=self._times)
             else:

@@ -3,6 +3,7 @@ import numpy as np
 import numbers
 import reprlib
 from binarysearch import binary_search
+import inspect
 
 class TimeSeries:
     """
@@ -209,7 +210,7 @@ class TimeSeries:
         cls = type(self)
         if isinstance(rhs, numbers.Real):
             return cls((a + rhs for a in self._values),self._times)
-        elif isinstance(rhs,cls):
+        elif isinstance(rhs,TimeSeries):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
                 return cls((a + b for a, b in zip(self._values,rhs._values)),self._times)
             else:
@@ -232,7 +233,7 @@ class TimeSeries:
         cls = type(self)
         if isinstance(rhs, numbers.Real):
             return cls((a*rhs for a in self._values),self._times)
-        elif isinstance(rhs,cls):
+        elif isinstance(rhs,TimeSeries):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
                 return cls((a*b for a, b in zip(self._values,rhs._values)),self._times)
             else:
@@ -254,7 +255,7 @@ class TimeSeries:
     def __eq__(self,rhs):
         # True if the times and values are the same; otherwise, False
         cls = type(self)
-        if isinstance(rhs, cls):
+        if isinstance(rhs, TimeSeries):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
         # elif isinstance(rhs, numbers.Real):
         #    return all(v==rhs for v in self._values)
