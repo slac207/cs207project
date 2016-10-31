@@ -1,8 +1,9 @@
 from Timeseries import TimeSeries
 import numpy as np
 import numbers
+import timeSeriesABC
 
-class ArrayTimeSeries(TimeSeries):
+class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
     """
     Inherits from TimeSeries; uses numpy arrays to store time and values data internally.
 
@@ -28,23 +29,24 @@ class ArrayTimeSeries(TimeSeries):
         Examples:
         --------
         >>> ats = ArrayTimeSeries(times=[0,1,2],values=[10,20,30])
-        """
+        """         
         
-        #test whether values is a sequence
+        # test whether values is a sequence
         try:
             self._times = np.array([_ for _ in times])
             self._values = np.array([_ for _ in values])
         except TypeError:
             raise TypeError("Non sequence passed into constructor")
-        
-        #make sure that times and values are the same length
+            
+        # make sure that times and values are the same length
         if np.size(self._times) != np.size(self._values):
-            raise TypeError("Times and Values must be same length")           
+            raise TypeError("Times and Values must be same length")             
+         
        
 
     def __getitem__(self,index):
         try:
-            return np.take(self._values,index) #faster than regular indexing
+            return np.take(self._values,index) # faster than regular indexing
         except IndexError:
             raise IndexError("Index out of bounds")
 
@@ -58,27 +60,27 @@ class ArrayTimeSeries(TimeSeries):
         return np.size(self._values)    
     
     def values(self):
-        #returns a numpy array of values
+        # returns a numpy array of values
         return self._values
     
     def times(self):
-        #returns a numpy array of times
+        # returns a numpy array of times
         return self._times
     
     def interpolate(self,times_to_interpolate):
         """
-        Produces new TimeSeries with linearly interpolated values using
+        Produces new ArrayTimeSeries with linearly interpolated values using
         piecewise-linear functions with stationary boundary conditions.
         Uses the numpy searchsorted() function.
         
         Parameters:
         -----------
-        self: TimeSeries instance
+        self: ArrayTimeSeries instance
         times_to_interpolate: sorted sequence of times to be interpolated
         
         Returns:
         --------
-        TimeSeries instance with interpolated times
+        ArrayTimeSeries instance with interpolated times
         
         Examples:
         --------
@@ -89,7 +91,7 @@ class ArrayTimeSeries(TimeSeries):
         """
         
         def binary_search_np(times,t):
-            #Uses numpy searchsorted to perform binary search
+            # uses numpy searchsorted to perform binary search
             idx = np.searchsorted(times,t)
             if np.take(times,idx) == t:
                 return self._values[t]
@@ -100,12 +102,12 @@ class ArrayTimeSeries(TimeSeries):
 
         tms = []
         def interp_helper(t):
-            #Interpolates a given time value
+            # interpolates a given time value
             tms.append(t)
-            #if the time is less than all the times we have
+            # if the time is less than all the times we have
             if t <= self._times[0]:
                 return self._values[0]
-            #if the time is greater than all the times we have
+            # if the time is greater than all the times we have
             elif t >= self._times[-1]:
                 return self._values[-1]
             else:
@@ -116,13 +118,13 @@ class ArrayTimeSeries(TimeSeries):
     
 
     def __neg__(self):
-        # returns: TimeSeries instance with negated values and no change to the times
+        # returns: ArrayTimeSeries instance with negated values and no change to the times
         cls = type(self)
         return cls(self._times,self._values*-1)
 
 
     def __abs__(self):
-        # returns: new TimeSeries instance with absolute value of the values
+        # returns: new ArrayTimeSeries instance with absolute value of the values
         # and no change to the times
         cls = type(self)
         return cls(self._times,abs(self._values))
@@ -172,4 +174,11 @@ class ArrayTimeSeries(TimeSeries):
         # test equality of the values components of two TimeSeries instances
         return np.array_equal(self._values, rhs._values)
        
-
+    def __eq__(self,rhs):
+        # True if the times and values are the same; otherwise, False
+        if isinstance(rhs, type(self)) or isinstance(self, type(rhs)):
+            return self._eqtimes(rhs) and self._eqvalues(rhs)
+        # elif isinstance(rhs, numbers.Real):
+        #    return all(v==rhs for v in self._values)
+        else:
+            return False
