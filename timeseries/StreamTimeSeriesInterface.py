@@ -16,7 +16,7 @@ class StreamTimeSeriesInterface(abc.ABC):
         
 
         
-class SimulatedTimeSeries(StreamTimeSeriesInterface):
+class StreamTimeSeries(StreamTimeSeriesInterface):
     """
     Class for timeseries objects that have streaming
     input data arriving via an iterator.
@@ -33,7 +33,8 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
         # If firstdata is real, we are only receiving values and need 
         # to attach our own times.  
         firstdata = next(gen)
-        self._firstdata = firstdata
+        print(type(firstdata))
+        self.firstdata = firstdata
         try:
             if isinstance(firstdata,numbers.Real):
                 time = itertools.count()
@@ -50,7 +51,11 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
         """Return (time,value) tuples in a list of length chunk"""
         return [next(self._items) for d in range(chunk)]
         
+        
+#import sys
+#print sys.exc_info()
 
+# user-defined exceptions
 
 class InputError(Exception):
     """Exception raised for errors in the input.

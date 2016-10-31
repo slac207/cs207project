@@ -33,7 +33,8 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
         # If firstdata is real, we are only receiving values and need 
         # to attach our own times.  
         firstdata = next(gen)
-        self._firstdata = firstdata
+        print(type(firstdata))
+        self.firstdata = firstdata
         try:
             if isinstance(firstdata,numbers.Real):
                 time = itertools.count()
