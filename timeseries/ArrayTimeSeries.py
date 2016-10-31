@@ -1,9 +1,9 @@
 from Timeseries import TimeSeries
 import numpy as np
 import numbers
-import timeSeriesABC
+from timeSeriesABC import SizedContainerTimeSeriesInterface
 
-class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
+class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
     """
     Inherits from TimeSeries; uses numpy arrays to store time and values data internally.
 
@@ -139,10 +139,11 @@ class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         # if rhs is Real, add it to all elements of `_values`.
         # if rhs is a TimeSeries instance with the same times, add it element-by-element.
         # returns: a new TimeSeries instance with the same times but updated `_values`.
+        pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
             return cls(values=self._values+rhs,times=self._times)
-        elif isinstance(rhs,cls):
+        elif isinstance(rhs,pcls):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
                 return cls(values=self._values+rhs._values,times=self._times)
             else:
@@ -155,10 +156,11 @@ class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         # if rhs is Real, multiply it by all elements of `_values`.
         # if rhs is a TimeSeries instance with the same times, multiply it element-by-element.
         # returns: a new TimeSeries instance with the same times but updated `_values`.
+        pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
             return cls(values=rhs*self._values,times=self._times)
-        elif isinstance(rhs,cls):
+        elif isinstance(rhs,pcls):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
                 return cls(values=self._values*rhs._values,times=self._times)
             else:
@@ -176,7 +178,7 @@ class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
        
     def __eq__(self,rhs):
         # True if the times and values are the same; otherwise, False
-        if isinstance(rhs, type(self)) or isinstance(self, type(rhs)):
+        if isinstance(rhs,SizedContainerTimeSeriesInterface):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
         # elif isinstance(rhs, numbers.Real):
         #    return all(v==rhs for v in self._values)
