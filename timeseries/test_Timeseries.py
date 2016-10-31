@@ -9,7 +9,7 @@ import collections
 
 class TimeSeriesTest(unittest.TestCase):
 
-    """ Test time series methods """
+    """ Test time series and array time series methods """
     def setUp(self):
         self.ts = TimeSeries(range(0,4),range(1,5))
         self.ats = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
@@ -216,14 +216,56 @@ class TimeSeriesTest(unittest.TestCase):
         assert self.ts3 is not self.ts4
         assert self.ts3!=self.ts5
         assert self.ts3 != self.ts6
-        self.ts3 = ArrayTimeSeries(values=range(10),times=range(10))
-        self.ts4 = ArrayTimeSeries(values=range(10),times=range(10))
-        self.ts5 = ArrayTimeSeries(values=range(9),times=range(9))
-        self.ts6 = [0,1,2]
-        assert self.ts3==self.ts4
-        assert self.ts3 is not self.ts4
-        assert self.ts3!=self.ts5
-        assert self.ts3 != self.ts6
+        self.ats3 = ArrayTimeSeries(values=range(10),times=range(10))
+        self.ats4 = ArrayTimeSeries(values=range(10),times=range(10))
+        self.ats5 = ArrayTimeSeries(values=range(9),times=range(9))
+        self.ats6 = [0,1,2]
+        assert self.ats3==self.ats4
+        assert self.ats3 is not self.ats4
+        assert self.ats3!=self.ats5
+        assert self.ats3 != self.ats6
+
+    def test_eq_ArrayTimeSeries_TimeSeries(self):
+        self.ts7 = TimeSeries(range(10))
+        self.ts8 = TimeSeries([10,34,23])
+        self.ats7 = ArrayTimeSeries(values=range(10),times=range(10))
+        self.ats8 = ArrayTimeSeries(values=range(8),times=range(8))
+        assert self.ts7==self.ats7
+        assert self.ats7==self.ts7
+        assert self.ts7 is not self.ats8
+        assert self.ats7!=self.ts8
+
+    def test_add_ArrayTimeSeries_TimeSeries(self):
+        ts1 = TimeSeries(range(10))
+        ts2 = TimeSeries([10,34,23])
+        ats1 = ArrayTimeSeries(values=range(10),times=range(10))
+        ats2= ArrayTimeSeries(values=range(8),times=range(8))
+        #print(ts1 + ats1)
+        #print(ats1 + ts1)
+        pass
+
+
+    def test_sub_TimeSeries_ArrayTimeSeries(self):
+        ts1 = TimeSeries(range(10))
+        ts2 = TimeSeries([10,34,23])
+        ats1 = ArrayTimeSeries(values=range(10),times=range(10))
+        ats2= ArrayTimeSeries(values=range(8),times=range(8))
+        #print(ts1 - ats1)
+        #print(ats1 - ts1)
+        pass
+        pass
+
+
+    def test_multiply_Array_TimeSeries_TimeSeries(self):
+        ts1 = TimeSeries(range(10))
+        ts2 = TimeSeries([10,34,23])
+        ats1 = ArrayTimeSeries(values=range(10),times=range(10))
+        ats2= ArrayTimeSeries(values=range(8),times=range(8))
+        #print(ts1.__mul__(ats1))
+        #print(ats1 * ts1)
+        pass
+        pass
+
 
     def test_bool(self):
         assert not bool(TimeSeries([0,0,0]))
@@ -244,7 +286,6 @@ class TimeSeriesTest(unittest.TestCase):
             self.ts+self.ts_long
         # Time series with different values should return a value error
         with raises(ValueError):
-
             self.ts+TimeSeries(range(0,4),range(0,4))
         # addition with other types is not implemented
         with raises(TypeError):
@@ -260,7 +301,6 @@ class TimeSeriesTest(unittest.TestCase):
             self.ats+self.ts_long
         # Time series with different values should return a value error
         with raises(ValueError):
-
             self.ats+ArrayTimeSeries(range(0,4),range(0,4))
         # addition with other types is not implemented
         with raises(TypeError):
