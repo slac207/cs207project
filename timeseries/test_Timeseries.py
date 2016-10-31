@@ -6,6 +6,8 @@ from Timeseries import TimeSeries
 from ArrayTimeSeries import ArrayTimeSeries
 import numbers
 import collections
+import timeSeriesABC
+
 
 class TimeSeriesTest(unittest.TestCase):
 
@@ -240,9 +242,16 @@ class TimeSeriesTest(unittest.TestCase):
         ts2 = TimeSeries([10,34,23])
         ats1 = ArrayTimeSeries(values=range(10),times=range(10))
         ats2= ArrayTimeSeries(values=range(8),times=range(8))
-        #print(ts1 + ats1)
-        #print(ats1 + ts1)
-        pass
+        sumTS1 = ts1 + ats1
+        assert isinstance(sumTS1, timeSeriesABC.SizedContainerTimeSeriesInterface)
+        assert len(sumTS1.times())==len(ts1.times())
+        assert sumTS1.values()[4] == ts1.values()[4] + ats1.values()[4]
+        assert sumTS1.times()[-1] == ats1.times()[-1]
+        sumTS2 = ats1 + ts1
+        assert isinstance(sumTS2, timeSeriesABC.SizedContainerTimeSeriesInterface)
+        assert len(sumTS2.times())==len(ts1.times())
+        assert sumTS2.values()[2] == ts1.values()[2] + ats1.values()[2]
+        assert sumTS2.times()[-1] == ats1.times()[-1]
 
 
     def test_sub_TimeSeries_ArrayTimeSeries(self):
@@ -250,22 +259,16 @@ class TimeSeriesTest(unittest.TestCase):
         ts2 = TimeSeries([10,34,23])
         ats1 = ArrayTimeSeries(values=range(10),times=range(10))
         ats2= ArrayTimeSeries(values=range(8),times=range(8))
-        #print(ts1 - ats1)
-        #print(ats1 - ts1)
-        pass
-        pass
-
+        subTS1 = ts1 - ats1
+        subTS2 = ats1 - ts1
 
     def test_multiply_Array_TimeSeries_TimeSeries(self):
         ts1 = TimeSeries(range(10))
         ts2 = TimeSeries([10,34,23])
         ats1 = ArrayTimeSeries(values=range(10),times=range(10))
         ats2= ArrayTimeSeries(values=range(8),times=range(8))
-        #print(ts1.__mul__(ats1))
-        #print(ats1 * ts1)
-        pass
-        pass
-
+        mulTS1 = ts1.__mul__(ats1)
+        mulTS2 = ats1 * ts1
 
     def test_bool(self):
         assert not bool(TimeSeries([0,0,0]))
