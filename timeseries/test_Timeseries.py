@@ -230,7 +230,10 @@ class TimeSeriesTest(unittest.TestCase):
         self.ts8 = TimeSeries([10,34,23])
         self.ats7 = ArrayTimeSeries(values=range(10),times=range(10))
         self.ats8 = ArrayTimeSeries(values=range(8),times=range(8))
+        print(self.ts7)
+        print(self.ats7)        
         assert self.ts7==self.ats7
+        
         assert self.ats7==self.ts7
         assert self.ts7 is not self.ats8
         assert self.ats7!=self.ts8

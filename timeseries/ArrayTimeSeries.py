@@ -1,9 +1,9 @@
 from Timeseries import TimeSeries
 import numpy as np
 import numbers
-import timeSeriesABC
+from timeSeriesABC import SizedContainerTimeSeriesInterface 
 
-class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
+class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
     """
     Inherits from TimeSeries; uses numpy arrays to store time and values data internally.
 
@@ -140,6 +140,7 @@ class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         # if rhs is a TimeSeries instance with the same times, add it element-by-element.
         # returns: a new TimeSeries instance with the same times but updated `_values`.
         cls = type(self)
+        pcls = SizedContainerTimeSeriesInterface
         if isinstance(rhs, numbers.Real):
             return cls(values=self._values+rhs,times=self._times)
         elif isinstance(rhs,cls):
@@ -156,6 +157,7 @@ class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         # if rhs is a TimeSeries instance with the same times, multiply it element-by-element.
         # returns: a new TimeSeries instance with the same times but updated `_values`.
         cls = type(self)
+        pcls = SizedContainerTimeSeriesInterface
         if isinstance(rhs, numbers.Real):
             return cls(values=rhs*self._values,times=self._times)
         elif isinstance(rhs,cls):
@@ -176,7 +178,8 @@ class ArrayTimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
        
     def __eq__(self,rhs):
         # True if the times and values are the same; otherwise, False
-        if isinstance(rhs, type(self)) or isinstance(self, type(rhs)):
+        cls = SizedContainerTimeSeriesInterface
+        if isinstance(rhs, cls):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
         # elif isinstance(rhs, numbers.Real):
         #    return all(v==rhs for v in self._values)
