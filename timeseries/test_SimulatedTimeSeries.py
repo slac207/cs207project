@@ -14,15 +14,15 @@ class SimulatedTimeSeriesTest(unittest.TestCase):
         def make_data(m, stop=None):
             for _ in itertools.count():
                 if stop and _ > stop:
-                    break
+                    break # pragma: no cover
                 yield normalvariate(0, m*random() )
         self.make_data = make_data
         self.data = zip(itertools.count(10),self.make_data(1))
         self.ts0 = SimulatedTimeSeries(self.data)
-        
+
     def tearDown(self):
         del self.make_data
-        
+
     def test_init(self):
         # Construct with an iterator
         self.ts = SimulatedTimeSeries(iter(range(10)))
@@ -42,20 +42,20 @@ class SimulatedTimeSeriesTest(unittest.TestCase):
         gen_return_triplet = genfun_return_triplet()
         with raises(InputError):
             SimulatedTimeSeries(gen_return_triplet)
-        
+
     def test_iter(self):
         # the iter method should return an iterable
         # that yields the values
         tsiter = iter(SimulatedTimeSeries(iter(range(10))))
         assert isinstance(tsiter,collections.Iterable)
         assert isinstance(next(tsiter),numbers.Real)
-        
+
     def test_itertimes(self):
         ts = SimulatedTimeSeries(iter(range(10)))
         times = ts.itertimes()
         assert isinstance(times,collections.Iterable)
         assert isinstance(next(times),numbers.Real)
-        
+
     def test_itervalues(self):
         ts = SimulatedTimeSeries(iter(range(10)))
         values = ts.itervalues()
@@ -70,7 +70,7 @@ class SimulatedTimeSeriesTest(unittest.TestCase):
         t,v = next(items)
         assert isinstance(t,numbers.Real)
         assert isinstance(v,numbers.Real)
-        
+
     def test_produce(self):
         ts = SimulatedTimeSeries(iter(range(10)))
         ats = ts.produce(20)
@@ -78,14 +78,14 @@ class SimulatedTimeSeriesTest(unittest.TestCase):
         assert len(ats)==9
         assert list(ats._times) == list(range(1,10))
         assert list(ats._values) == list(range(1,10))
-        
+
         ts = SimulatedTimeSeries(iter(range(100)))
         ats = ts.produce(20)
         assert len(ats)==20
-        
+
     def test_repr(self):
         assert repr(self.ts0)=='Instance of a SimulatedTimeSeries with streaming input'
-    
+
     def test_str(self):
         assert str(self.ts0)=='Instance of a SimulatedTimeSeries with streaming input'
 
@@ -93,13 +93,13 @@ class SimulatedTimeSeriesTest(unittest.TestCase):
         ts = SimulatedTimeSeries(iter(range(10)))
         tslazy = ts.lazy
         assert isinstance(tslazy,lazy.LazyOperation)
-        assert isinstance(tslazy.eval(),SimulatedTimeSeries)    
-        
+        assert isinstance(tslazy.eval(),SimulatedTimeSeries)
+
     def test_online_mean(self):
         ts = SimulatedTimeSeries(iter(range(100)))
         assert isinstance(ts.online_mean(),SimulatedTimeSeries)
         assert all(ts.online_mean().produce(10)._values==np.arange(0.5,5.5,0.5))
-    
+
     def test_online_std(self):
         ts = SimulatedTimeSeries(iter(range(100)))
         assert isinstance(ts.online_std(),SimulatedTimeSeries)
@@ -108,7 +108,7 @@ class SimulatedTimeSeriesTest(unittest.TestCase):
     def test_mean(self):
         ts = SimulatedTimeSeries(iter(range(100)))
         assert ts.mean()==10.5
-        
+
     def test_std(self):
         ts = SimulatedTimeSeries(iter(range(100)))
         assert ts.std()==5.9160797830996161
