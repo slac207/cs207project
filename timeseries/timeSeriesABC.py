@@ -11,14 +11,12 @@ class TimeSeriesInterface(abc.ABC):
     @abc.abstractmethod
     def __iter__(self):
         """Iterate over values."""
-        for i in self._values:
-            yield i
+        """pass"""
 
             
     def itertimes(self):
         """Iterate over times."""
-        for i in self._times:
-            yield i
+        """pass"""
 
         
     @abc.abstractmethod
@@ -29,15 +27,13 @@ class TimeSeriesInterface(abc.ABC):
     @abc.abstractmethod
     def iteritems(self):
         """Iterate over (time, value) pairs."""
-        for i,j in zip(self._times,self._values):
-            yield i,j
+        """pass"""
         
             
     @abc.abstractmethod
     def itervalues(self):
         """Iterate over values."""
-        for j in self._values:
-            yield j
+        """pass"""
     
     @abc.abstractmethod
     def __repr__(self):
