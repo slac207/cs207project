@@ -4,6 +4,7 @@ import numbers
 import reprlib
 from binarysearch import binary_search
 from timeSeriesABC import SizedContainerTimeSeriesInterface
+import math
 
 class TimeSeries(SizedContainerTimeSeriesInterface):
     """
@@ -126,16 +127,14 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         return cls((-v for v in self._values), self._times)
 
     def __abs__(self):
-        #THIS STILL NEEDS TO BE FIXED
         """Returns: L2-norm of the TimeSeries values"""
-        cls = type(self)
-        return cls((abs(v) for v in self._values), self._times)
+        return math.sqrt(sum([v*v for v in self._values]))
+
 
     def __bool__(self):
-        #FIX THIS ONE AS WELL- bool(abs(self._values))
         """Returns: Returns True if all values in self._values are 
         zero. False, otherwise"""
-        return bool(any(self._values))
+        return bool(abs(self))
 
     def __add__(self, rhs):
         """
@@ -158,9 +157,8 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
                 return cls((a + b for a, b in zip(self._values,rhs._values)),self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points.')
-        #elif isinstance(rhs,np.ndarray):
-        #    raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
-        
+        elif isinstance(rhs,np.ndarray):
+            raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented
 
@@ -184,6 +182,8 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
                 return cls((a*b for a, b in zip(self._values,rhs._values)),self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
+        elif isinstance(rhs,np.ndarray):
+            raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented
         

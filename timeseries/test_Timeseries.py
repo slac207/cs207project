@@ -198,19 +198,19 @@ class TimeSeriesTest(unittest.TestCase):
 
 
     def test_abs(self):
-        # absolute value of an instance with negative and positive values
-        # should have only positive values
-        self.ts2 = TimeSeries(range(-10,10))
-        assert min(abs(self.ts2)._values)>=0
-        # Times should be the same
-        assert abs(self.ts2)._times == list(self.ts2._times)
-        # absolute value of an instance with negative and positive values
-        # should have only positive values
-        self.ts2 = ArrayTimeSeries(values=range(-10,10),times=range(-10,10))
-        assert min(abs(self.ts2)._values)>=0
-        # Times should be the same
-        assert np.all(abs(self.ts2)._times == list(self.ts2._times))
-
+        # absolute value of an instance and its negative should be the same.
+        ts = TimeSeries(range(10))
+        assert abs(ts)>0
+        assert abs(ts)==abs(-ts)
+        assert abs(ts)==16.881943016134134
+        
+        # test on ArrayTimeSeries
+        ats = ArrayTimeSeries(range(10),range(10))
+        assert abs(ats)>0
+        assert abs(ats)==abs(-ats)
+        assert abs(ats)==16.881943016134134
+        
+        
     def test_eq(self):
         self.ts3 = TimeSeries(range(10))
         self.ts4 = TimeSeries(range(10))
@@ -228,7 +228,10 @@ class TimeSeriesTest(unittest.TestCase):
         assert self.ats3 is not self.ats4
         assert self.ats3!=self.ats5
         assert self.ats3 != self.ats6
-
+        
+        # A TimeSeries should be able to equal an ArrayTimeSeries
+        assert self.ts3==self.ats3
+        
     def test_eq_ArrayTimeSeries_TimeSeries(self):
         self.ts7 = TimeSeries(range(10))
         self.ts8 = TimeSeries([10,34,23])
@@ -258,8 +261,14 @@ class TimeSeriesTest(unittest.TestCase):
         assert len(sumTS2.times())==len(ts1.times())
         assert sumTS2.values()[2] == ts1.values()[2] + ats1.values()[2]
         assert sumTS2.times()[-1] == ats1.times()[-1]
-
-
+        
+        # addition with numpy arrays should fail:
+        with raises(TypeError):
+            ts1+np.arange(10)
+        with raises(TypeError):
+            ats1+np.arange(10)
+            
+            
     def test_sub_TimeSeries_ArrayTimeSeries(self):
         ts1 = TimeSeries(range(10))
         ts2 = TimeSeries([0,1,2,3,4,5,6,7,8,9])
@@ -283,6 +292,11 @@ class TimeSeriesTest(unittest.TestCase):
         assert subTS3.values()[2] == ts2.values()[2] - ats1.values()[2]
         assert subTS3.times()[-1] == ats1.times()[-1]
 
+        # subtraction with numpy arrays should fail:
+        with raises(TypeError):
+            ts1-np.arange(10)
+        with raises(TypeError):
+            ats1-np.arange(10)
 
     def test_multiply_Array_TimeSeries_TimeSeries(self):
         ts1 = TimeSeries(range(10))
@@ -302,7 +316,14 @@ class TimeSeriesTest(unittest.TestCase):
         assert len(mulTS2.times())==len(ts1.times())
         assert mulTS2.values()[2] == ts1.values()[2] * ats1.values()[2]
         assert mulTS2.times()[-1] == ats1.times()[-1]
+        
+        # multiplication with numpy arrays should fail:
+        with raises(TypeError):
+            ts1*np.arange(10)
+        with raises(TypeError):
+            ats1*np.arange(10)
 
+            
     def test_bool(self):
         assert not bool(TimeSeries([0,0,0]))
         assert bool(TimeSeries([0,0,1]))

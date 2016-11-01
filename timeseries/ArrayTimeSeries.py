@@ -128,16 +128,13 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         return cls(self._times,self._values*-1)
 
     def __abs__(self):
-        #THIS STILL NEEDS TO BE FIXED
         """Returns: L2-norm of the ArrayTimeSeries values"""
-        cls = type(self)
-        return cls(self._times,abs(self._values))
+        return np.linalg.norm(self._values)
 
     def __bool__(self):
-        #FIX THIS ONE AS WELL- bool(abs(self._values))
         """Returns: Returns True if all values in self._values are 
         zero. False, otherwise"""
-        return np.count_nonzero(self._values) > 0   
+        return bool(abs(self))
     
     def __add__(self, rhs):
         """
@@ -160,6 +157,8 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
                 return cls(values=self._values+rhs._values,times=self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points.')
+        elif isinstance(rhs,np.ndarray):
+            raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented  
     
@@ -183,6 +182,8 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
                 return cls(values=self._values*rhs._values,times=self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
+        elif isinstance(rhs,np.ndarray):
+            raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented
         
