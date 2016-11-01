@@ -107,4 +107,8 @@ class SimulatedTimeSeriesTest(unittest.TestCase):
 
     def test_mean(self):
         ts = SimulatedTimeSeries(iter(range(100)))
-        assert isinstance(ts.mean(20),numbers.Real)
+        assert ts.mean()==10.5
+        
+    def test_std(self):
+        ts = SimulatedTimeSeries(iter(range(100)))
+        assert ts.std()==5.9160797830996161
