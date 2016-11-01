@@ -67,6 +67,16 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         # returns a numpy array of times
         return self._times
     
+    def _binary_search_np(self,times,t):
+        # uses numpy searchsorted to perform binary search
+        idx = np.searchsorted(times,t)
+        if np.take(times,idx) == t:
+            return self._values[t]
+        else:
+            left_idx,right_idx = idx-1, idx
+            m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
+            return (t-self._times[left_idx])*m + self._values[left_idx]
+        
     def interpolate(self,times_to_interpolate):
         """
         Produces new ArrayTimeSeries with linearly interpolated values using
@@ -88,17 +98,7 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         >>> ats.interpolate([0.5,1.5,3])
         ArrayTimeSeries(Length: 3, Times: array([ 0.5,  1.5,  3. ]), Values: array([ 30.,  25.,  30.]))
         
-        """
-        
-        def binary_search_np(times,t):
-            # uses numpy searchsorted to perform binary search
-            idx = np.searchsorted(times,t)
-            if np.take(times,idx) == t:
-                return self._values[t]
-            else:
-                left_idx,right_idx = idx-1, idx
-                m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
-                return (t-self._times[left_idx])*m + self._values[left_idx]                
+        """                
 
         tms = []
         def interp_helper(t):
@@ -111,7 +111,7 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
             elif t >= self._times[-1]:
                 return self._values[-1]
             else:
-                return binary_search_np(self._times,t)
+                return self._binary_search_np(self._times,t)
         
         interpolated_values = [interp_helper(t) for t in times_to_interpolate] 
         return self.__class__(times=tms, values=interpolated_values)
