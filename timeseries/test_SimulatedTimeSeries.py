@@ -2,7 +2,7 @@ from pytest import raises
 import unittest
 import lazy
 import numpy as np
-from Simulatedtimeseries import SimulatedTimeSeries, StreamTimeSeriesInterface
+from SimulatedTimeSeries import SimulatedTimeSeries
 import collections
 import itertools
 from random import normalvariate, random

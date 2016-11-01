@@ -1,19 +1,8 @@
 import abc
 import itertools
 import numbers
-
-class StreamTimeSeriesInterface(abc.ABC):
-    """
-    Abstract Base Class for timeseries data
-    that arriving streaming.
-    """
-    
-    @abc.abstractmethod
-    def produce(self,chunk=1)->list:
-        """
-        Output a list of (time,value) tuples of length chunk
-        """
-        
+from timeSeriesABC import StreamTimeSeriesInterface
+from ArrayTimeSeries import ArrayTimeSeries      
 
         
 class SimulatedTimeSeries(StreamTimeSeriesInterface):
@@ -41,14 +30,40 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
             elif len(firstdata)==2:
                 self._items = gen
             else: 
-                raise InputError('Cannot accept input of type({}) that is not length 2'.format(type(firstdata)))
+                raise InputError('Cannot accept input of type({}) that is not length 2'.format(type(firstdata).__name__))
         except:
             raise InputError('Invalid input into StreamTimeSeries')
         
+    
+    def __iter__(self):
+        for _,v in self._items:
+            yield v
         
+    def itertimes(self):
+        for t,_ in self._items:
+            yield t
+
+    def iteritems(self):
+        for item in self._items:
+            yield item
+            
+    def itervalues(self): 
+        for _,v in self._items:
+            yield v
+    
     def produce(self,chunk=1):
-        """Return (time,value) tuples in a list of length chunk"""
-        return [next(self._items) for d in range(chunk)]
+        """Return (time,value) as an array time series object
+        with chunk items from the generator"""
+        values = []
+        times = []
+        for _ in range(chunk):
+            try:
+                t,v = next(self._items)
+                times.append(t)
+                values.append(v)
+            except StopIteration:
+                break
+        return ArrayTimeSeries(times,values)
         
 
 
