@@ -432,6 +432,23 @@ class TimeSeriesTest(unittest.TestCase):
             assert self.ats*'a'
         with raises(TypeError):
             assert 'a'*self.ats
+            
+
+    def test_mean(self):
+        self.ts  = TimeSeries(range(0,4),range(1,5))
+        self.ats = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
+        assert ts.mean() == 1.5
+        assert ats.mean() == 6.0
+
+        
+    def test_std(self):
+        self.ts  = TimeSeries(range(0,4),range(1,5))
+        self.ats = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
+        assert ts.std() == 1.2909944487358056
+        assert ats.std() == 3.40587727318528
+
+        
+        
 
 if __name__=='__main__':
     try:  # pragma: no cover

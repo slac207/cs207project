@@ -201,3 +201,11 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
         else:
             return False
+        
+        
+    def mean(self, chunk=None):
+        return(np.mean(self._values))
+    
+    
+    def std(self, chunk=None):
+        return(np.std(self._values))        
