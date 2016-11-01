@@ -140,6 +140,9 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
                 return cls((a + b for a, b in zip(self._values,rhs._values)),self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points.')
+        #elif isinstance(rhs,np.ndarray):
+        #    raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
+        
         else:
             return NotImplemented
 

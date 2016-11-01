@@ -8,26 +8,24 @@ class TimeSeriesInterface(abc.ABC):
     Documentation of the interface.
     """
     
+    @abc.abstractmethod
     def __iter__(self):
-        # iterate over values
-        for i in self._values:
-            yield i
-
-            
+        """pass"""
+        
+    @abc.abstractmethod
     def itertimes(self):
-        for i in self._times:
-            yield i
+        """pass"""
+        
 
-            
+    @abc.abstractmethod
     def iteritems(self):
-        for i,j in zip(self._times,self._values):
-            yield i,j
-
+        """pass"""
+        
             
+    @abc.abstractmethod
     def itervalues(self):
-        for j in self._values:
-            yield j
-            
+        """pass"""
+        
     
     @abc.abstractmethod
     def __repr__(self):
@@ -68,8 +66,29 @@ class TimeSeriesInterface(abc.ABC):
 class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
     """
     Documentation of the interface.
+    Need to say that times are stored in _times and values in _values
     """
 
+    def __iter__(self):
+        # iterate over values
+        for i in self._values:
+            yield i
+
+            
+    def itertimes(self):
+        for i in self._times:
+            yield i
+
+            
+    def iteritems(self):
+        for i,j in zip(self._times,self._values):
+            yield i,j
+
+            
+    def itervalues(self):
+        for j in self._values:
+            yield j
+        
     def __contains__(self,item):
         return item in self._values
     
@@ -184,3 +203,24 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         """
         TO DO
         """   
+        
+class StreamTimeSeriesInterface(TimeSeriesInterface):
+    """
+    Abstract Base Class for timeseries data
+    that arrive streaming.
+    """
+    
+    @abc.abstractmethod
+    def produce(self,chunk=1)->list:
+        """
+        Output a list of (time,value) tuples of length chunk
+        """
+    
+    def __repr__(self):
+        cls = type(self)
+        return "Instance of a {} with streaming input".format(cls.__name__)
+
+    def __str__(self):
+        return repr(self)
+        
+    
