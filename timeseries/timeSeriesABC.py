@@ -265,4 +265,10 @@ class StreamTimeSeriesInterface(TimeSeriesInterface):
     def __str__(self):
         return repr(self)
         
-    
+    @abc.abstractmethod
+    def online_mean(self):
+        """Return a SimulatedTimeSeries of the running mean."""
+
+    @abc.abstractmethod
+    def online_std(self):
+        """Return a SimulatedTimeSeries of the running standard deviation."""
