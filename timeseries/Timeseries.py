@@ -5,6 +5,7 @@ import reprlib
 from binarysearch import binary_search
 from timeSeriesABC import SizedContainerTimeSeriesInterface
 import math
+import statistics as stat
 
 class TimeSeries(SizedContainerTimeSeriesInterface):
     """
@@ -202,3 +203,11 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
         else:
             return False
+        
+        
+    def mean(self, chunk=None):
+        return(stat.mean(self._values))
+    
+    
+    def std(self, chunk=None):
+        return(stat.stdev(self._values))
