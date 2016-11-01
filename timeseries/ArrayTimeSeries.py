@@ -124,10 +124,8 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
 
 
     def __abs__(self):
-        # returns: new ArrayTimeSeries instance with absolute value of the values
-        # and no change to the times
-        cls = type(self)
-        return cls(self._times,abs(self._values))
+        # returns the 2-norm of the timeseries values.
+        return np.linalg.norm(self._values)
 
 
     def __bool__(self):
@@ -148,6 +146,8 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
                 return cls(values=self._values+rhs._values,times=self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points.')
+        elif isinstance(rhs,np.ndarray):
+            raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented  
         
@@ -165,6 +165,8 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
                 return cls(values=self._values*rhs._values,times=self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
+        elif isinstance(rhs,np.ndarray):
+            raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented
         

@@ -4,6 +4,7 @@ import numbers
 import reprlib
 from binarysearch import binary_search
 from timeSeriesABC import SizedContainerTimeSeriesInterface
+import math
 
 class TimeSeries(SizedContainerTimeSeriesInterface):
     """
@@ -116,10 +117,8 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
 
 
     def __abs__(self):
-        # returns: new TimeSeries instance with absolute value of the values
-        #     and no change to the times
-        cls = type(self)
-        return cls((abs(v) for v in self._values), self._times)
+        # returns the 2-norm of the timeseries values.
+        return math.sqrt(sum([v*v for v in self._values]))
 
 
     def __bool__(self):
@@ -140,9 +139,8 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
                 return cls((a + b for a, b in zip(self._values,rhs._values)),self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points.')
-        #elif isinstance(rhs,np.ndarray):
-        #    raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
-        
+        elif isinstance(rhs,np.ndarray):
+            raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented
 
@@ -160,6 +158,8 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
                 return cls((a*b for a, b in zip(self._values,rhs._values)),self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
+        elif isinstance(rhs,np.ndarray):
+            raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented
         
