@@ -3,9 +3,9 @@ import numpy as np
 import numbers
 import reprlib
 from binarysearch import binary_search
-import timeSeriesABC
+from timeSeriesABC import SizedContainerTimeSeriesInterface
 
-class TimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
+class TimeSeries(SizedContainerTimeSeriesInterface):
     """
     Purpose of the class.
     Things the user should keep in mind when using an instance
@@ -67,11 +67,6 @@ class TimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         except IndexError:
             raise IndexError("Index out of bounds")
 
-    
-
-
-
-
 
     def values(self):
         #  a numpy array of values
@@ -114,18 +109,6 @@ class TimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         interpolated_values = [interp_helper(t) for t in times_to_interpolate]
         return self.__class__(times=tms, values=interpolated_values)
 
-
-    def __eq__(self,rhs):
-        # True if the times and values are the same; otherwise, False
-        if isinstance(rhs, type(self)) or isinstance(self, type(rhs)):
-            return self._eqtimes(rhs) and self._eqvalues(rhs)
-        # elif isinstance(rhs, numbers.Real):
-        #    return all(v==rhs for v in self._values)
-        else:
-            return False
-
-
-
     def __neg__(self):
         # returns: TimeSeries instance with negated values and no change to the times
         cls = type(self)
@@ -148,10 +131,11 @@ class TimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         # if rhs is Real, add it to all elements of `_values`.
         # if rhs is a TimeSeries instance with the same times, add it element-by-element.
         # returns: a new TimeSeries instance with the same times but updated `_values`.
+        pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
             return cls((a + rhs for a in self._values),self._times)
-        elif isinstance(rhs,cls):
+        elif isinstance(rhs,pcls):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
                 return cls((a + b for a, b in zip(self._values,rhs._values)),self._times)
             else:
@@ -167,10 +151,11 @@ class TimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
         # if rhs is Real, multiply it by all elements of `_values`.
         # if rhs is a TimeSeries instance with the same times, multiply it element-by-element.
         # returns: a new TimeSeries instance with the same times but updated `_values`.
+        pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
             return cls((a*rhs for a in self._values),self._times)
-        elif isinstance(rhs,cls):
+        elif isinstance(rhs,pcls):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
                 return cls((a*b for a, b in zip(self._values,rhs._values)),self._times)
             else:
@@ -191,7 +176,8 @@ class TimeSeries(timeSeriesABC.SizedContainerTimeSeriesInterface):
 
     def __eq__(self,rhs):
         # True if the times and values are the same; otherwise, False
-        if isinstance(rhs, type(self)) or isinstance(self, type(rhs)):
+        cls = SizedContainerTimeSeriesInterface
+        if isinstance(rhs, cls):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
         # elif isinstance(rhs, numbers.Real):
         #    return all(v==rhs for v in self._values)
