@@ -437,15 +437,15 @@ class TimeSeriesTest(unittest.TestCase):
     def test_mean(self):
         self.ts  = TimeSeries(range(0,4),range(1,5))
         self.ats = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
-        assert ts.mean() == 1.5
-        assert ats.mean() == 6.0
+        assert self.ts.mean() == 1.5
+        assert self.ats.mean() == 6.0
 
         
     def test_std(self):
         self.ts  = TimeSeries(range(0,4),range(1,5))
         self.ats = ArrayTimeSeries(values=[0,5,10,8,7], times=[1,2.5,3,3.5,4])
-        assert ts.std() == 1.2909944487358056
-        assert ats.std() == 3.8078865529319543
+        assert self.ts.std() == 1.2909944487358056
+        assert self.ats.std() == 3.8078865529319543
 
         
         
