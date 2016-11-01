@@ -68,6 +68,24 @@ class TimeSeriesInterface(abc.ABC):
         """
         return self.identity() 
         
+        
+    @abc.abstractmethod    
+    def mean(self, chunk=None):
+        """
+        Require ability to calculate the mean of values within a 
+        TimeSeriesInterface instance.
+        Optional `chunk` argument to be used for subclass instances
+        with no storage.
+        """ 
+        
+    @abc.abstractmethod    
+    def std(self, chunk=None):
+        """
+        Require ability to calculate the standard deviation of values within a 
+        TimeSeriesInterface instance.
+        Optional `chunk` argument to be used for subclass instances
+        with no storage.        
+        """          
 
 
 
@@ -227,7 +245,7 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         
     @abc.abstractmethod
     def __mul__(self):
-        """
+        """ 
         Require ability to multiply two SizedContainerTimeSeriesInterface
         instances, assuming that their times are equivalent pairwise.
         """   
@@ -237,7 +255,8 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         """
         Require notion of equality between two SizedContainerTimeSeriesInterface
         instances.
-        """   
+        """  
+       
         
 class StreamTimeSeriesInterface(TimeSeriesInterface):
     """
