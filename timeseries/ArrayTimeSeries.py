@@ -1,16 +1,16 @@
-from Timeseries import TimeSeries
 import numpy as np
 import numbers
 from timeSeriesABC import SizedContainerTimeSeriesInterface
 
 class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
     """
-    Inherits from TimeSeries; uses numpy arrays to store time and values data internally.
+    Class which stores a ordered set of numerical data using numpy arrays.
+    Inherits from SizedContainerTimeSeriesInterface.
 
-    Parameters
+    Attributes:
     ----------
-    values : a sequence- data used to populate time series instance.
-    times  : a sequence- time associated with each observation in `values`.
+    _times: sequence that represents time data
+    _values: sequence that represents value data
 
     Notes:
     ------
@@ -42,36 +42,44 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         if np.size(self._times) != np.size(self._values):
             raise TypeError("Times and Values must be same length")             
          
-       
-
     def __getitem__(self,index):
+        """Method for indexing into ArrayTimeSeries. 
+        Returns: The value of self._values at the given index. """
         try:
-            return np.take(self._values,index) # faster than regular indexing
+            return np.take(self._values,index) 
         except IndexError:
             raise IndexError("Index out of bounds")
 
     def __setitem__(self,index,value):
+        """Method for assignment into ArrayTimeSeries value storage.
+        Sets the given 'index' of self._values to 'value'. """        
         try:
             np.put(self._values, index, value)
         except IndexError:
             raise IndexError("Index out of bounds")
 
     def __len__(self):
+        """Method for determing length of ArrayTimeSeries self._values"""         
         return np.size(self._values)    
     
     def values(self):
-        # returns a numpy array of values
+        """Returns a numpy array of ArrayTimeSeries values, i.e. self._values"""
         return self._values
     
     def times(self):
-        # returns a numpy array of times
+        """Returns a numpy array of ArrayTimeSeries times, i.e. self._times"""
         return self._times
     
     def _binary_search_np(self,times,t):
-        # uses numpy searchsorted to perform binary search
-        idx = np.searchsorted(times,t)
+        """Helper function for interpolate() that finds extrapolated value
+        for a given time, t, using numpy binarysearch (np.searchsorted())
+        Returns: linearly extrapolated value for a given time """
+        
+        idx = np.searchsorted(times,t) # implements binary search
+        #if the value is already in times, return its (known) value
         if np.take(times,idx) == t:
             return self._values[idx]
+        #otherwise, extrapolate
         else:
             left_idx,right_idx = idx-1, idx
             m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
@@ -81,7 +89,6 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         """
         Produces new ArrayTimeSeries with linearly interpolated values using
         piecewise-linear functions with stationary boundary conditions.
-        Uses the numpy searchsorted() function.
         
         Parameters:
         -----------
@@ -90,53 +97,58 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         
         Returns:
         --------
-        ArrayTimeSeries instance with interpolated times
+        ArrayTimeSeries instance with interpolated values
         
         Examples:
         --------
         >>> ats = ArrayTimeSeries(times=[0,1,2],values=[40,20,30])
         >>> ats.interpolate([0.5,1.5,3])
         ArrayTimeSeries(Length: 3, Times: array([ 0.5,  1.5,  3. ]), Values: array([ 30.,  25.,  30.]))
-        
         """                
-
         tms = []
-        def interp_helper(t):
+        interpolated_values = []
+        for t in times_to_interpolate:
             # interpolates a given time value
             tms.append(t)
             # if the time is less than all the times we have
             if t <= self._times[0]:
-                return self._values[0]
+                interpolated_values.append(self._values[0])
             # if the time is greater than all the times we have
             elif t >= self._times[-1]:
-                return self._values[-1]
+                interpolated_values.append(self._values[-1])
             else:
-                return self._binary_search_np(self._times,t)
+                interpolated_values.append(self._binary_search_np(self._times,t))
         
-        interpolated_values = [interp_helper(t) for t in times_to_interpolate] 
         return self.__class__(times=tms, values=interpolated_values)
-    
 
     def __neg__(self):
-        # returns: ArrayTimeSeries instance with negated values and no change to the times
+        """Returns: ArrayTimeSeries instance with negated values 
+        but no change to times"""
         cls = type(self)
         return cls(self._times,self._values*-1)
 
-
     def __abs__(self):
-        # returns the 2-norm of the timeseries values.
+        """Returns: L2-norm of the ArrayTimeSeries values"""
         return np.linalg.norm(self._values)
 
-
     def __bool__(self):
-        # returns: bool `False` iff all `_values` are zero
+        #FIX THIS ONE AS WELL- bool(abs(self._values))
+        """Returns: Returns True if all values in self._values are 
+        zero. False, otherwise"""
         return np.count_nonzero(self._values) > 0   
     
-    
     def __add__(self, rhs):
-        # if rhs is Real, add it to all elements of `_values`.
-        # if rhs is a TimeSeries instance with the same times, add it element-by-element.
-        # returns: a new TimeSeries instance with the same times but updated `_values`.
+        """
+        Description
+        -------------
+        If rhs is Real, add it to all elements of `_values`.
+        If rhs is a SizedContainerTimeSeriesInterface instance with the same
+        times, add the values element-wise.
+        
+        Returns:
+        --------
+        A new ArrayTimeSeries instance with the same times but updated values"""
+        
         pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
@@ -150,12 +162,18 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
             raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented  
-        
     
     def __mul__(self, rhs):
-        # if rhs is Real, multiply it by all elements of `_values`.
-        # if rhs is a TimeSeries instance with the same times, multiply it element-by-element.
-        # returns: a new TimeSeries instance with the same times but updated `_values`.
+        """
+        Description:
+        -----------
+        If rhs is Real, multiply it by all elements of `_values`.
+        If rhs is a TimeSeries instance with the same times, multiply values element-wise.
+        
+        Returns:
+        --------
+        A new ArrayTimeSeries instance with the same times but updated `_values`."""
+        
         pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
@@ -171,18 +189,16 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
             return NotImplemented
         
     def _eqtimes(self,rhs):
-        # test equality of the time components of two TimeSeries instances
+        """Test equality of the times of two SizedContainerTimeSeriesInterface instances"""
         return np.array_equal(self._times, rhs._times)
     
     def _eqvalues(self,rhs):
-        # test equality of the values components of two TimeSeries instances
+        """Test equality of the values of two SizedContainerTimeSeriesInterface instances"""
         return np.array_equal(self._values, rhs._values)
        
     def __eq__(self,rhs):
-        # True if the times and values are the same; otherwise, False
+        """Tests if two SizedContainerTimeSeriesInterface have same times and values"""
         if isinstance(rhs,SizedContainerTimeSeriesInterface):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
-        # elif isinstance(rhs, numbers.Real):
-        #    return all(v==rhs for v in self._values)
         else:
             return False

@@ -8,9 +8,13 @@ import math
 
 class TimeSeries(SizedContainerTimeSeriesInterface):
     """
-    Purpose of the class.
-    Things the user should keep in mind when using an instance
-        of this object.
+    Class which stores a ordered set of numerical data using lists.
+    Inherits from SizedContainerTimeSeriesInterface.
+    
+    Attributes:
+    ----------
+    _times: sequence that represents time data
+    _values: sequence that represents value data
 
     Notes:
     ------
@@ -21,12 +25,15 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         """
         Parameters
         ----------
-        values : a sequence
+        values : a sequence 
            data used to populate time series instance.
         times  : a sequence (optional)
            time associated with each observation in `values`.
-
-        """
+        
+        Examples:
+        --------
+        >>> ts = TimeSeries(values=[10,20,30])
+        """    
         # test whether values is a sequence
         try:
             iter(values)
@@ -35,7 +42,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         self._values = [x for x in values]
 
 
-        if times == None:
+        if times == None: #if not provided times, need to produce them
             self._times = range(0,len(values))
         else:
             #test if times is a sequence
@@ -46,35 +53,33 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
                     raise TypeError("Times and Values must be same length")
             except TypeError:
                 raise TypeError("Non sequence passed into constructor")
-
-
-    def __len__(self):
-        return len(self._values)
-
-
+            
     def __getitem__(self, index):
-        # returns value corresponding to the data located at
-        #  `_values[index]`.
+        """Method for indexing into TimeSeries. 
+        Returns: The value of self._values at the given index. """
         try:
             return self._values[index]
         except IndexError:
             raise IndexError("Index out of bounds")
 
-
     def __setitem__(self, index, value):
-        # sets `_values[index]` to `value`
+        """Method for assignment into TimeSeries value storage.
+        Sets the given 'index' of self._values to 'value'. """    
         try:
             self._values[index] = value
         except IndexError:
             raise IndexError("Index out of bounds")
-
+        
+    def __len__(self):
+        """Method for determing length of TimeSeries self._values"""  
+        return len(self._values)    
 
     def values(self):
-        #  a numpy array of values
+        """Returns a numpy array of the TimeSeries values"""
         return np.array(self._values)
 
     def times(self):
-        # returns a numpy array of times
+        """Returns a numpy array of the TimeSeries times"""
         return np.array(self._times)
 
     def interpolate(self,times_to_interpolate):
@@ -90,46 +95,59 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         Returns:
         --------
         TimeSeries instance with interpolated times
-
+        
+        Examples:
+        --------
+        >>> ts = TimeSeries(times=[0,1,2],values=[40,20,30])
+        >>> ts.interpolate([0.5,1.5,3])
+        TimeSeries(Length: 3, Times: [0.5, 1.5, 3], Values: [30.0, 25.0, 30])
         """
 
         tms = []
-        def interp_helper(t):
+        interpolated_values = []
+        for t in times_to_interpolate:
             tms.append(t)
             #if the time is less than all the times we have
             if t <= self._times[0]:
-                return self._values[0]
+                interpolated_values.append(self._values[0])
             #if the time is greater than all the times we have
             elif t >= self._times[-1]:
-                return self._values[-1]
+                interpolated_values.append(self._values[-1])
             else:
                 left_idx,right_idx = binary_search(self._times,t)
                 m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
-                return (t-self._times[left_idx])*m + self._values[left_idx]
+                interpolated_values.append((t-self._times[left_idx])*m + self._values[left_idx])
 
-        interpolated_values = [interp_helper(t) for t in times_to_interpolate]
         return self.__class__(times=tms, values=interpolated_values)
 
     def __neg__(self):
-        # returns: TimeSeries instance with negated values and no change to the times
+        """Returns: TimeSeries instance with negated values 
+        but no change to times"""
         cls = type(self)
         return cls((-v for v in self._values), self._times)
 
-
     def __abs__(self):
-        # returns the 2-norm of the timeseries values.
+        """Returns: L2-norm of the TimeSeries values"""
         return math.sqrt(sum([v*v for v in self._values]))
 
 
     def __bool__(self):
-        # returns: bool `False` iff all `_values` are zero
-        return bool(any(self._values))
-
+        """Returns: Returns True if all values in self._values are 
+        zero. False, otherwise"""
+        return bool(abs(self))
 
     def __add__(self, rhs):
-        # if rhs is Real, add it to all elements of `_values`.
-        # if rhs is a TimeSeries instance with the same times, add it element-by-element.
-        # returns: a new TimeSeries instance with the same times but updated `_values`.
+        """
+        Description
+        -------------
+        If rhs is Real, add it to all elements of `_values`.
+        If rhs is a SizedContainerTimeSeriesInterface instance with the same
+        times, add the values element-wise.
+        
+        Returns:
+        --------
+        A new TimeSeries instance with the same times but updated values"""
+        
         pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
@@ -144,11 +162,17 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         else:
             return NotImplemented
 
-
     def __mul__(self, rhs):
-        # if rhs is Real, multiply it by all elements of `_values`.
-        # if rhs is a TimeSeries instance with the same times, multiply it element-by-element.
-        # returns: a new TimeSeries instance with the same times but updated `_values`.
+        """
+        Description:
+        -----------
+        If rhs is Real, multiply it by all elements of `_values`.
+        If rhs is a TimeSeries instance with the same times, multiply values element-wise.
+        
+        Returns:
+        --------
+        A new TimeSeries instance with the same times but updated `_values`."""
+        
         pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
@@ -163,23 +187,18 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         else:
             return NotImplemented
         
-        
     def _eqtimes(self,rhs):
-        # test equality of the time components of two TimeSeries instances
+        """Test equality of the times of two SizedContainerTimeSeriesInterface instances"""
         return len(self._times)==len(rhs._times) and all(a==b for a,b in zip(self._times,rhs._times))
 
-
     def _eqvalues(self,rhs):
-        # test equality of the values components of two TimeSeries instances
+        """Test equality of the values of two SizedContainerTimeSeriesInterface instances"""
         return len(self._values)==len(rhs._values) and all(a==b for a,b in zip(self._values,rhs._values))
 
-
     def __eq__(self,rhs):
-        # True if the times and values are the same; otherwise, False
+        """Tests if two SizedContainerTimeSeriesInterface have same times and values"""
         cls = SizedContainerTimeSeriesInterface
         if isinstance(rhs, cls):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
-        # elif isinstance(rhs, numbers.Real):
-        #    return all(v==rhs for v in self._values)
         else:
             return False

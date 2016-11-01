@@ -5,12 +5,19 @@ import reprlib
 
 class TimeSeriesInterface(abc.ABC):
     """
-    Documentation of the interface.
+    Interface for TimeSeries class which inherits from ABC
     """
     
     @abc.abstractmethod
     def __iter__(self):
+        """Iterate over values."""
         """pass"""
+
+            
+    def itertimes(self):
+        """Iterate over times."""
+        """pass"""
+
         
     @abc.abstractmethod
     def itertimes(self):
@@ -19,25 +26,26 @@ class TimeSeriesInterface(abc.ABC):
 
     @abc.abstractmethod
     def iteritems(self):
+        """Iterate over (time, value) pairs."""
         """pass"""
         
             
     @abc.abstractmethod
     def itervalues(self):
+        """Iterate over values."""
         """pass"""
-        
     
     @abc.abstractmethod
     def __repr__(self):
         """
-        TO DO
+        All TimeSeries must support a repr function
         """
         
         
     @abc.abstractmethod
     def __str__(self): 
         """
-        TO DO
+        All TimeSeries must support a str function
         """
         
         
@@ -65,8 +73,11 @@ class TimeSeriesInterface(abc.ABC):
 
 class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
     """
-    Documentation of the interface.
-    Need to say that times are stored in _times and values in _values
+    Interface for sized-container based TimeSeries.
+    Inherits from TimeSeriesInterface.
+    Times for TimeSeries stored in _times
+    Values for TimeSeries stored in _values
+
     """
 
     def __iter__(self):
@@ -90,9 +101,20 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
             yield j
         
     def __contains__(self,item):
+        """Returns boolean of whether given 'item' is contained in _.values"""
         return item in self._values
     
     def __repr__(self):
+        """
+        Returns a string representation of a SizedContainerTimeSeriesInterface
+        instance, of the form
+
+        "Class_name(Length: 'n', Times: 't', Values: 'v')"
+
+        where n is the length of `self`
+              t displays the first three elements of _times
+              v displays the first three elements of _values
+        """        
         r = reprlib.Repr()
         r.maxlist = 3       # max elements displayed for lists
         cls = type(self).__name__
@@ -102,14 +124,15 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
     
     def __str__(self):
         """
-        Returns a string representation of a TimeSeries instance, of the form
+        Returns a string representation of a SizedContainerTimeSeriesInterface
+        instance, of the form
 
-        "TimeSeries with 'n' elements (Times: 't', Values: 'v')"
+        "Class_name with 'n' elements (Times: 't', Values: 'v')"
 
         where n is the length of `self`
               t displays the first three elements of _times
               v displays the first three elements of _values
-        """
+        """        
         r = reprlib.Repr()
         r.maxlist = 3       # max elements displayed for lists
         cls = type(self).__name__
@@ -119,89 +142,101 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
     
 
     def items(self):
-        # returns a list of time, value pairs
+        """Returns a list of (time, value) pairs"""
         return list(zip(self._times,self._values))
     
     def __pos__(self):
-        # returns: TimeSeries instance with no change to the values or times
+        """Returns: TimeSeries instance with no change to the values or times"""
         return self
 
     def __sub__(self, rhs):
-        # if rhs is Real, subtract it from all elements of `_values`.
-        # if rhs is a TimeSeries instance with the same times, subtract it element-by-element.
-        # returns: a new TimeSeries instance with the same times but updated `_values`.
+        """
+        Description
+        -------------
+        If rhs is Real, subtract it from all elements of `_values`.
+        If rhs is a SizedContainerTimeSeriesInterface instance with the same
+        times, subtract the values element-wise.
+        
+        Returns:
+        --------
+        A new instance of type(self) with the same times but updated values"""
+        
         return self + (-rhs) 
     
     @abc.abstractmethod
     def __getitem__(self):
         """
-        TO DO
+        Require indexing for sized-container based TimeSeries.
         """   
         
     @abc.abstractmethod
     def __setitem__(self):
         """
-        TO DO
+        Require assignment for sized-container based TimeSeries.
         """ 
         
     @abc.abstractmethod
     def __len__(self):
         """
-        TO DO
+        Require notion of size for sized-container based TimeSeries.
         """ 
         
     @abc.abstractmethod
     def values(self):
         """
-        TO DO
+        Require ability to return stored values for sized-container based TimeSeries.
         """    
         
     @abc.abstractmethod
     def times(self):
         """
-        TO DO
+        Require ability to return stored values for sized-container based TimeSeries.
         """  
         
     @abc.abstractmethod
     def interpolate(self):
         """
-        TO DO
+        Require notion of value interpolation for times not present originally
+        for sized-container based TimeSeries.
         """ 
         
     @abc.abstractmethod
     def __neg__(self):
         """
-        TO DO
+        Require ability to negate values for sized-container based TimeSeries.
         """   
         
     @abc.abstractmethod
     def __abs__(self):
         """
-        TO DO
+        Require notion of 2-norm over values for sized-container based TimeSeries.
         """ 
         
     @abc.abstractmethod
     def __bool__(self):
         """
-        TO DO
+        Require ability to test if self._values is all zeros
         """   
         
     @abc.abstractmethod
     def __add__(self):
         """
-        TO DO
+        Require ability to add together two SizedContainerTimeSeriesInterface
+        instances, assuming that their times are equivalent pairwise.
         """       
         
     @abc.abstractmethod
     def __mul__(self):
         """
-        TO DO
+        Require ability to multiply two SizedContainerTimeSeriesInterface
+        instances, assuming that their times are equivalent pairwise.
         """   
         
     @abc.abstractmethod    
     def __eq__(self,rhs):
         """
-        TO DO
+        Require notion of equality between two SizedContainerTimeSeriesInterface
+        instances.
         """   
         
 class StreamTimeSeriesInterface(TimeSeriesInterface):
