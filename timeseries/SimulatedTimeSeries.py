@@ -21,11 +21,11 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
         # Use the first datapoint to decide whether times are included.
         # If firstdata is real, we are only receiving values and need 
         # to attach our own times.  
-        firstdata = next(gen)
-        self._firstdata = firstdata
         try:
+            firstdata = next(gen)
+            self._firstdata = firstdata
             if isinstance(firstdata,numbers.Real):
-                time = itertools.count()
+                time = itertools.count(1)
                 self._items = zip(time,gen)
             elif len(firstdata)==2:
                 self._items = gen
@@ -36,24 +36,28 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
         
     
     def __iter__(self):
+        """Generator function returning the values only"""
         for _,v in self._items:
             yield v
         
     def itertimes(self):
+        """Generator function returning the times only"""
         for t,_ in self._items:
             yield t
 
     def iteritems(self):
+        """Generator function returning (time,value) tuples"""
         for item in self._items:
             yield item
             
     def itervalues(self): 
+        """Generator function returning the values only"""
         for _,v in self._items:
             yield v
     
     def produce(self,chunk=1):
-        """Return (time,value) as an array time series object
-        with chunk items from the generator"""
+        """Return (time,value) as an ArrayTimeSeries object
+        with number of items equal to 'chunk'"""
         values = []
         times = []
         for _ in range(chunk):

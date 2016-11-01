@@ -10,21 +10,21 @@ class TimeSeriesInterface(abc.ABC):
     
     @abc.abstractmethod
     def __iter__(self):
-        pass
+        """pass"""
         
     @abc.abstractmethod
     def itertimes(self):
-        pass
+        """pass"""
         
 
     @abc.abstractmethod
     def iteritems(self):
-        pass
+        """pass"""
         
             
     @abc.abstractmethod
     def itervalues(self):
-        pass
+        """pass"""
         
     
     @abc.abstractmethod
