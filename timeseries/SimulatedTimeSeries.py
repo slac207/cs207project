@@ -75,12 +75,15 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
         return ArrayTimeSeries(times,values)
         
     def _online_mean_genfun(self):
+        # Helper function to online_mean.
+        # This is a generator function used as the input to 
+        # construct the online_mean SimulatedTimeSeries object.  
+        # It returns (time,value) tuples
+        # where the value is the mean of the present time series object.
         yield self._firstitem
         for item in self._items:
             t,v = item
-            print (t,v)
             mu, n = self._running_mean
-            print (mu,n)
             n += 1
             delta = v - mu
             mu = mu + delta/n
@@ -88,9 +91,18 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
             yield (t,mu)
     
     def online_mean(self):
+        """Return a SimulatedTimeSeries of the running mean.
+        Note that this is computed only over the samples that 
+        are called from this method.
+        """
         return SimulatedTimeSeries(self._online_mean_genfun())
 
     def _online_std_genfun(self):
+        # Helper function to online_std.
+        # This is a generator function used as the input to 
+        # construct the online_std SimulatedTimeSeries object.  
+        # It returns (time,value) tuples
+        # where the value is the std of the present time series object.
         yield self._firstitem[0],0
         for item in self._items:
             t,v = item
@@ -100,12 +112,25 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
             S += (v-mu_last)*(v-mu)
             self._running_std = mu,n,S
             stdev = math.sqrt(S/(n-1))
-            print (t,v,self._running_std, stdev)
             yield (t,stdev)
                 
     def online_std(self):
+        """Return a SimulatedTimeSeries of the running std.
+        Note that this is computed only over the samples that 
+        are called from this method.
+        """
         return SimulatedTimeSeries(self._online_std_genfun())
         
+    def mean(self,chunk=20):
+        """Return the mean of the next chunk values of the generator.
+        Returns a float.  Does not include previous values."""
+        
+        return self.produce(chunk=chunk).mean()
+        
+    def std(self,chunk=20):
+        """Return the standard deviation of the next chunk values of the generator.
+        Returns a float.  Does not include previous values."""
+        return self.produce(chunk=chunk).std()
     
 class InputError(Exception):
     """Exception raised for errors in the input.
