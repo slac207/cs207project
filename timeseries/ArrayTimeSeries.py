@@ -208,4 +208,4 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
     
     
     def std(self, chunk=None):
-        return(np.std(self._values))        
+        return(np.std(self._values, ddof=1))        
