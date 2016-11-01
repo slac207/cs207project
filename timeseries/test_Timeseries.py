@@ -144,7 +144,7 @@ class TimeSeriesTest(unittest.TestCase):
         assert(a.interpolate(b.itertimes()) == ArrayTimeSeries(times=[2.5,7.5],values=[1.5,2.5]))
         assert(a.interpolate([-100,100]) == ArrayTimeSeries(times=[-100,100],values=[1,3]))
         
-        assert(a.interpolate([0]) == TimeSeries(times=[0],values=[1]))
+        assert(a.interpolate([5]) == TimeSeries(times=[5],values=[2]))
 
     def test_lazy(self):
         'lazy property should be an instance of LazyOperation'

@@ -71,7 +71,7 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         # uses numpy searchsorted to perform binary search
         idx = np.searchsorted(times,t)
         if np.take(times,idx) == t:
-            return self._values[t]
+            return self._values[idx]
         else:
             left_idx,right_idx = idx-1, idx
             m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
