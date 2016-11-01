@@ -37,8 +37,7 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
     
     def __iter__(self):
         """Generator function returning the values only"""
-        for _,v in self._items:
-            yield v
+        return self.itervalues()
         
     def itertimes(self):
         """Generator function returning the times only"""
