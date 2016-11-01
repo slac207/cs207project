@@ -8,6 +8,7 @@ class TimeSeriesInterface(abc.ABC):
     Interface for TimeSeries class which inherits from ABC
     """
     
+    @abc.abstractmethod
     def __iter__(self):
         """Iterate over values."""
         for i in self._values:
@@ -19,18 +20,24 @@ class TimeSeriesInterface(abc.ABC):
         for i in self._times:
             yield i
 
-            
+        
+    @abc.abstractmethod
+    def itertimes(self):
+        """pass"""
+        
+
+    @abc.abstractmethod
     def iteritems(self):
         """Iterate over (time, value) pairs."""
         for i,j in zip(self._times,self._values):
             yield i,j
-
+        
             
+    @abc.abstractmethod
     def itervalues(self):
         """Iterate over values."""
         for j in self._values:
             yield j
-            
     
     @abc.abstractmethod
     def __repr__(self):
@@ -72,8 +79,31 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
     """
     Interface for sized-container based TimeSeries.
     Inherits from TimeSeriesInterface.
+    Times for TimeSeries stored in _times
+    Values for TimeSeries stored in _values
+
     """
 
+    def __iter__(self):
+        # iterate over values
+        for i in self._values:
+            yield i
+
+            
+    def itertimes(self):
+        for i in self._times:
+            yield i
+
+            
+    def iteritems(self):
+        for i,j in zip(self._times,self._values):
+            yield i,j
+
+            
+    def itervalues(self):
+        for j in self._values:
+            yield j
+        
     def __contains__(self,item):
         """Returns boolean of whether given 'item' is contained in _.values"""
         return item in self._values
@@ -212,3 +242,24 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         Require notion of equality between two SizedContainerTimeSeriesInterface
         instances.
         """   
+        
+class StreamTimeSeriesInterface(TimeSeriesInterface):
+    """
+    Abstract Base Class for timeseries data
+    that arrive streaming.
+    """
+    
+    @abc.abstractmethod
+    def produce(self,chunk=1)->list:
+        """
+        Output a list of (time,value) tuples of length chunk
+        """
+    
+    def __repr__(self):
+        cls = type(self)
+        return "Instance of a {} with streaming input".format(cls.__name__)
+
+    def __str__(self):
+        return repr(self)
+        
+    

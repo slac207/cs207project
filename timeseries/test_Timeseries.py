@@ -143,7 +143,7 @@ class TimeSeriesTest(unittest.TestCase):
         assert(a.interpolate([1]) == ArrayTimeSeries(times=[1],values=[1.2]))
         assert(a.interpolate(b.itertimes()) == ArrayTimeSeries(times=[2.5,7.5],values=[1.5,2.5]))
         assert(a.interpolate([-100,100]) == ArrayTimeSeries(times=[-100,100],values=[1,3]))
-        
+
         assert(a.interpolate([5]) == TimeSeries(times=[5],values=[2]))
 
     def test_lazy(self):
@@ -234,6 +234,7 @@ class TimeSeriesTest(unittest.TestCase):
         self.ts8 = TimeSeries([10,34,23])
         self.ats7 = ArrayTimeSeries(values=range(10),times=range(10))
         self.ats8 = ArrayTimeSeries(values=range(8),times=range(8))
+        # ArrayTimeSeries and TimeSeries objects should be the same if they have the same times and values
         assert self.ts7==self.ats7
         assert self.ats7==self.ts7
         assert self.ts7 is not self.ats8
@@ -245,6 +246,9 @@ class TimeSeriesTest(unittest.TestCase):
         ats1 = ArrayTimeSeries(values=range(10),times=range(10))
         ats2= ArrayTimeSeries(values=range(8),times=range(8))
         sumTS1 = ts1 + ats1
+        # Check that the result is an instance of sized Container
+        # Check that the size of times has not changed
+        # Check that the elements have been added
         assert isinstance(sumTS1, timeSeriesABC.SizedContainerTimeSeriesInterface)
         assert len(sumTS1.times())==len(ts1.times())
         assert sumTS1.values()[4] == ts1.values()[4] + ats1.values()[4]
@@ -258,11 +262,27 @@ class TimeSeriesTest(unittest.TestCase):
 
     def test_sub_TimeSeries_ArrayTimeSeries(self):
         ts1 = TimeSeries(range(10))
-        ts2 = TimeSeries([10,34,23])
+        ts2 = TimeSeries([0,1,2,3,4,5,6,7,8,9])
         ats1 = ArrayTimeSeries(values=range(10),times=range(10))
-        ats2= ArrayTimeSeries(values=range(8),times=range(8))
         subTS1 = ts1 - ats1
         subTS2 = ats1 - ts1
+        subTS3 = ts2 - ats1
+        # Check that the result is an instance of sized Container
+        # Check that the size of times has not changed
+        # Check that the elements have been subtracted
+        assert isinstance(subTS1, timeSeriesABC.SizedContainerTimeSeriesInterface)
+        assert len(subTS1.times())==len(ts1.times())
+        assert subTS1.values()[4] == ts1.values()[4] - ats1.values()[4]
+        assert subTS1.times()[-1] == ats1.times()[-1]
+        assert isinstance(subTS2, timeSeriesABC.SizedContainerTimeSeriesInterface)
+        assert len(subTS2.times())==len(ts1.times())
+        assert subTS2.values()[2] == ts1.values()[2] - ats1.values()[2]
+        assert subTS2.times()[-1] == ats1.times()[-1]
+        assert isinstance(subTS3, timeSeriesABC.SizedContainerTimeSeriesInterface)
+        assert len(subTS3.times())==len(ts2.times())
+        assert subTS3.values()[2] == ts2.values()[2] - ats1.values()[2]
+        assert subTS3.times()[-1] == ats1.times()[-1]
+
 
     def test_multiply_Array_TimeSeries_TimeSeries(self):
         ts1 = TimeSeries(range(10))
@@ -271,6 +291,17 @@ class TimeSeriesTest(unittest.TestCase):
         ats2= ArrayTimeSeries(values=range(8),times=range(8))
         mulTS1 = ts1.__mul__(ats1)
         mulTS2 = ats1 * ts1
+        # Check that the result is an instance of sized Container
+        # Check that the size of times has not changed
+        # Check that the elements have been multiplied
+        assert isinstance(mulTS1, timeSeriesABC.SizedContainerTimeSeriesInterface)
+        assert len(mulTS1.times())==len(ts1.times())
+        assert mulTS1.values()[2] == ts1.values()[2] * ats1.values()[2]
+        assert mulTS1.times()[-1] == ats1.times()[-1]
+        assert isinstance(mulTS2, timeSeriesABC.SizedContainerTimeSeriesInterface)
+        assert len(mulTS2.times())==len(ts1.times())
+        assert mulTS2.values()[2] == ts1.values()[2] * ats1.values()[2]
+        assert mulTS2.times()[-1] == ats1.times()[-1]
 
     def test_bool(self):
         assert not bool(TimeSeries([0,0,0]))
