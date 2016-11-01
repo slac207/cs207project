@@ -132,10 +132,9 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         return np.linalg.norm(self._values)
 
     def __bool__(self):
-        #FIX THIS ONE AS WELL- bool(abs(self._values))
         """Returns: Returns True if all values in self._values are 
         zero. False, otherwise"""
-        return np.count_nonzero(self._values) > 0   
+        return bool(abs(self))
     
     def __add__(self, rhs):
         """
