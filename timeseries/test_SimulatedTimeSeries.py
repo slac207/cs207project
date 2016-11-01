@@ -94,3 +94,21 @@ class SimulatedTimeSeriesTest(unittest.TestCase):
         tslazy = ts.lazy
         assert isinstance(tslazy,lazy.LazyOperation)
         assert isinstance(tslazy.eval(),SimulatedTimeSeries)    
+        
+    def test_online_mean(self):
+        ts = SimulatedTimeSeries(iter(range(100)))
+        assert isinstance(ts.online_mean(),SimulatedTimeSeries)
+        assert all(ts.online_mean().produce(10)._values==np.arange(0.5,5.5,0.5))
+    
+    def test_online_std(self):
+        ts = SimulatedTimeSeries(iter(range(100)))
+        assert isinstance(ts.online_std(),SimulatedTimeSeries)
+        assert all(ts.online_std().produce(10)._values==np.sqrt(np.array([(i**2)/12+5*i/12+0.5 for i in range(10)])))
+
+    def test_mean(self):
+        ts = SimulatedTimeSeries(iter(range(100)))
+        assert ts.mean()==10.5
+        
+    def test_std(self):
+        ts = SimulatedTimeSeries(iter(range(100)))
+        assert ts.std()==5.9160797830996161

@@ -11,37 +11,25 @@ class TimeSeriesInterface(abc.ABC):
     @abc.abstractmethod
     def __iter__(self):
         """Iterate over values."""
-        """pass"""
-
-            
-    def itertimes(self):
-        """Iterate over times."""
-        """pass"""
-
         
     @abc.abstractmethod
     def itertimes(self):
-        """pass"""
+        """Iterate over times."""
         
-
     @abc.abstractmethod
     def iteritems(self):
         """Iterate over (time, value) pairs."""
-        """pass"""
         
-            
     @abc.abstractmethod
     def itervalues(self):
         """Iterate over values."""
-        """pass"""
     
     @abc.abstractmethod
     def __repr__(self):
         """
         All TimeSeries must support a repr function
         """
-        
-        
+
     @abc.abstractmethod
     def __str__(self): 
         """
@@ -277,4 +265,10 @@ class StreamTimeSeriesInterface(TimeSeriesInterface):
     def __str__(self):
         return repr(self)
         
-    
+    @abc.abstractmethod
+    def online_mean(self):
+        """Return a SimulatedTimeSeries of the running mean."""
+
+    @abc.abstractmethod
+    def online_std(self):
+        """Return a SimulatedTimeSeries of the running standard deviation."""
