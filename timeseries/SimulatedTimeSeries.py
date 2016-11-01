@@ -3,7 +3,7 @@ import itertools
 import numbers
 from timeSeriesABC import StreamTimeSeriesInterface
 from ArrayTimeSeries import ArrayTimeSeries      
-
+import math
         
 class SimulatedTimeSeries(StreamTimeSeriesInterface):
     """
@@ -27,14 +27,20 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
             if isinstance(firstdata,numbers.Real):
                 time = itertools.count(1)
                 self._items = zip(time,gen)
+                self._firstitem = (0,self._firstdata)
             elif len(firstdata)==2:
                 self._items = gen
+                self._firstitem = self._firstdata
             else: 
                 raise InputError('Cannot accept input of type({}) that is not length 2'.format(type(firstdata).__name__))
         except:
             raise InputError('Invalid input into StreamTimeSeries')
         
-    
+        # Initialize the mean and standard deviation trackers
+        self._running_mean = (self._firstitem[1],1) # tuple of current mean, number of observations included.
+        self._running_std = (self._firstitem[1],1,0)# tuple of current mean, number of observations included, sum of squared errors around the mean
+
+                
     def __iter__(self):
         """Generator function returning the values only"""
         return self.itervalues()
@@ -68,8 +74,39 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
                 break
         return ArrayTimeSeries(times,values)
         
+    def _online_mean_genfun(self):
+        yield self._firstitem
+        for item in self._items:
+            t,v = item
+            print (t,v)
+            mu, n = self._running_mean
+            print (mu,n)
+            n += 1
+            delta = v - mu
+            mu = mu + delta/n
+            self._running_mean = (mu,n)
+            yield (t,mu)
+    
+    def online_mean(self):
+        return SimulatedTimeSeries(self._online_mean_genfun())
 
-
+    def _online_std_genfun(self):
+        yield self._firstitem[0],0
+        for item in self._items:
+            t,v = item
+            mu, n, S = self._running_std
+            n += 1
+            mu_last, mu = mu, mu + (v-mu)/n
+            S += (v-mu_last)*(v-mu)
+            self._running_std = mu,n,S
+            stdev = math.sqrt(S/(n-1))
+            print (t,v,self._running_std, stdev)
+            yield (t,stdev)
+                
+    def online_std(self):
+        return SimulatedTimeSeries(self._online_std_genfun())
+        
+    
 class InputError(Exception):
     """Exception raised for errors in the input.
 
