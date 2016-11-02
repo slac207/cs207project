@@ -1,0 +1,908 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>timeseries package &mdash; timeSeries  documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="timeSeries  documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="timeseries-package">
+<h1>timeseries package<a class="headerlink" href="#timeseries-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-timeseries.ArrayTimeSeries">
+<span id="timeseries-arraytimeseries-module"></span><h2>timeseries.ArrayTimeSeries module<a class="headerlink" href="#module-timeseries.ArrayTimeSeries" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries">
+<em class="property">class </em><code class="descclassname">timeseries.ArrayTimeSeries.</code><code class="descname">ArrayTimeSeries</code><span class="sig-paren">(</span><em>times</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/ArrayTimeSeries.html#ArrayTimeSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">timeSeriesABC.SizedContainerTimeSeriesInterface</span></code></p>
+<p>Class which stores a ordered set of numerical data using numpy arrays.
+Inherits from SizedContainerTimeSeriesInterface.</p>
+<p>_times: sequence that represents time data
+_values: sequence that represents value data</p>
+<p>PRE: times must be a monotonically increasing sequence</p>
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.interpolate">
+<code class="descname">interpolate</code><span class="sig-paren">(</span><em>times_to_interpolate</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/ArrayTimeSeries.html#ArrayTimeSeries.interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces new ArrayTimeSeries with linearly interpolated values using
+piecewise-linear functions with stationary boundary conditions.</p>
+<p>self: ArrayTimeSeries instance
+times_to_interpolate: sorted sequence of times to be interpolated</p>
+<p>ArrayTimeSeries instance with interpolated values</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ats</span> <span class="o">=</span> <span class="n">ArrayTimeSeries</span><span class="p">(</span><span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ats</span><span class="o">.</span><span class="n">interpolate</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">ArrayTimeSeries(Length: 3, Times: array([ 0.5,  1.5,  3. ]), Values: array([ 30.,  25.,  30.]))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/ArrayTimeSeries.html#ArrayTimeSeries.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/ArrayTimeSeries.html#ArrayTimeSeries.std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.times">
+<code class="descname">times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/ArrayTimeSeries.html#ArrayTimeSeries.times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of ArrayTimeSeries times, i.e. self._times</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/ArrayTimeSeries.html#ArrayTimeSeries.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of ArrayTimeSeries values, i.e. self._values</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.SimulatedTimeSeries">
+<span id="timeseries-simulatedtimeseries-module"></span><h2>timeseries.SimulatedTimeSeries module<a class="headerlink" href="#module-timeseries.SimulatedTimeSeries" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="timeseries.SimulatedTimeSeries.InputError">
+<em class="property">exception </em><code class="descclassname">timeseries.SimulatedTimeSeries.</code><code class="descname">InputError</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#InputError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.InputError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/exceptions.html#Exception" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></a></p>
+<p>Exception raised for errors in the input.</p>
+<dl class="attribute">
+<dt>
+<code class="descname">message -- explanation of the error</code></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries">
+<em class="property">class </em><code class="descclassname">timeseries.SimulatedTimeSeries.</code><code class="descname">SimulatedTimeSeries</code><span class="sig-paren">(</span><em>gen</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#SimulatedTimeSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">timeSeriesABC.StreamTimeSeriesInterface</span></code></p>
+<p>Class for timeseries objects that have streaming
+input data arriving via an iterator.</p>
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#SimulatedTimeSeries.iteritems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function returning (time,value) tuples</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itertimes">
+<code class="descname">itertimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#SimulatedTimeSeries.itertimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itertimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function returning the times only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itervalues">
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#SimulatedTimeSeries.itervalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itervalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function returning the values only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>chunk=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#SimulatedTimeSeries.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mean of the next chunk values of the generator.
+Returns a float.  Does not include previous values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_mean">
+<code class="descname">online_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#SimulatedTimeSeries.online_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a SimulatedTimeSeries of the running mean.
+Note that this is computed only over the samples that
+are called from this method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_std">
+<code class="descname">online_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#SimulatedTimeSeries.online_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a SimulatedTimeSeries of the running std.
+Note that this is computed only over the samples that
+are called from this method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>chunk=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#SimulatedTimeSeries.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return (time,value) as an ArrayTimeSeries object
+with number of items equal to &#8216;chunk&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>chunk=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/SimulatedTimeSeries.html#SimulatedTimeSeries.std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the standard deviation of the next chunk values of the generator.
+Returns a float.  Does not include previous values.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.Timeseries">
+<span id="timeseries-timeseries-module"></span><h2>timeseries.Timeseries module<a class="headerlink" href="#module-timeseries.Timeseries" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.Timeseries.TimeSeries">
+<em class="property">class </em><code class="descclassname">timeseries.Timeseries.</code><code class="descname">TimeSeries</code><span class="sig-paren">(</span><em>values</em>, <em>times=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/Timeseries.html#TimeSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.Timeseries.TimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">timeSeriesABC.SizedContainerTimeSeriesInterface</span></code></p>
+<p>Class which stores a ordered set of numerical data using lists.
+Inherits from SizedContainerTimeSeriesInterface.</p>
+<p>_times: sequence that represents time data
+_values: sequence that represents value data</p>
+<p>PRE: times must be a monotonically increasing sequence</p>
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.interpolate">
+<code class="descname">interpolate</code><span class="sig-paren">(</span><em>times_to_interpolate</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/Timeseries.html#TimeSeries.interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces new TimeSeries with linearly interpolated values using
+piecewise-linear functions with stationary boundary conditions</p>
+<p>self: TimeSeries instance
+times_to_interpolate: sorted sequence of times to be interpolated</p>
+<p>TimeSeries instance with interpolated times</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">(</span><span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">interpolate</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">TimeSeries(Length: 3, Times: [0.5, 1.5, 3], Values: [30.0, 25.0, 30])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/Timeseries.html#TimeSeries.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/Timeseries.html#TimeSeries.std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.times">
+<code class="descname">times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/Timeseries.html#TimeSeries.times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of the TimeSeries times</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/Timeseries.html#TimeSeries.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of the TimeSeries values</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.binarysearch">
+<span id="timeseries-binarysearch-module"></span><h2>timeseries.binarysearch module<a class="headerlink" href="#module-timeseries.binarysearch" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="timeseries.binarysearch.binary_search">
+<code class="descclassname">timeseries.binarysearch.</code><code class="descname">binary_search</code><span class="sig-paren">(</span><em>da_array</em>, <em>needle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/binarysearch.html#binary_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.binarysearch.binary_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>An algorithm that operates in O(lg(n)) to search for an element
+in an array sorted in ascending order.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>da_array</strong> (<a class="reference external" href="http://docs.python.org/3.5/library/stdtypes.html#list" title="(in Python v3.5)"><em>list</em></a>) &#8211; a list of &#8220;comparable&#8221; items sorted in non-descending order</li>
+<li><strong>needle</strong> (<em>an item to find in the array; it may or may not</em>) &#8211; be in the array</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; an integer representing the index of <cite>needle</cite> if found, and -1
+otherwise</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/3.5/library/functions.html#int" title="(in Python v3.5)">int</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<dl class="docutils">
+<dt>PRE: <cite>da_array</cite> is a list that is sorted in non-decreasing order (thus items in</dt>
+<dd><cite>da_array</cite> must be comparable: implement &lt; and ==)</dd>
+<dt>POST:</dt>
+<dd><ul class="first last simple">
+<li><cite>da_array</cite> is not changed by this function (immutable)</li>
+<li>returns <cite>index`=-1 if `needle</cite> is not in <cite>da_array</cite></li>
+<li>returns an int <cite>index ` in [0:len(da_array)] if
+`index</cite> is in <cite>da_array</cite></li>
+</ul>
+</dd>
+<dt>INVARIANTS:</dt>
+<dd><ul class="first last simple">
+<li>If <cite>needle</cite> in <cite>da_array</cite>, needle in <cite>da_array[min_index:max_index]</cite>
+is a loop invariant in the while loop below.</li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">#if needle in the array, return its index</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="mf">1.5</span><span class="p">)</span> <span class="c1">#if needle not in array, return surrounding indices</span>
+<span class="go">(0, 1)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.lazy">
+<span id="timeseries-lazy-module"></span><h2>timeseries.lazy module<a class="headerlink" href="#module-timeseries.lazy" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.lazy.LazyOperation">
+<em class="property">class </em><code class="descclassname">timeseries.lazy.</code><code class="descname">LazyOperation</code><span class="sig-paren">(</span><em>function</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/lazy.html#LazyOperation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.lazy.LazyOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Isolate the function call from the function execution.
+out = LazyOperation(function,*args,**kwargs) defines the operation.
+out.eval() evaluates the operation.
+out.eval() = function(<a href="#id1"><span class="problematic" id="id2">*</span></a>args,**kwargs).</p>
+<dl class="method">
+<dt id="timeseries.lazy.LazyOperation.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/lazy.html#LazyOperation.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.lazy.LazyOperation.eval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="timeseries.lazy.lazy">
+<code class="descclassname">timeseries.lazy.</code><code class="descname">lazy</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/lazy.html#lazy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.lazy.lazy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a function return a LazyOperation instance</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeseries.lazy.lazy_add">
+<code class="descclassname">timeseries.lazy.</code><code class="descname">lazy_add</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/lazy.html#lazy_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.lazy.lazy_add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="timeseries.lazy.lazy_mul">
+<code class="descclassname">timeseries.lazy.</code><code class="descname">lazy_mul</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/lazy.html#lazy_mul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.lazy.lazy_mul" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.test_SimulatedTimeSeries">
+<span id="timeseries-test-simulatedtimeseries-module"></span><h2>timeseries.test_SimulatedTimeSeries module<a class="headerlink" href="#module-timeseries.test_SimulatedTimeSeries" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest">
+<em class="property">class </em><code class="descclassname">timeseries.test_SimulatedTimeSeries.</code><code class="descname">SimulatedTimeSeriesTest</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_init">
+<code class="descname">test_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_iter">
+<code class="descname">test_iter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_iteritems">
+<code class="descname">test_iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_iteritems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_iteritems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_itertimes">
+<code class="descname">test_itertimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_itertimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_itertimes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_itervalues">
+<code class="descname">test_itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_itervalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_itervalues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_lazy">
+<code class="descname">test_lazy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_lazy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_lazy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_mean">
+<code class="descname">test_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_online_mean">
+<code class="descname">test_online_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_online_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_online_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_online_std">
+<code class="descname">test_online_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_online_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_online_std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_produce">
+<code class="descname">test_produce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_produce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_repr">
+<code class="descname">test_repr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_repr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_repr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_std">
+<code class="descname">test_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_str">
+<code class="descname">test_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_SimulatedTimeSeries.html#SimulatedTimeSeriesTest.test_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.SimulatedTimeSeriesTest.test_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="timeseries.test_SimulatedTimeSeries.random">
+<code class="descclassname">timeseries.test_SimulatedTimeSeries.</code><code class="descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; x in the interval [0, 1).<a class="headerlink" href="#timeseries.test_SimulatedTimeSeries.random" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.test_Timeseries">
+<span id="timeseries-test-timeseries-module"></span><h2>timeseries.test_Timeseries module<a class="headerlink" href="#module-timeseries.test_Timeseries" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest">
+<em class="property">class </em><code class="descclassname">timeseries.test_Timeseries.</code><code class="descname">TimeSeriesTest</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>Test time series and array time series methods</p>
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_abs">
+<code class="descname">test_abs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_abs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_abs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_add">
+<code class="descname">test_add</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_add_ArrayTimeSeries_TimeSeries">
+<code class="descname">test_add_ArrayTimeSeries_TimeSeries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_add_ArrayTimeSeries_TimeSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_add_ArrayTimeSeries_TimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_bool">
+<code class="descname">test_bool</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_bool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_contains">
+<code class="descname">test_contains</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_contains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_contains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_eq">
+<code class="descname">test_eq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_eq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_eq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_eq_ArrayTimeSeries_TimeSeries">
+<code class="descname">test_eq_ArrayTimeSeries_TimeSeries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_eq_ArrayTimeSeries_TimeSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_eq_ArrayTimeSeries_TimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_getitem">
+<code class="descname">test_getitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_getitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_getitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_input_diff_len">
+<code class="descname">test_input_diff_len</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_input_diff_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_input_diff_len" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_input_list">
+<code class="descname">test_input_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_input_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_input_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_input_nonseq">
+<code class="descname">test_input_nonseq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_input_nonseq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_input_nonseq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_input_range">
+<code class="descname">test_input_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_input_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_input_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_input_string">
+<code class="descname">test_input_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_input_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_input_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_input_tuple">
+<code class="descname">test_input_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_input_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_input_tuple" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_interpolate">
+<code class="descname">test_interpolate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_interpolate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_items">
+<code class="descname">test_items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_iter">
+<code class="descname">test_iter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_iteritems">
+<code class="descname">test_iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_iteritems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_iteritems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_itertimes">
+<code class="descname">test_itertimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_itertimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_itertimes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_itervalues">
+<code class="descname">test_itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_itervalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_itervalues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_lazy">
+<code class="descname">test_lazy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_lazy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_lazy" title="Permalink to this definition">¶</a></dt>
+<dd><p>lazy property should be an instance of LazyOperation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_lazy_smoketest">
+<code class="descname">test_lazy_smoketest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_lazy_smoketest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_lazy_smoketest" title="Permalink to this definition">¶</a></dt>
+<dd><p>An involved use of lazy operations on the lazy property
+to ensure the layers can work together</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_length">
+<code class="descname">test_length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_mean">
+<code class="descname">test_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_mul">
+<code class="descname">test_mul</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_mul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_mul" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_multiply_Array_TimeSeries_TimeSeries">
+<code class="descname">test_multiply_Array_TimeSeries_TimeSeries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_multiply_Array_TimeSeries_TimeSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_multiply_Array_TimeSeries_TimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_neg">
+<code class="descname">test_neg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_neg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_neg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_pos">
+<code class="descname">test_pos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_pos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_repr">
+<code class="descname">test_repr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_repr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_repr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_setitem">
+<code class="descname">test_setitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_setitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_setitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_std">
+<code class="descname">test_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_string">
+<code class="descname">test_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_sub">
+<code class="descname">test_sub</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_sub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_sub" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_sub_TimeSeries_ArrayTimeSeries">
+<code class="descname">test_sub_TimeSeries_ArrayTimeSeries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_sub_TimeSeries_ArrayTimeSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_sub_TimeSeries_ArrayTimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_times">
+<code class="descname">test_times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_Timeseries.TimeSeriesTest.test_values">
+<code class="descname">test_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_Timeseries.html#TimeSeriesTest.test_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_Timeseries.TimeSeriesTest.test_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.test_binarysearch">
+<span id="timeseries-test-binarysearch-module"></span><h2>timeseries.test_binarysearch module<a class="headerlink" href="#module-timeseries.test_binarysearch" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.test_binarysearch.MyTest">
+<em class="property">class </em><code class="descclassname">timeseries.test_binarysearch.</code><code class="descname">MyTest</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="timeseries.test_binarysearch.MyTest.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_binarysearch.MyTest.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_binarysearch.MyTest.test_chr">
+<code class="descname">test_chr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest.test_chr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest.test_chr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_binarysearch.MyTest.test_empty">
+<code class="descname">test_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest.test_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest.test_empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_binarysearch.MyTest.test_non_numeric_inf">
+<code class="descname">test_non_numeric_inf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest.test_non_numeric_inf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest.test_non_numeric_inf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_binarysearch.MyTest.test_non_numeric_nan">
+<code class="descname">test_non_numeric_nan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest.test_non_numeric_nan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest.test_non_numeric_nan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_binarysearch.MyTest.test_non_numeric_str">
+<code class="descname">test_non_numeric_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest.test_non_numeric_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest.test_non_numeric_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_binarysearch.MyTest.test_not_array">
+<code class="descname">test_not_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest.test_not_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest.test_not_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.test_binarysearch.MyTest.test_sorted">
+<code class="descname">test_sorted</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_binarysearch.html#MyTest.test_sorted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_binarysearch.MyTest.test_sorted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.test_lazy">
+<span id="timeseries-test-lazy-module"></span><h2>timeseries.test_lazy module<a class="headerlink" href="#module-timeseries.test_lazy" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="timeseries.test_lazy.test_composition">
+<code class="descclassname">timeseries.test_lazy.</code><code class="descname">test_composition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_lazy.html#test_composition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_lazy.test_composition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="timeseries.test_lazy.test_kw">
+<code class="descclassname">timeseries.test_lazy.</code><code class="descname">test_kw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_lazy.html#test_kw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_lazy.test_kw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="timeseries.test_lazy.test_kw_composition">
+<code class="descclassname">timeseries.test_lazy.</code><code class="descname">test_kw_composition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_lazy.html#test_kw_composition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_lazy.test_kw_composition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="timeseries.test_lazy.test_operation">
+<code class="descclassname">timeseries.test_lazy.</code><code class="descname">test_operation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_lazy.html#test_operation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_lazy.test_operation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="timeseries.test_lazy.test_type">
+<code class="descclassname">timeseries.test_lazy.</code><code class="descname">test_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/test_lazy.html#test_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.test_lazy.test_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.timeSeriesABC">
+<span id="timeseries-timeseriesabc-module"></span><h2>timeseries.timeSeriesABC module<a class="headerlink" href="#module-timeseries.timeSeriesABC" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface">
+<em class="property">class </em><code class="descclassname">timeseries.timeSeriesABC.</code><code class="descname">SizedContainerTimeSeriesInterface</code><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#SizedContainerTimeSeriesInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#timeseries.timeSeriesABC.TimeSeriesInterface" title="timeseries.timeSeriesABC.TimeSeriesInterface"><code class="xref py py-class docutils literal"><span class="pre">timeseries.timeSeriesABC.TimeSeriesInterface</span></code></a></p>
+<p>Interface for sized-container based TimeSeries.
+Inherits from TimeSeriesInterface.
+Times for TimeSeries stored in _times
+Values for TimeSeries stored in _values</p>
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.interpolate">
+<code class="descname">interpolate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#SizedContainerTimeSeriesInterface.interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require notion of value interpolation for times not present originally
+for sized-container based TimeSeries.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.items">
+<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#SizedContainerTimeSeriesInterface.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of (time, value) pairs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#SizedContainerTimeSeriesInterface.iteritems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.itertimes">
+<code class="descname">itertimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#SizedContainerTimeSeriesInterface.itertimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.itertimes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.itervalues">
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#SizedContainerTimeSeriesInterface.itervalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.itervalues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.times">
+<code class="descname">times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#SizedContainerTimeSeriesInterface.times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require ability to return stored values for sized-container based TimeSeries.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#SizedContainerTimeSeriesInterface.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require ability to return stored values for sized-container based TimeSeries.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="timeseries.timeSeriesABC.StreamTimeSeriesInterface">
+<em class="property">class </em><code class="descclassname">timeseries.timeSeriesABC.</code><code class="descname">StreamTimeSeriesInterface</code><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#StreamTimeSeriesInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.StreamTimeSeriesInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#timeseries.timeSeriesABC.TimeSeriesInterface" title="timeseries.timeSeriesABC.TimeSeriesInterface"><code class="xref py py-class docutils literal"><span class="pre">timeseries.timeSeriesABC.TimeSeriesInterface</span></code></a></p>
+<p>Abstract Base Class for timeseries data
+that arrive streaming.</p>
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.StreamTimeSeriesInterface.online_mean">
+<code class="descname">online_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#StreamTimeSeriesInterface.online_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.StreamTimeSeriesInterface.online_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a SimulatedTimeSeries of the running mean.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.StreamTimeSeriesInterface.online_std">
+<code class="descname">online_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#StreamTimeSeriesInterface.online_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.StreamTimeSeriesInterface.online_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a SimulatedTimeSeries of the running standard deviation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.StreamTimeSeriesInterface.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>chunk=1</em><span class="sig-paren">)</span> &rarr; list<a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#StreamTimeSeriesInterface.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.StreamTimeSeriesInterface.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output a list of (time,value) tuples of length chunk</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface">
+<em class="property">class </em><code class="descclassname">timeseries.timeSeriesABC.</code><code class="descname">TimeSeriesInterface</code><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#TimeSeriesInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/abc.html#abc.ABC" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">abc.ABC</span></code></a></p>
+<p>Interface for TimeSeries class which inherits from ABC</p>
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.identity">
+<code class="descname">identity</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.identity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#TimeSeriesInterface.iteritems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over (time, value) pairs.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.itertimes">
+<code class="descname">itertimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#TimeSeriesInterface.itertimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.itertimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over times.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.itervalues">
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#TimeSeriesInterface.itervalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.itervalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over values.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.lazy">
+<code class="descname">lazy</code><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.lazy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lazy identity property.
+self.lazy returns a LazyOperation instance of self.identity(), so that
+self.lazy.eval() is self.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>self.identity()</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">a LazyOperation instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#TimeSeriesInterface.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require ability to calculate the mean of values within a
+TimeSeriesInterface instance.
+Optional <cite>chunk</cite> argument to be used for subclass instances
+with no storage.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/timeseries/timeSeriesABC.html#TimeSeriesInterface.std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require ability to calculate the standard deviation of values within a
+TimeSeriesInterface instance.
+Optional <cite>chunk</cite> argument to be used for subclass instances
+with no storage.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-timeseries" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">timeseries package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-timeseries.ArrayTimeSeries">timeseries.ArrayTimeSeries module</a></li>
+<li><a class="reference internal" href="#module-timeseries.SimulatedTimeSeries">timeseries.SimulatedTimeSeries module</a></li>
+<li><a class="reference internal" href="#module-timeseries.Timeseries">timeseries.Timeseries module</a></li>
+<li><a class="reference internal" href="#module-timeseries.binarysearch">timeseries.binarysearch module</a></li>
+<li><a class="reference internal" href="#module-timeseries.lazy">timeseries.lazy module</a></li>
+<li><a class="reference internal" href="#module-timeseries.test_SimulatedTimeSeries">timeseries.test_SimulatedTimeSeries module</a></li>
+<li><a class="reference internal" href="#module-timeseries.test_Timeseries">timeseries.test_Timeseries module</a></li>
+<li><a class="reference internal" href="#module-timeseries.test_binarysearch">timeseries.test_binarysearch module</a></li>
+<li><a class="reference internal" href="#module-timeseries.test_lazy">timeseries.test_lazy module</a></li>
+<li><a class="reference internal" href="#module-timeseries.timeSeriesABC">timeseries.timeSeriesABC module</a></li>
+<li><a class="reference internal" href="#module-timeseries">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/timeseries.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, SLAC207.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/source/timeseries.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

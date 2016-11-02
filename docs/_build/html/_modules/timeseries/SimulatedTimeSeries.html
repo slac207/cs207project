@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>timeseries.SimulatedTimeSeries &mdash; timeSeries  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="timeSeries  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for timeseries.SimulatedTimeSeries</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numbers</span>
+<span class="kn">from</span> <span class="nn">timeSeriesABC</span> <span class="kn">import</span> <span class="n">StreamTimeSeriesInterface</span>
+<span class="kn">from</span> <span class="nn">ArrayTimeSeries</span> <span class="kn">import</span> <span class="n">ArrayTimeSeries</span>      
+<span class="kn">import</span> <span class="nn">math</span>
+        
+<div class="viewcode-block" id="SimulatedTimeSeries"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.SimulatedTimeSeries">[docs]</a><span class="k">class</span> <span class="nc">SimulatedTimeSeries</span><span class="p">(</span><span class="n">StreamTimeSeriesInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for timeseries objects that have streaming</span>
+<span class="sd">    input data arriving via an iterator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">gen</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Input is an iterator.  </span>
+<span class="sd">        It may be floats corresponding to values of a timeseries</span>
+<span class="sd">        or it may tuples of floats corresponding to (time, value) pairs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Use the first datapoint to decide whether times are included.</span>
+        <span class="c1"># If firstdata is real, we are only receiving values and need </span>
+        <span class="c1"># to attach our own times.  </span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">firstdata</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_firstdata</span> <span class="o">=</span> <span class="n">firstdata</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firstdata</span><span class="p">,</span><span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">):</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">gen</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_firstitem</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_firstdata</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">firstdata</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="o">=</span> <span class="n">gen</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_firstitem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_firstdata</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s1">&#39;Cannot accept input of type({}) that is not length 2&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">firstdata</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s1">&#39;Invalid input into StreamTimeSeries&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Initialize the mean and standard deviation trackers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running_mean</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_firstitem</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># tuple of current mean, number of observations included.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running_std</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_firstitem</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="c1"># tuple of current mean, number of observations included, sum of squared errors around the mean</span>
+
+                
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator function returning the values only&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">itervalues</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="SimulatedTimeSeries.itertimes"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itertimes">[docs]</a>    <span class="k">def</span> <span class="nf">itertimes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator function returning the times only&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">t</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">t</span></div>
+
+<div class="viewcode-block" id="SimulatedTimeSeries.iteritems"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.iteritems">[docs]</a>    <span class="k">def</span> <span class="nf">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator function returning (time,value) tuples&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">item</span></div>
+            
+<div class="viewcode-block" id="SimulatedTimeSeries.itervalues"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itervalues">[docs]</a>    <span class="k">def</span> <span class="nf">itervalues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Generator function returning the values only&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">v</span></div>
+    
+<div class="viewcode-block" id="SimulatedTimeSeries.produce"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chunk</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return (time,value) as an ArrayTimeSeries object</span>
+<span class="sd">        with number of items equal to &#39;chunk&#39;&quot;&quot;&quot;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">chunk</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">t</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">)</span>
+                <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">ArrayTimeSeries</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">values</span><span class="p">)</span></div>
+        
+    <span class="k">def</span> <span class="nf">_online_mean_genfun</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Helper function to online_mean.</span>
+        <span class="c1"># This is a generator function used as the input to </span>
+        <span class="c1"># construct the online_mean SimulatedTimeSeries object.  </span>
+        <span class="c1"># It returns (time,value) tuples</span>
+        <span class="c1"># where the value is the mean of the present time series object.</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_firstitem</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+            <span class="n">t</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="n">mu</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running_mean</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">v</span> <span class="o">-</span> <span class="n">mu</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">delta</span><span class="o">/</span><span class="n">n</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_running_mean</span> <span class="o">=</span> <span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">mu</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="SimulatedTimeSeries.online_mean"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_mean">[docs]</a>    <span class="k">def</span> <span class="nf">online_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a SimulatedTimeSeries of the running mean.</span>
+<span class="sd">        Note that this is computed only over the samples that </span>
+<span class="sd">        are called from this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">SimulatedTimeSeries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_online_mean_genfun</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">_online_std_genfun</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Helper function to online_std.</span>
+        <span class="c1"># This is a generator function used as the input to </span>
+        <span class="c1"># construct the online_std SimulatedTimeSeries object.  </span>
+        <span class="c1"># It returns (time,value) tuples</span>
+        <span class="c1"># where the value is the std of the present time series object.</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_firstitem</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+            <span class="n">t</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="n">mu</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running_std</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">mu_last</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">mu</span> <span class="o">+</span> <span class="p">(</span><span class="n">v</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">/</span><span class="n">n</span>
+            <span class="n">S</span> <span class="o">+=</span> <span class="p">(</span><span class="n">v</span><span class="o">-</span><span class="n">mu_last</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">v</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_running_std</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">S</span>
+            <span class="n">stdev</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">S</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">stdev</span><span class="p">)</span>
+                
+<div class="viewcode-block" id="SimulatedTimeSeries.online_std"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_std">[docs]</a>    <span class="k">def</span> <span class="nf">online_std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a SimulatedTimeSeries of the running std.</span>
+<span class="sd">        Note that this is computed only over the samples that </span>
+<span class="sd">        are called from this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">SimulatedTimeSeries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_online_std_genfun</span><span class="p">())</span></div>
+        
+<div class="viewcode-block" id="SimulatedTimeSeries.mean"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.mean">[docs]</a>    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chunk</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the mean of the next chunk values of the generator.</span>
+<span class="sd">        Returns a float.  Does not include previous values.&quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="SimulatedTimeSeries.std"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.std">[docs]</a>    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chunk</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the standard deviation of the next chunk values of the generator.</span>
+<span class="sd">        Returns a float.  Does not include previous values.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span></div></div>
+    
+<div class="viewcode-block" id="InputError"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.SimulatedTimeSeries.InputError">[docs]</a><span class="k">class</span> <span class="nc">InputError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception raised for errors in the input.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        message -- explanation of the error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, SLAC207.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

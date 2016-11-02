@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>timeseries.test_binarysearch &mdash; timeSeries  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="timeSeries  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for timeseries.test_binarysearch</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">binarysearch</span> <span class="kn">import</span> <span class="n">binary_search</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="MyTest"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest">[docs]</a><span class="k">class</span> <span class="nc">MyTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="MyTest.setUp"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputt</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="MyTest.tearDown"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputt</span></div>
+    
+    <span class="c1">#test showing that sorted array is necessary- 3 is present but returns -1</span>
+<div class="viewcode-block" id="MyTest.test_sorted"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest.test_sorted">[docs]</a>    <span class="k">def</span> <span class="nf">test_sorted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span><span class="mi">3</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
+    
+    <span class="c1">#test for searching in an empty array</span>
+<div class="viewcode-block" id="MyTest.test_empty"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest.test_empty">[docs]</a>    <span class="k">def</span> <span class="nf">test_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([],</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>   </div>
+        
+    <span class="c1">#test for passing in non-array </span>
+<div class="viewcode-block" id="MyTest.test_not_array"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest.test_not_array">[docs]</a>    <span class="k">def</span> <span class="nf">test_not_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">binary_search</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>     </div>
+            
+    <span class="c1">#test for passing in strings</span>
+<div class="viewcode-block" id="MyTest.test_non_numeric_str"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest.test_non_numeric_str">[docs]</a>    <span class="k">def</span> <span class="nf">test_non_numeric_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">binary_search</span><span class="p">([</span><span class="s1">&#39;l&#39;</span><span class="p">,</span><span class="s1">&#39;ol&#39;</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>  </div>
+            
+<div class="viewcode-block" id="MyTest.test_chr"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest.test_chr">[docs]</a>    <span class="k">def</span> <span class="nf">test_chr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">],</span><span class="s1">&#39;c&#39;</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span>         </div>
+    
+    <span class="c1">#test for whether NaN is valid input in array      </span>
+<div class="viewcode-block" id="MyTest.test_non_numeric_nan"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest.test_non_numeric_nan">[docs]</a>    <span class="k">def</span> <span class="nf">test_non_numeric_nan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;NaN&#39;</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;NaN&#39;</span><span class="p">)],</span><span class="mi">2</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span></div>
+    
+    <span class="c1">#test for whether inf is valid input in array         </span>
+<div class="viewcode-block" id="MyTest.test_non_numeric_inf"><a class="viewcode-back" href="../../source/timeseries.html#timeseries.test_binarysearch.MyTest.test_non_numeric_inf">[docs]</a>    <span class="k">def</span> <span class="nf">test_non_numeric_inf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span> </div></div>
+     
+        
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, SLAC207.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
