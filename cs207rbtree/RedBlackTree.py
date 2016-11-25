@@ -1,27 +1,30 @@
 class ValueRef(object):
     " a reference to a string value on disk"
     def __init__(self, referent=None, address=0):
-        self._referent = referent #value to store
-        self._address = address #address to store at
+        self._referent = referent # value to store
+        self._address = address # address to store at
 
     @property
     def address(self):
+        "get the address"
         return self._address
 
     def prepare_to_store(self, storage):
+        # Not implemented
         pass
 
     @staticmethod
     def referent_to_bytes(referent):
+        "convert the string to utf-8 encoding"
         return referent.encode('utf-8')
 
     @staticmethod
     def bytes_to_referent(bytes):
+        "convert utf-8 encoding to a string"
         return bytes.decode('utf-8')
 
-
     def get(self, storage):
-        "read bytes for value from disk"
+        "read bytes for value from disk and assign string to referent property"
         if self._referent is None and self._address:
             self._referent = self.bytes_to_referent(storage.read(self._address))
         return self._referent
@@ -46,7 +49,7 @@ class BinaryNodeRef(ValueRef):
 
     @staticmethod
     def referent_to_bytes(referent):
-        "use pickle to convert node to bytes"
+        "use pickle to convert node to dictionary of bytes"
         return pickle.dumps({
             'left': referent.left_ref.address,
             'key': referent.key,
@@ -273,7 +276,7 @@ class Storage(object):
         self._f.write(self._integer_to_bytes(integer))
 
     def write(self, data):
-        "write data to disk, returning the adress at which you wrote it"
+        "write data to disk, returning the address at which you wrote it"
         #first lock, get to end, get address to return, write size
         #write data, unlock <==WRONG, dont want to unlock here
         #your code here
@@ -318,28 +321,35 @@ class Storage(object):
 class DBDB(object):
 
     def __init__(self, f):
+        "Creates storage and tree properties"
         self._storage = Storage(f)
         self._tree = BinaryTree(self._storage)
 
     def _assert_not_closed(self):
+        "Confirm the storage database is closed"
         if self._storage.closed:
             raise ValueError('Database closed.')
 
     def close(self):
+        "Close the storage object"
         self._storage.close()
 
     def commit(self):
+        "Confirm storage is closed and commit"
         self._assert_not_closed()
         self._tree.commit()
 
     def get(self, key):
+        "Confirm storage is open and get a value for a key"
         self._assert_not_closed()
         return self._tree.get(key)
 
     def set(self, key, value):
+        "Confirm storage is open and set a value for a key"
         self._assert_not_closed()
         return self._tree.set(key, value)
 
     def delete(self, key):
+        "Confirm storage is open and delete node with key"
         self._assert_not_closed()
         return self._tree.delete(key)
