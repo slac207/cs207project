@@ -1,3 +1,8 @@
+import pickle # for BinaryNodeRef class
+import os # for storage class
+import struct # for storage class
+import portalocker # for storage class
+
 class ValueRef(object):
     " a reference to a string value on disk"
     def __init__(self, referent=None, address=0):
@@ -36,20 +41,18 @@ class ValueRef(object):
             self.prepare_to_store(storage)
             self._address = storage.write(self.referent_to_bytes(self._referent))
 
-
-import pickle
 class BinaryNodeRef(ValueRef):
-    "reference to a btree node on disk"
+    "Reference to a btree node on disk"
 
     #calls the BinaryNode's store_refs
     def prepare_to_store(self, storage):
-        "have a node store its refs"
+        "Have a node store its refs"
         if self._referent:
             self._referent.store_refs(storage)
 
     @staticmethod
     def referent_to_bytes(referent):
-        "use pickle to convert node to dictionary of bytes"
+        "Use pickle to convert node to dictionary of bytes"
         return pickle.dumps({
             'left': referent.left_ref.address,
             'key': referent.key,
@@ -59,7 +62,7 @@ class BinaryNodeRef(ValueRef):
 
     @staticmethod
     def bytes_to_referent(string):
-        "unpickle bytes to get a node object"
+        "Unpickle bytes to get a node object"
         d = pickle.loads(string)
         return BinaryNode(
             BinaryNodeRef(address=d['left']),
@@ -71,7 +74,7 @@ class BinaryNodeRef(ValueRef):
 class BinaryNode(object):
     @classmethod
     def from_node(cls, node, **kwargs):
-        "clone a node with some changes from another one"
+        "Clone a node with some changes from another one"
         return cls(
             left_ref=kwargs.get('left_ref', node.left_ref),
             key=kwargs.get('key', node.key),
@@ -80,6 +83,7 @@ class BinaryNode(object):
         )
 
     def __init__(self, left_ref, key, value_ref, right_ref):
+        "Stores key and references to the value, left node, and right node"
         self.left_ref = left_ref
         self.key = key
         self.value_ref = value_ref
@@ -98,23 +102,24 @@ class BinaryNode(object):
 class BinaryTree(object):
     "Immutable Binary Tree class. Constructs new tree on changes"
     def __init__(self, storage):
+        "Sets storage object as property and refreshes reference to tree"
         self._storage = storage
         self._refresh_tree_ref()
 
     def commit(self):
-        "changes are final only when committed"
+        "Changes are final only when committed"
         #triggers BinaryNodeRef.store
         self._tree_ref.store(self._storage)
         #make sure address of new tree is stored
         self._storage.commit_root_address(self._tree_ref.address)
 
     def _refresh_tree_ref(self):
-        "get reference to new tree if it has changed"
+        "Get reference to new tree if it has changed"
         self._tree_ref = BinaryNodeRef(
             address=self._storage.get_root_address())
 
     def get(self, key):
-        "get value for a key"
+        "Get value for a key"
         #your code here
         #if tree is not locked by another writer
         #refresh the references and get new tree if needed
@@ -133,7 +138,7 @@ class BinaryTree(object):
         raise KeyError
 
     def set(self, key, value):
-        "set a new value in the tree. will cause a new tree"
+        "Set a new value in the tree. Will cause a new tree"
         #try to lock the tree. If we succeed make sure
         #we dont lose updates from any other process
         if self._storage.lock():
@@ -146,8 +151,8 @@ class BinaryTree(object):
 
 
     def _insert(self, node, key, value_ref):
-        "insert a new node creating a new path from root"
-        #create a tree ifnthere was none so far
+        "Insert a new node creating a new path from root"
+        #create a tree if there was none so far
         if node is None:
             new_node = BinaryNode(
                 BinaryNodeRef(), key, value_ref, BinaryNodeRef())
@@ -166,14 +171,14 @@ class BinaryTree(object):
         return BinaryNodeRef(referent=new_node)
 
     def delete(self, key):
-        "delete node with key, creating new tree and path"
+        "Delete node with key, creating new tree and path"
         if self._storage.lock():
             self._refresh_tree_ref()
         node = self._follow(self._tree_ref)
         self._tree_ref = self._delete(node, key)
 
     def _delete(self, node, key):
-        "underlying delete implementation"
+        "Underlying delete implementation"
         if node is None:
             raise KeyError
         elif key < node.key:
@@ -206,19 +211,17 @@ class BinaryTree(object):
         return BinaryNodeRef(referent=new_node)
 
     def _follow(self, ref):
-        "get a node from a reference"
+        "Get a node from a reference"
         #calls BinaryNodeRef.get
         return ref.get(self._storage)
 
     def _find_max(self, node):
+        "Get the node that represents the maximum"
         while True:
             next_node = self._follow(node.right_ref)
             if next_node is None:
                 return node
             node = next_node
-import os
-import struct
-import portalocker
 
 class Storage(object):
     SUPERBLOCK_SIZE = 4096
@@ -226,13 +229,14 @@ class Storage(object):
     INTEGER_LENGTH = 8
 
     def __init__(self, f):
+        "Stores f, sets state to unlocked, and ensures we start in sector boundary"
         self._f = f
         self.locked = False
         #we ensure that we start in a sector boundary
         self._ensure_superblock()
 
     def _ensure_superblock(self):
-        "guarantee that the next write will start on a sector boundary"
+        "Guarantee that the next write will start on a sector boundary"
         self.lock()
         self._seek_end()
         end_address = self._f.tell()
@@ -241,7 +245,7 @@ class Storage(object):
         self.unlock()
 
     def lock(self):
-        "if not locked, lock the file for writing"
+        "If not locked, lock the file for writing"
         if not self.locked:
             portalocker.lock(self._f, portalocker.LOCK_EX)
             self.locked = True
@@ -250,33 +254,39 @@ class Storage(object):
             return False
 
     def unlock(self):
+        "If locked, flush and unlock the file"
         if self.locked:
             self._f.flush()
             portalocker.unlock(self._f)
             self.locked = False
 
     def _seek_end(self):
+        "Move pointer to the end of the file"
         self._f.seek(0, os.SEEK_END)
 
     def _seek_superblock(self):
-        "go to beginning of file which is on sec boundary"
+        "Go to beginning of file which is on sec boundary"
         self._f.seek(0)
 
     def _bytes_to_integer(self, integer_bytes):
+        "Use struct to unpack bytes into an integer"
         return struct.unpack(self.INTEGER_FORMAT, integer_bytes)[0]
 
     def _integer_to_bytes(self, integer):
+        "Use struct to pack an integer into bytes"
         return struct.pack(self.INTEGER_FORMAT, integer)
 
     def _read_integer(self):
+        "Read the next 8 bytes and return the unpacked integer"
         return self._bytes_to_integer(self._f.read(self.INTEGER_LENGTH))
 
     def _write_integer(self, integer):
+        "Lock the file and write integer to file"
         self.lock()
         self._f.write(self._integer_to_bytes(integer))
 
     def write(self, data):
-        "write data to disk, returning the address at which you wrote it"
+        "Write data to disk, returning the address at which you wrote it"
         #first lock, get to end, get address to return, write size
         #write data, unlock <==WRONG, dont want to unlock here
         #your code here
@@ -288,22 +298,28 @@ class Storage(object):
         return object_address
 
     def read(self, address):
-        self._f.seek(address)
-        length = self._read_integer()
-        data = self._f.read(length)
+        "Read data from given address in file"
+        self._f.seek(address) # Move pointer in file
+        length = self._read_integer() # Get the next integer from the file
+        data = self._f.read(length) #
         return data
 
     def commit_root_address(self, root_address):
-        self.lock()
-        self._f.flush()
+        """
+        Atomically commit changes by writing the new root address to beginning
+        of the next superblock and unlocking the file.
+        """
+        self.lock() # Lock self
+        self._f.flush() # finish off sector
         #make sure you write root address at position 0
-        self._seek_superblock()
+        self._seek_superblock() # move pointer to next superblock
         #write is atomic because we store the address on a sector boundary.
-        self._write_integer(root_address)
-        self._f.flush()
-        self.unlock()
+        self._write_integer(root_address) # write the root address to file
+        self._f.flush() # finish off sector
+        self.unlock() # unlock the file for writing
 
     def get_root_address(self):
+        "Get the root address from the beginning of the file"
         #read the first integer in the file
         #your code here
         self._seek_superblock()
@@ -311,11 +327,13 @@ class Storage(object):
         return root_address
 
     def close(self):
+        "Unlock and close the file"
         self.unlock()
         self._f.close()
 
     @property
     def closed(self):
+        "Returns true if database is closed"
         return self._f.closed
 
 class DBDB(object):
