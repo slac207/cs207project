@@ -15,7 +15,7 @@ This file is a script to generate
 How to run:
 python generateTS.py
 
-Require folders:
+Requires folder:
 tsdata
 
 '''
