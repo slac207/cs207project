@@ -131,13 +131,13 @@ class BinaryTree(object):
         while node is not None:
             if key < node.key:
                 node = self._follow(node.left_ref)
-            elif key < node.key:
+            elif key > node.key: # this was a bug!
                 node = self._follow(node.right_ref)
             else:
                 return self._follow(node.value_ref)
         raise KeyError
 
-    def set(self, key, value):
+    def set(self, key, value): # Have questions about this one
         "Set a new value in the tree. Will cause a new tree"
         #try to lock the tree. If we succeed make sure
         #we dont lose updates from any other process
@@ -172,7 +172,7 @@ class BinaryTree(object):
 
     def delete(self, key):
         "Delete node with key, creating new tree and path"
-        if self._storage.lock():
+        if self._storage.lock(): # returns true if it was unlocked
             self._refresh_tree_ref()
         node = self._follow(self._tree_ref)
         self._tree_ref = self._delete(node, key)
@@ -245,7 +245,7 @@ class Storage(object):
         self.unlock()
 
     def lock(self):
-        "If not locked, lock the file for writing"
+        "If not locked, lock the file for writing and return True"
         if not self.locked:
             portalocker.lock(self._f, portalocker.LOCK_EX)
             self.locked = True
