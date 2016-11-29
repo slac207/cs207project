@@ -11,6 +11,8 @@ import random
 import lab10
 
 '''
+SCRIPT 2, Milestone 2 Part 7
+
 This file is a script to generate 20 Databases
 From 20 different timeseries vantage points
 
@@ -28,27 +30,32 @@ if __name__ == "__main__":
 	indexes = np.random.choice(1000,20, replace = False)
 	vantagePtList= []
 
+	#Create TS Referencing
+	#The 20 randomally selected vantagePtFiles
 	for j in range(20):
 		fileName = 'tsdata/ts'+str(indexes[j])+'.dat'
 		dbName = "tsdb/db"+str(j)+".dbdb"
 		x = np.loadtxt(fileName, delimiter=' ')
 		vantagePt = ts.TimeSeries(x[:,1],x[:,0])
 		vantagePtList.append(vantagePt)
+		##Remove DB if it has previously been created
 		if os.path.exists(dbName):
    			 os.remove(dbName)
 
+	#For all 20 Databases
+	#Loop through 1000 TimeSeries
+	#Add Key = Distance(vantagePt, comparePt)
+	#Value = comparePT's fileName
 	for i in range(1000):
 		fileName = 'tsdata/ts'+str(i)+'.dat'
 		x = np.loadtxt(fileName, delimiter=' ')
 		comparePt = ts.TimeSeries(x[:,1],x[:,0])
 
+		# Add Key,Value for ComparePt for all 20 Databases
 		for j in range(20):
 			dbName = "tsdb/db"+str(j)+".dbdb"
 			db = lab10.connect(dbName)
-			#dist = ss.kernel_corr(vantagePtList[j],comparePt)
-			dist = random.random()
-
+			dist = 2*(1-ss.kernel_corr(vantagePtList[j],comparePt))
 			db.set(dist, fileName)
-
 			db.commit()
 			db.close()
