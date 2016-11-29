@@ -29,10 +29,10 @@ def stand(x, m, s):
 
 def ccor(ts1, ts2):
     "given two standardized time series, compute their cross-correlation using FFT"
-    f1 = nfft.fft(list(iter(ts1)))
-    f2 = nfft.fft(np.flipud(list(iter(ts2))))
+    f1 = nfft.fft(list(iter(ts1)), norm="ortho")
+    f2 = nfft.fft(np.flipud(list(iter(ts2))), norm="ortho")
     cc = np.real(nfft.ifft(f1 * f2))
-    return nfft.fftshift(cc)
+    return cc
 
 # this is just for checking the max correlation with the
 #kernelized cross-correlation
@@ -50,8 +50,12 @@ def kernel_corr(ts1, ts2, mult=1):
     "compute a kernelized correlation so that we can get a real distance"
     #your code here.
     ccorts = ccor(ts1, ts2)
+    cc1 = ccor(ts1, ts1)
+    cc2 = ccor(ts2, ts2)
     exp_ccorts = np.exp(mult*ccorts)
-    return sum(exp_ccorts)
+    exp_ts1 = np.exp(mult*cc1)
+    exp_ts2 = np.exp(mult*cc2)
+    return sum(exp_ccorts)/np.sqrt(sum(exp_ts1)*sum(exp_ts2))
 
 
 #this is for a quick and dirty test of these functions
@@ -63,24 +67,19 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     plt.plot(t1)
     plt.plot(t2)
-    #plt.show()
-
-    print("Standardizing the timeseries")
+    plt.show()
     standts1 = stand(t1, t1.mean(), t1.std())
     standts2 = stand(t2, t2.mean(), t2.std())
-    
-    print("Finding the correlation")
+
     idx, mcorr = max_corr_at_phase(standts1, standts2)
     print(idx, mcorr)
-
-    print("Finding the kernel correlation")
     sumcorr = kernel_corr(standts1, standts2, mult=10)
     print(sumcorr)
     t3 = random_ts(2)
     t4 = random_ts(3)
     plt.plot(t3)
     plt.plot(t4)
-    #plt.show()
+    plt.show()
     standts3 = stand(t3, t3.mean(), t3.std())
     standts4 = stand(t4, t4.mean(), t4.std())
     idx, mcorr = max_corr_at_phase(standts3, standts4)
