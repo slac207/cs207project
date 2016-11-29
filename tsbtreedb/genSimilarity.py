@@ -11,51 +11,73 @@ import random
 import lab10
 
 '''
+SCRIPT 3, Milestone 2 Part 7
+
 This file is a script to return
 the 10 most similar timeseries to argv[1]
 
 How to run:
+python genSimilarity.py tsdata/ts899.dat
+
+Returns (Prints):
+#### Nearest Timeseries ####
+tsdata/ts899.dat
+
+Example 2:
 python genSimilarity.py ts_test.dat
+
+Returns (Prints):
+#### Nearest Timeseries ####
+tsdata/ts398.dat
+
 
 Requires folder:
 tsdb
 
 '''
 
-def connect(dbname):
-    try:
-        f = open(dbname, 'r+b')
-    except IOError:
-        fd = os.open(dbname, os.O_RDWR | os.O_CREAT)
-        f = os.fdopen(fd, 'r+b')
-    return DBDB(f)
-
 if __name__ == "__main__":
-	filename = sys.argv[1]
-	x = np.loadtxt(filename, delimiter=' ')
-	testPt = ts.TimeSeries(x[:,1],x[:,0])
-	
-	# Need to compare testPt against all Vantage pts
-	# And find closest vantagePt
+    # Load in the TS to Evaluate
+    filename = sys.argv[1]
+    x = np.loadtxt(filename, delimiter=' ')
+    testPt = ts.TimeSeries(x[:,1],x[:,0])
 
-	#dbName = "tsdb/db"+str(j)+".dbdb"
-	dbName = "tsdb/db0.dbdb"
-	db = lab10.connect(dbName)
+    # Find the Nearest vantagePt
+    minDist = float('inf')
+    for j in range(20):
+        dbName = "tsdb/db"+str(j)+".dbdb"
+        db = lab10.connect(dbName)
+        vantagePtFile = db.get(0)
+        x = np.loadtxt(vantagePtFile, delimiter=' ')
+        comparePt = ts.TimeSeries(x[:,1],x[:,0])
+        dist = 2*(1-ss.kernel_corr(comparePt,testPt))
+        if dist < minDist:
+            minDist = dist
+            minDbName = dbName
+            minVantagePtFile = vantagePtFile
 
+    #Connect to DB Referencing the Nearest vantagePT
+    db = lab10.connect(minDbName)
+    keys, filenames = db.getAll_LTE(float(2)*minDist)
+    nFiles = len(filenames)
 
-	#dist = ss.kernel_corr(vantagePtList[j],testPt)
-	dist = random.random()
-	keys, filenames = db.getAll_LTE(dist)
-	distDict = {}
+    #Dictionary Key File, Val = Distance to testPt
+    distDict = {}
 
-	for i in range(len(filenames)):
-		x = np.loadtxt(filenames[i], delimiter=' ')
-		comparePt = ts.TimeSeries(x[:,1],x[:,0])
-		#dist = ss.kernel_corr(comparePt,testPt)
-		dist = random.random()
+    #Get dist between testPT and all TS within key below 2*minDist
+    for i in range(nFiles):
+        x = np.loadtxt(filenames[i], delimiter=' ')
+        comparePt = ts.TimeSeries(x[:,1],x[:,0])
+        dist = 2*(1-ss.kernel_corr(comparePt,testPt))
+        #dist = random.random()
+        distDict[filenames[i]] = dist
 
-		distDict[filenames[i]] = dist
+    ## Commented out these prints that return up to 10 of the nearest TS
+    ## Print 10 Nearest Distances (Assuming you have reviewed at least 10 TS)
+    #print(sorted(distDict.values())[:10])
+    ## Print 10 nearest TS FIles (Assuming you have reviewed at least 10 TS)
+    ##print(sorted(distDict, key=distDict.__getitem__)[:10])
 
-
-	print(sorted(distDict.values())[:10])
-	print(sorted(distDict, key=distDict.__getitem__)[:10])
+    ## Return Nearest Timeseries
+    print("#### Nearest Timeseries ####")
+    print(sorted(distDict, key=distDict.__getitem__)[0])
