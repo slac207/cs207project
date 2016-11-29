@@ -4,7 +4,7 @@ import struct # for storage class
 import portalocker # for storage class
 
 class ValueRef(object):
-    " a reference to a string value on disk"
+    "A reference to a string value on disk"
     def __init__(self, referent=None, address=0):
         self._referent = referent # value to store
         self._address = address # address to store at
@@ -72,6 +72,10 @@ class BinaryNodeRef(ValueRef):
         )
 
 class BinaryNode(object):
+    """
+    Class that points to one node of a Binary Tree and stores references
+    to its children nodes.
+    """
     @classmethod
     def from_node(cls, node, **kwargs):
         "Clone a node with some changes from another one"
@@ -224,6 +228,10 @@ class BinaryTree(object):
             node = next_node
 
 class Storage(object):
+    """
+    Storage class to interact with the file on disk.
+    Manages writing to file, locking/unlocking for editing, and closing the file."
+    """
     SUPERBLOCK_SIZE = 4096
     INTEGER_FORMAT = "!Q"
     INTEGER_LENGTH = 8
@@ -337,7 +345,7 @@ class Storage(object):
         return self._f.closed
 
 class DBDB(object):
-
+    "Database class to manage Storage and BinaryTree operations."
     def __init__(self, f):
         "Creates storage and tree properties"
         self._storage = Storage(f)
