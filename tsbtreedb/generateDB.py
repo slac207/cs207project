@@ -42,6 +42,8 @@ if __name__ == "__main__":
 		##Remove DB if it has previously been created
 		if os.path.exists(dbName):
    			 os.remove(dbName)
+
+		# Connect to Databses
 		db = lab10.connect(dbName)
 		dbList.append(db)
 
@@ -57,17 +59,9 @@ if __name__ == "__main__":
 		# Add Key,Value for ComparePt for all 20 Databases
 		for j in range(20):
 			dist = 2*(1-ss.kernel_corr(vantagePtList[j],comparePt))
-
-			'''
-			dbName = "tsdb/db"+str(j)+".dbdb"
-			db = lab10.connect(dbName)
-			db.set(dist, fileName)
-			db.commit()
-			db.close()
-			'''
-
 			dbList[j].set(dist, fileName)
 
+	#Commit and Close Databases
 	for j in range(20):
 		dbList[j].commit()
 		dbList[j].close()
