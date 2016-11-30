@@ -40,7 +40,9 @@ if __name__ == "__main__":
     # Load in the TS to Evaluate
     filename = sys.argv[1]
     x = np.loadtxt(filename, delimiter=' ')
-    testPt = ts.TimeSeries(x[:,1],x[:,0])
+    origTs = ts.TimeSeries(x[:,1],x[:,0])
+    time = np.linspace(.01,.99,1024)
+    testTs = origTs.interpolate(time)
 
     # Find the Nearest vantagePt
     minDist = float('inf')
@@ -50,7 +52,7 @@ if __name__ == "__main__":
         vantagePtFile = db.get(0)
         x = np.loadtxt(vantagePtFile, delimiter=' ')
         comparePt = ts.TimeSeries(x[:,1],x[:,0])
-        dist = 2*(1-ss.kernel_corr(comparePt,testPt))
+        dist = 2*(1-ss.kernel_corr(comparePt,testTs))
         if dist < minDist:
             minDist = dist
             minDbName = dbName
@@ -61,14 +63,14 @@ if __name__ == "__main__":
     keys, filenames = db.getAll_LTE(float(2)*minDist)
     nFiles = len(filenames)
 
-    #Dictionary Key File, Val = Distance to testPt
+    #Dictionary Key File, Val = Distance to testTs
     distDict = {}
 
-    #Get dist between testPT and all TS within key below 2*minDist
+    #Get dist between testTs and all TS within key below 2*minDist
     for i in range(nFiles):
         x = np.loadtxt(filenames[i], delimiter=' ')
         comparePt = ts.TimeSeries(x[:,1],x[:,0])
-        dist = 2*(1-ss.kernel_corr(comparePt,testPt))
+        dist = 2*(1-ss.kernel_corr(comparePt,testTs))
         #dist = random.random()
         distDict[filenames[i]] = dist
 

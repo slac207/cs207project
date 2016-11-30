@@ -11,7 +11,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
     """
     Class which stores a ordered set of numerical data using lists.
     Inherits from SizedContainerTimeSeriesInterface.
-    
+
     Attributes:
     ----------
     _times: sequence that represents time data
@@ -26,15 +26,15 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         """
         Parameters
         ----------
-        values : a sequence 
+        values : a sequence
            data used to populate time series instance.
         times  : a sequence (optional)
            time associated with each observation in `values`.
-        
+
         Examples:
         --------
         >>> ts = TimeSeries(values=[10,20,30])
-        """    
+        """
         # test whether values is a sequence
         try:
             iter(values)
@@ -54,9 +54,9 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
                     raise TypeError("Times and Values must be same length")
             except TypeError:
                 raise TypeError("Non sequence passed into constructor")
-            
+
     def __getitem__(self, index):
-        """Method for indexing into TimeSeries. 
+        """Method for indexing into TimeSeries.
         Returns: The value of self._values at the given index. """
         try:
             return self._values[index]
@@ -65,15 +65,15 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
 
     def __setitem__(self, index, value):
         """Method for assignment into TimeSeries value storage.
-        Sets the given 'index' of self._values to 'value'. """    
+        Sets the given 'index' of self._values to 'value'. """
         try:
             self._values[index] = value
         except IndexError:
             raise IndexError("Index out of bounds")
-        
+
     def __len__(self):
-        """Method for determing length of TimeSeries self._values"""  
-        return len(self._values)    
+        """Method for determing length of TimeSeries self._values"""
+        return len(self._values)
 
     def values(self):
         """Returns a numpy array of the TimeSeries values"""
@@ -96,7 +96,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         Returns:
         --------
         TimeSeries instance with interpolated times
-        
+
         Examples:
         --------
         >>> ts = TimeSeries(times=[0,1,2],values=[40,20,30])
@@ -115,14 +115,19 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
             elif t >= self._times[-1]:
                 interpolated_values.append(self._values[-1])
             else:
-                left_idx,right_idx = binary_search(self._times,t)
-                m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
-                interpolated_values.append((t-self._times[left_idx])*m + self._values[left_idx])
+                idx = binary_search(self._times,t)
+                if type(idx) == tuple:
+                    left_idx,right_idx = idx
+                    m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
+                    interpolated_values.append((t-self._times[left_idx])*m + self._values[left_idx])
+                else:
+                    interpolated_values.append(self._values[idx])
+
 
         return self.__class__(times=tms, values=interpolated_values)
 
     def __neg__(self):
-        """Returns: TimeSeries instance with negated values 
+        """Returns: TimeSeries instance with negated values
         but no change to times"""
         cls = type(self)
         return cls((-v for v in self._values), self._times)
@@ -133,7 +138,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
 
 
     def __bool__(self):
-        """Returns: Returns True if all values in self._values are 
+        """Returns: Returns True if all values in self._values are
         zero. False, otherwise"""
         return bool(abs(self))
 
@@ -144,11 +149,11 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         If rhs is Real, add it to all elements of `_values`.
         If rhs is a SizedContainerTimeSeriesInterface instance with the same
         times, add the values element-wise.
-        
+
         Returns:
         --------
         A new TimeSeries instance with the same times but updated values"""
-        
+
         pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
@@ -169,11 +174,11 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         -----------
         If rhs is Real, multiply it by all elements of `_values`.
         If rhs is a TimeSeries instance with the same times, multiply values element-wise.
-        
+
         Returns:
         --------
         A new TimeSeries instance with the same times but updated `_values`."""
-        
+
         pcls = SizedContainerTimeSeriesInterface
         cls = type(self)
         if isinstance(rhs, numbers.Real):
@@ -187,7 +192,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
             raise TypeError('unsupported operand type(s) for +: \'{}\' and \'{}\''.format(type(self).__name__,type(rhs).__name__))
         else:
             return NotImplemented
-        
+
     def _eqtimes(self,rhs):
         """Test equality of the times of two SizedContainerTimeSeriesInterface instances"""
         return len(self._times)==len(rhs._times) and all(a==b for a,b in zip(self._times,rhs._times))
@@ -203,11 +208,11 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
             return self._eqtimes(rhs) and self._eqvalues(rhs)
         else:
             return False
-        
-        
+
+
     def mean(self, chunk=None):
         return(stat.mean(self._values))
-    
-    
+
+
     def std(self, chunk=None):
         return(stat.stdev(self._values))
