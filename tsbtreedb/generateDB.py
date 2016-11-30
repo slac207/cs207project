@@ -29,6 +29,7 @@ if __name__ == "__main__":
 
 	indexes = np.random.choice(1000,20, replace = False)
 	vantagePtList= []
+	dbList = []
 
 	#Create TS Referencing
 	#The 20 randomally selected vantagePtFiles
@@ -42,6 +43,10 @@ if __name__ == "__main__":
 		if os.path.exists(dbName):
    			 os.remove(dbName)
 
+		# Connect to Databses
+		db = lab10.connect(dbName)
+		dbList.append(db)
+
 	#For all 20 Databases
 	#Loop through 1000 TimeSeries
 	#Add Key = Distance(vantagePt, comparePt)
@@ -53,9 +58,10 @@ if __name__ == "__main__":
 
 		# Add Key,Value for ComparePt for all 20 Databases
 		for j in range(20):
-			dbName = "tsdb/db"+str(j)+".dbdb"
-			db = lab10.connect(dbName)
 			dist = 2*(1-ss.kernel_corr(vantagePtList[j],comparePt))
-			db.set(dist, fileName)
-			db.commit()
-			db.close()
+			dbList[j].set(dist, fileName)
+
+	#Commit and Close Databases
+	for j in range(20):
+		dbList[j].commit()
+		dbList[j].close()
