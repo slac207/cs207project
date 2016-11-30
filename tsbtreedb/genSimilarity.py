@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     #Connect to DB Referencing the Nearest vantagePT
     db = lab10.connect(minDbName)
-    keys, filenames = db.getAll_LTE(float(2)*minDist)
+    keys, filenames = db.get_All_LTE(float(2)*minDist)
     nFiles = len(filenames)
 
     #Dictionary Key File, Val = Distance to testTs
@@ -76,9 +76,9 @@ if __name__ == "__main__":
 
     ## Commented out these prints that return up to 10 of the nearest TS
     ## Print 10 Nearest Distances (Assuming you have reviewed at least 10 TS)
-    #print(sorted(distDict.values())[:10])
+    ## print(sorted(distDict.values())[:10])
     ## Print 10 nearest TS FIles (Assuming you have reviewed at least 10 TS)
-    ##print(sorted(distDict, key=distDict.__getitem__)[:10])
+    ## print(sorted(distDict, key=distDict.__getitem__)[:10])
 
     ## Return Nearest Timeseries
     print("#### Nearest Timeseries ####")
