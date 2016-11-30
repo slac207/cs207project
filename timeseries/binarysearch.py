@@ -52,6 +52,6 @@ def binary_search(da_array, needle):
             min_index = midpoint + 1
         else:
             index = midpoint
-            return index
+            return (index,'FOUND')
         
         

@@ -30,15 +30,15 @@ class MyTest(unittest.TestCase):
             binary_search(['l','ol'],2)  
             
     def test_chr(self):
-        self.assertEqual(binary_search(['a','b','c','d'],'c'),2)         
+        self.assertEqual(binary_search(['a','b','c','d'],'c'),(2,'FOUND'))         
     
     #test for whether NaN is valid input in array      
     def test_non_numeric_nan(self):
-        self.assertEqual(binary_search([1,2,float('NaN'),float('NaN')],2),1)
+        self.assertEqual(binary_search([1,2,float('NaN'),float('NaN')],2),(1,'FOUND'))
     
     #test for whether inf is valid input in array         
     def test_non_numeric_inf(self):
-        self.assertEqual(binary_search([1,2,np.inf],np.inf),2) 
+        self.assertEqual(binary_search([1,2,np.inf],np.inf),(2,'FOUND')) 
      
         
     

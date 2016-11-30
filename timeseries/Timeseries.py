@@ -103,7 +103,6 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         >>> ts.interpolate([0.5,1.5,3])
         TimeSeries(Length: 3, Times: [0.5, 1.5, 3], Values: [30.0, 25.0, 30])
         """
-
         tms = []
         interpolated_values = []
         for t in times_to_interpolate:
@@ -115,9 +114,12 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
             elif t >= self._times[-1]:
                 interpolated_values.append(self._values[-1])
             else:
-                left_idx,right_idx = binary_search(self._times,t)
-                m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
-                interpolated_values.append((t-self._times[left_idx])*m + self._values[left_idx])
+                left_idx, right_idx = binary_search(self._times,t)
+                if right_idx == 'FOUND':
+                    interpolated_values.append(self._values[left_idx])
+                else:
+                    m = float(self._values[right_idx]-self._values[left_idx])/(self._times[right_idx]-self._times[left_idx])
+                    interpolated_values.append((t-self._times[left_idx])*m + self._values[left_idx])
 
         return self.__class__(times=tms, values=interpolated_values)
 
