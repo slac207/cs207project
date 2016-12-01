@@ -94,6 +94,7 @@ class SizedContainerTimeSeriesInterfaceTest(unittest.TestCase):
         # assert (ts_extrap.times() == [11]).all()
         # assert (ts_extrap.values() == [1]).all()
 
+
     def test_lazy(self):
         if self.ts is None:
             return
