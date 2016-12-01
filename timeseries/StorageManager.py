@@ -155,7 +155,7 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
     
     A SMTimeSeries instance can be made in one of three ways:
     1. giving times and values, optionally with an id and a storage manager:
-       e.g. SMTimeSeries(times,values,id=id,SM=SM)
+        SMTimeSeries(times,values,id=id,SM=SM)
     2. from an existing storage manager:
         SMTimeSeries.from_db(SM,id)
     3. from a timeseries implementing the SizedContainerTimeSeriesInterface:
