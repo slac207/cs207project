@@ -34,9 +34,14 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         # test whether values is a sequence
         try:
             self._times = np.array([_ for _ in times])
-            self._values = np.array([_ for _ in values])
+            self._values = np.array([_ for _ in values],dtype='float')
         except TypeError:
-            raise TypeError("Non sequence passed into constructor")
+            raise TypeError("Non-sequence passed into constructor")
+        except ValueError:
+            raise TypeError("Non-numeric sequence passed into constructor")
+        else:
+            if (not np.issubdtype(self._times.dtype,np.float)) and (not np.issubdtype(self._times.dtype,np.integer)):
+                raise TypeError("Non-numeric times given")
             
         # make sure that times and values are the same length
         if np.size(self._times) != np.size(self._values):
