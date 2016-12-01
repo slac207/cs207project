@@ -30,16 +30,17 @@ class StorageManagerInterface():
     
 
 class FileStorageManager(StorageManagerInterface):
-    """Implementation of the StorageManagerInterface.
+    """Implementation of the StorageManagerInterface that stores
+    the timeseries on disk as numpy's .npy format.
     """
     
     #  ---  Design Decisions:  ----
     #Stores the timeseries objects as separate numpy files.
     #Maintains an index of the ids in memory and a copy on-disk.
     #As values, the index contains the length and filename of the timeseries.
-    """$$ NEED TO SAVE THE INDEX EVERY TIME IT IS MODIFIED, OR HAVE IT LOADED FROM DISK AS AN OPEN FILE..."""
     
-    def __init__(self,directory='./filestorage'):
+    def __init__(self,directory='./FSM_filestorage'):
+        # define an index, directory, and save the index.
         self._index = dict()
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -52,10 +53,14 @@ class FileStorageManager(StorageManagerInterface):
     @staticmethod
     def _make_ts(ts):
         """Transform an n x 2 numpy array into a timeseries object
-        that adherest to the SizedContainerTimeSeriesInterface"""
+        that adheres to the SizedContainerTimeSeriesInterface"""
         return ArrayTimeSeries(ts[:,0],ts[:,1])
         
     def _make_id(self):
+        """if no ID is given, assign a uniqe one randomly."""
+        
+        # choose from the integers 100x bigger than the current size.
+        # repeat until an unused one is found (shouldn't take long!)
         n = len(self._index)
         N = 100*len(self._index)
         if N==0:
@@ -77,9 +82,12 @@ class FileStorageManager(StorageManagerInterface):
         values = np.asarray(t.values(),dtype='float64').reshape(-1,1)
         ts = np.concatenate((times,values),axis=1)
         
+        # if no id is given, generate a unique one
         if id is None:
             id = self._make_id()
         
+        # if id is already taken and we are not overwriting, throw an error
+        # otherwise, store the timeseries, update the index, and store the index.
         if (id in self._index) and (overwrite == False):
             raise KeyError('There already a time series with id {}; if you want to overwrite, set overwrite=True'.format(id))
         else:
@@ -89,8 +97,10 @@ class FileStorageManager(StorageManagerInterface):
             with open(self._idx_file,'wb') as f:
                 pickle.dump(self._index,f)
 
-            
+        # update the id property
         self._id = id
+        
+        # return a timeseries object.
         return self._make_ts(ts)
         
     def size(self, id:int)->int:
@@ -109,6 +119,7 @@ class FileStorageManager(StorageManagerInterface):
         Return a representation of the timeseries as an object
         that adheres to the SizedContainerTimeSeriesInterface.
         """  
+        # return the timeseries and update the id property
         if id in self._index:
             size,filename = self._index[id]
             ts = np.load(filename)
@@ -123,6 +134,7 @@ class FileStorageManager(StorageManagerInterface):
         return self._id
     
     def reload_index(self):
+        # if the index is somehow lost in memory, reload it from disk
         with open(self._idx_file,'rb') as f:
             self._index = pickle.load(f)
             
@@ -137,25 +149,39 @@ class FileStorageManager(StorageManagerInterface):
         return '{}({} ids: {})'.format(cls,len(self._index),key_str)
     
 class SMTimeSeries(SizedContainerTimeSeriesInterface):
-    """$$own docstring here.  Include some examples."""
-    # Maybe make there be one thing loaded in memory in the FSM, with ID and TS a property.
-    # If I link a storage manager then change it, does it change the internal one too?
+    """
+    SMTimeSeries is an implementation of the SizedContainerTimeSeriesInterface.
+    It uses a FileStorageManager to store the timeseries.  
+    
+    A SMTimeSeries instance can be made in one of three ways:
+    1. giving times and values, optionally with an id and a storage manager:
+       e.g. SMTimeSeries(times,values,id=id,SM=SM)
+    2. from an existing storage manager:
+        SMTimeSeries.from_db(SM,id)
+    3. from a timeseries implementing the SizedContainerTimeSeriesInterface:
+        SMTimeSeries.from_ts(ts,id=id,SM=SM)
+    """
 
     def __init__(self,times=None,values=None,id=None,SM=None,get_from_SM=False):
+        # Set the storage manager; make a new one if not given.
         if SM:
             self._sm = SM
         else:
             self._sm = FileStorageManager()
         
+        # If the call came from from_db, get the ts from the storage manager.
         if get_from_SM:
             self._ts = self._sm.get(id)
             self._id = id
+        
+        # If not, a timeseries was given.  It needs to be stored.
         else:
             if (times is None) or (values is None):
                 raise TypeError('Require Times and Values; at least one was missing')
             else:
                 # Write to the Storage Manager, but it takes an input that 
                 # adheres to the SizedContainerTimeSeriesInterface.
+                # We make an intermediate ArrayTimeSeries object.
                 ts_temp = ArrayTimeSeries(times,values)
                 if id:
                     self._ts = self._sm.store(id,ts_temp)
@@ -167,18 +193,22 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
             
     @classmethod
     def from_db(cls,SM,id):
+        """return a SMTimeSeries instance with timeseries from a storage manager at the given id, """
         return cls(id=id,SM=SM,get_from_SM=True)
     
     @classmethod
     def from_ts(cls,ts,SM=None,id=None):
+        """return a SMTimeSeries instance from a given timeseries that implements the SizedContainerTimeSeriesInterface."""
         return cls(times=ts.times(),values=ts.values(),SM=SM,id=id)
     
     @property
     def SM(self):
+        """Return the storage manager used by the SMTimeSeries instance."""
         return self._sm
         
     @property
     def id(self):
+        """Return the id of the SMTimeSeries instance within its storage manager."""
         return self._id
     
     @property
@@ -278,8 +308,10 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
         
         
     def mean(self, chunk=None):
+        """ Return the mean of the values."""
         return self._ts.mean(chunk=chunk)
     
     
     def std(self, chunk=None):
+        """ Return the standard deviation of the values."""
         return self._ts.std(chunk=chunk)

@@ -1,5 +1,5 @@
 from pytest import raises
-import unittest
+import unittest, os, time
 import lazy
 import numpy as np
 from Timeseries import TimeSeries
@@ -11,11 +11,19 @@ import timeSeriesABC
 
 
 class SizedContainerTimeSeriesInterfaceTest(unittest.TestCase):
+    """ Any time series that adheres to the SizedContainerTimeSeriesInterface
+        must pass these tests. The tests expect the following timeseries:
+        self.ts = times=range(10,14),values=range(0,4)
+        self.ts2 = times=range(4),values=range(4)
+        self.ts3 = times=range(4),values=range(4)
+        self.ts4 = times=range(5),values=range(5)
+        self.ts_a = times=range(10,15),values=range(2,7)
+        self.ts_b = times=range(10,15),values=range(-2,3)
+        """
 
-    """ Test any time series that adheres to the SizedContainerTimeSeriesInterface"""
     def setUp(self):
         self.ts=None
-        
+
     def tearDown(self):
         del self.ts
         
@@ -27,52 +35,80 @@ class SizedContainerTimeSeriesInterfaceTest(unittest.TestCase):
     def test_getitem(self):
         if self.ts is None:
             return
+        # indexing is by index not time, so 12 is out of range 
+        # while 3 is in range.
         with raises(IndexError):
             self.ts[12]
         assert self.ts[3] == 3
+        
+    def test_getnone(self):
+        if self.ts is None:
+            return
+        with raises(TypeError):
+            self.ts[None]
 
     def test_setitem(self):
         if self.ts is None:
             return
+        # 200 is out of range while 2 is in range.
         with raises(IndexError):
             self.ts[200] = 0
         self.ts[2] = -10
         assert self.ts[2] == -10
 
+    def test_setNone(self):
+        if self.ts is None:
+            return
+        # setting a None should be represented as either None or np.nan
+        self.ts[2]=None
+        assert (self.ts[2] is None) or np.isnan(self.ts[2])
+        
+    def test_setNaN(self):
+        if self.ts is None:
+            return
+        self.ts[2] = np.nan
+        assert np.isnan(self.ts[2])
+        
     def test_iter(self):
         if self.ts is None:
             return
+        # iter returns the values as an iterable
         assert isinstance(iter(self.ts), collections.Iterable) == True
         assert list(iter(self.ts)) == [0,1,2,3]
+
+    def test_itervalues(self):
+        if self.ts is None:
+            return
+        # same as iter
+        assert isinstance(self.ts.itervalues(), collections.Iterable) == True
+        assert list(self.ts.itervalues()) == [0,1,2,3]
 
     def test_itertimes(self):
         if self.ts is None:
             return
+        # itertimes returns the times as an iterable
         assert isinstance(self.ts.itertimes(), collections.Iterable) == True
         assert list(self.ts.itertimes()) == [10,11,12,13]
 
     def test_iteritems(self):
         if self.ts is None:
             return
+        # iteritems returns (time,value) tuples as an iterable
         assert isinstance(self.ts.iteritems(), collections.Iterable) == True
         assert list(self.ts.iteritems()) == [(10, 0), (11, 1), (12, 2), (13, 3)]
 
-    def test_times(self):
+    def test_items(self):
         if self.ts is None:
             return
+        # items returns (time,value) tuples in some form.
         assert self.ts.items() == list(zip(self.ts.times(),self.ts.values()))
     
     def test_contains(self):
         if self.ts is None:
             return
+        # 3 is in the values but 13 is not
         assert self.ts.__contains__(3) == True
         assert self.ts.__contains__(13) == False
-
-    def test_itervalues(self):
-        if self.ts is None:
-            return
-        assert isinstance(self.ts.itervalues(), collections.Iterable) == True
-        assert list(self.ts.itervalues()) == [0,1,2,3]
 
     def test_interpolate(self):
         if self.ts is None:
@@ -83,32 +119,32 @@ class SizedContainerTimeSeriesInterfaceTest(unittest.TestCase):
         assert ts_interp.times() == [10.5]
         assert ts_interp.values() == [0.5]
         
+        # check values beyond the defined times
         ts_extrap = self.ts.interpolate([-100,100])
         assert type(ts_extrap) == type(self.ts)
         assert (ts_extrap.times() == [-100,100]).all()
         assert (ts_extrap.values() == [0,3]).all()
 
-        # # extrapolate right on the endpoints.
-        # ts_extrap = self.ts.interpolate([11])
-        # assert type(ts_extrap) == type(self.ts)
-        # assert (ts_extrap.times() == [11]).all()
-        # assert (ts_extrap.values() == [1]).all()
-
+        # check times that already exist
+        ts_extrap = self.ts.interpolate([11])
+        assert type(ts_extrap) == type(self.ts)
+        assert (ts_extrap.times() == [11]).all()
+        assert (ts_extrap.values() == [1]).all()
 
     def test_lazy(self):
         if self.ts is None:
             return
-        'lazy property should be an instance of LazyOperation'
+        # lazy property should be an instance of LazyOperation
         assert isinstance(self.ts.lazy,lazy.LazyOperation)==True
-        'self.ts.lazy.eval() should be the same as self.ts'
+        # self.ts.lazy.eval() should be the same as self.ts
         assert self.ts is self.ts.lazy.eval()
 
     def test_pos(self):
         if self.ts is None:
             return
-        # Values should be the same
+        # Values should be the same after applying pos
         assert list((+self.ts)._values)==list(self.ts._values)
-        # Times should be the same
+        # Times should be the same after applying pos
         assert list((+self.ts)._times)==list(self.ts._times)
         # A new instance should be created that is equal to the old.
         assert +self.ts==self.ts
@@ -134,15 +170,20 @@ class SizedContainerTimeSeriesInterfaceTest(unittest.TestCase):
     def test_eq(self):
         if self.ts is None:
             return
+        # ts2 and ts3 should be equal but not the same id.
         assert self.ts2==self.ts3
         assert self.ts2 is not self.ts3
+        # ts and ts2 are not equal (different values)
         assert self.ts !=self.ts2
+        # ts2 and ts4 are not equal (different lengths)
         assert self.ts2 != self.ts4
+        # a ts should not be the same as a non-ts object
         assert self.ts != 'a'
             
     def test_bool(self):
         if self.ts is None:
             return
+        # bool(ts) is true if and only if the values are all zero
         assert not bool(self.ts*0)
         assert bool(self.ts)
         assert bool(-self.ts)
@@ -242,15 +283,26 @@ class SizedContainerTimeSeriesInterfaceTest(unittest.TestCase):
     def test_mean(self):
         if self.ts is None:
             return
+        # mean is the mean of the values
         assert self.ts.mean() == 1.5
         
     def test_std(self):
         if self.ts is None:
             return
+        # std is the standard deviatin of the values
         assert self.ts.std() == 1.2909944487358056
 
 class SizedContainerTimeSeriesInterfaceTestInteractions(unittest.TestCase):
-
+    """
+    Test the operations between two timeseries instances,
+    each of which implements the SizedContainerTimeSeriesInterface
+    but are different types. Expects the following:
+    ts1 = type 1, times=range(11,16),values=range(1,6)
+    ts2 = type 2, times=range(11,16),values=range(-2,3)
+    ts2b = type 2, times=range(1,6),values=range(-2,3)      # With different times, this one should fail
+    ts2c = type 2, times=range(11,16),values=range(1,6)    # This should be equal to ts1
+    """
+    
     def setUp(self):
         self.ts1 = None
                 
@@ -260,6 +312,7 @@ class SizedContainerTimeSeriesInterfaceTestInteractions(unittest.TestCase):
     def test_eq_interaction(self):
         if self.ts1 is None:
             return
+        # equality should work as if they were the same type
         assert self.ts1 == self.ts2c
         assert self.ts2c == self.ts1
         assert self.ts1 is not self.ts2c
@@ -270,6 +323,8 @@ class SizedContainerTimeSeriesInterfaceTestInteractions(unittest.TestCase):
     def test_add_interaction(self):
         if self.ts1 is None:
             return
+        # adding should work as if they were the same type,
+        # returning an object of the same type as the first added object
         ts_sum = self.ts1+self.ts2
         assert isinstance(ts_sum,timeSeriesABC.SizedContainerTimeSeriesInterface)
         assert type(ts_sum)==type(self.ts1)
@@ -299,6 +354,8 @@ class SizedContainerTimeSeriesInterfaceTestInteractions(unittest.TestCase):
     def test_sub_interaction(self):
         if self.ts1 is None:
             return
+        # subtracting should work as if they were the same type,
+        # returning an object of the same type as the first subtracted object
         ts_sub = self.ts1-self.ts2
         assert isinstance(ts_sub,timeSeriesABC.SizedContainerTimeSeriesInterface)
         assert type(ts_sub)==type(self.ts1)
@@ -328,6 +385,8 @@ class SizedContainerTimeSeriesInterfaceTestInteractions(unittest.TestCase):
     def test_multiply_interaction(self):
         if self.ts1 is None:
             return
+        # multiplying should work as if they were the same type,
+        # returning an object of the same type as the first multiplied object
         ts_mul = self.ts1*self.ts2
         assert isinstance(ts_mul,timeSeriesABC.SizedContainerTimeSeriesInterface)
         assert type(ts_mul)==type(self.ts1)
@@ -355,7 +414,12 @@ class SizedContainerTimeSeriesInterfaceTestInteractions(unittest.TestCase):
             self.ts2b*self.ts1
             
 class test_TimeSeries(SizedContainerTimeSeriesInterfaceTest):
+    """
+    Test TimeSeries, an implementation of SizedContainerTimeSeriesInterface.
+    Along with the SizedContainerTimeSeriesInterfaceTest tests, test the __init__ capabilities"""
+    
     def setUp(self):
+        # These adhere to what SizedContainerTimeSeriesInterfaceTest expects
         self.ts = TimeSeries(range(0,4),range(10,14))
         self.ts2 = TimeSeries(range(4))
         self.ts3 = TimeSeries(list(range(4)))
@@ -383,12 +447,14 @@ class test_TimeSeries(SizedContainerTimeSeriesInterfaceTest):
         ts = TimeSeries(np.arange(4))
         ts = TimeSeries(range(0,4),np.arange(10,14))
         ts = TimeSeries([0,1,2,3],np.arange(10,14))
+        ts = TimeSeries(np.empty(5)*np.nan)
         
         # Times and Values must have the same lengths.
         with raises(TypeError):
             ts = TimeSeries(range(0,4),range(0,5))
  
     def test_input_string(self):
+        # TimeSeries is very general and will accept strings
         t = TimeSeries('abcd')
 
     def test_input_list(self):
@@ -400,6 +466,7 @@ class test_TimeSeries(SizedContainerTimeSeriesInterfaceTest):
         t = TimeSeries(())
 
     def test_input_nonseq(self):
+        # However, the input must be a sequence
         with raises(TypeError):
             t = TimeSeries(3)
     
@@ -410,7 +477,12 @@ class test_TimeSeries(SizedContainerTimeSeriesInterfaceTest):
         assert repr(TimeSeries((2,3))) == "TimeSeries(Length: 2, Times: range(0, 2), Values: [2, 3])"
     
 class test_ArrayTimeSeries(SizedContainerTimeSeriesInterfaceTest):
+    """
+    Test ArrayTimeSeries, an implementation of SizedContainerTimeSeriesInterface.
+    Along with the SizedContainerTimeSeriesInterfaceTest tests, test the __init__ capabilities"""
+    
     def setUp(self):
+        # These adhere to what SizedContainerTimeSeriesInterfaceTest expects
         self.ts = ArrayTimeSeries(range(10,14),range(0,4))
         self.ts2 = ArrayTimeSeries(range(4),range(4))
         self.ts3 = ArrayTimeSeries(list(range(4)),list(range(4)))
@@ -444,8 +516,10 @@ class test_ArrayTimeSeries(SizedContainerTimeSeriesInterfaceTest):
             ts = ArrayTimeSeries(range(0,4),range(0,5))
 
     def test_input_string(self):
-        t = ArrayTimeSeries('abcd',[0,10,20,30])
-        t = ArrayTimeSeries('abcd','edsa')
+        with raises(TypeError):
+            t = ArrayTimeSeries('abcd',[0,10,20,30])
+        with raises(TypeError):
+            t = ArrayTimeSeries('abcd','edsa')
 
     def test_input_list(self):
         t = ArrayTimeSeries(values=[1,2,3,4],times=[10,20,30,40])
@@ -459,16 +533,20 @@ class test_ArrayTimeSeries(SizedContainerTimeSeriesInterfaceTest):
             t = ArrayTimeSeries(4,3)
     
     def test_string(self):
-        assert str(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries with 2 elements (Times: array([2, 3]), Values: array([1, 2]))"
+        assert str(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries with 2 elements (Times: array([2, 3]), Values: array([ 1.,  2.]))"
 
     def test_repr(self):
-        assert repr(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries(Length: 2, Times: array([2, 3]), Values: array([1, 2]))"
+        assert repr(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries(Length: 2, Times: array([2, 3]), Values: array([ 1.,  2.]))"
 
             
 class test_SMTimeSeries(SizedContainerTimeSeriesInterfaceTest):
+    """
+    Test SMTimeSeries, an implementation of SizedContainerTimeSeriesInterface.
+    Along with the SizedContainerTimeSeriesInterfaceTest tests, test the __init__ capabilities"""
+    
     def setUp(self):
-        self.sm = FileStorageManager()
-
+        # These adhere to what SizedContainerTimeSeriesInterfaceTest expects
+        self.sm = FileStorageManager(directory='./temp_dir1')
         self.ts = SMTimeSeries(range(10,14),range(0,4),id=1,SM=self.sm)
         self.ts2 = SMTimeSeries(range(4),range(4),id=2,SM=self.sm)
         self.ts3 = SMTimeSeries(list(range(4)),list(range(4)),id=3,SM=self.sm)
@@ -554,9 +632,28 @@ class test_SMTimeSeries(SizedContainerTimeSeriesInterfaceTest):
         # 4 because this is the second time we've added to it
         assert len(self.sm._index)==10
         
+    def test_zzz_teardowndir(self):
+        """this test runs at the end and removes the directories and files made for the testing"""
+        dir = self.sm._dir
+        assert dir=='./temp_dir1'
+        if os.path.exists(dir):
+            [ os.remove(dir+'/'+f) for f in os.listdir(dir) ]
+            os.rmdir(dir)
+        ts = SMTimeSeries([0,1],[0,1])
+        dir2 = ts._sm._dir
+        assert dir2=='./FSM_filestorage'
+        if os.path.exists(dir2):
+            [ os.remove(dir2+'/'+f) for f in os.listdir(dir2) ]
+            os.rmdir(dir2)
+             
 class test_TimeSeries_ArrayTimeSeries_Interactions(SizedContainerTimeSeriesInterfaceTestInteractions):
-        
+    """
+    Test how TimeSeries and ArrayTimeSeries interact when an operation acts on one of each type.
+    This uses the tests in SizedContainerTimeSeriesInterfaceTestInteractions.
+    """
+    
     def setUp(self):
+        # These adhere to what SizedContainerTimeSeriesInterfaceTestInteractions expects
         self.ts1 = TimeSeries(range(1,6),range(11,16))
         self.ts2 = ArrayTimeSeries(range(11,16),range(-2,3))
         # With different times, this one should fail
@@ -571,9 +668,15 @@ class test_TimeSeries_ArrayTimeSeries_Interactions(SizedContainerTimeSeriesInter
         del self.ts2c
 
 class test_SMTimeSeries_ArrayTimeSeries_Interactions(SizedContainerTimeSeriesInterfaceTestInteractions):
-        
+    """
+    Test how SMTimeSeries and ArrayTimeSeries interact when an operation acts on one of each type.
+    This uses the tests in SizedContainerTimeSeriesInterfaceTestInteractions.
+    """
+    
     def setUp(self):
-        self.ts1 = SMTimeSeries(range(11,16),range(1,6) )
+        # These adhere to what SizedContainerTimeSeriesInterfaceTestInteractions expects
+        sm = FileStorageManager(directory='./temp_dir2')
+        self.ts1 = SMTimeSeries(range(11,16),range(1,6),SM=sm)
         self.ts2 = ArrayTimeSeries(range(11,16),range(-2,3))
         # With different times, this one should fail
         self.ts2b = ArrayTimeSeries(range(1,6),range(-2,3))
@@ -586,18 +689,40 @@ class test_SMTimeSeries_ArrayTimeSeries_Interactions(SizedContainerTimeSeriesInt
         del self.ts2b
         del self.ts2c
         
-class test_TimeSeries_SMTimeSeries_Interactions(SizedContainerTimeSeriesInterfaceTestInteractions):
+    def test_zzz_teardowndir(self):
+        """this test runs at the end and removes the directories and files made for the testing"""
+        dir = self.ts1._sm._dir
+        assert dir=='./temp_dir2'
+        if os.path.exists(dir):
+            [ os.remove(dir+'/'+f) for f in os.listdir(dir) ]
+            os.rmdir(dir)
         
+class test_TimeSeries_SMTimeSeries_Interactions(SizedContainerTimeSeriesInterfaceTestInteractions):
+    """
+    Test how TimeSeries and SMTimeSeries interact when an operation acts on one of each type.
+    This uses the tests in SizedContainerTimeSeriesInterfaceTestInteractions.
+    """   
+    
     def setUp(self):
+        # These adhere to what SizedContainerTimeSeriesInterfaceTestInteractions expects
+        sm = FileStorageManager(directory='./temp_dir3')
         self.ts1 = TimeSeries(range(1,6),range(11,16))
-        self.ts2 = SMTimeSeries(range(11,16),range(-2,3))
+        self.ts2 = SMTimeSeries(range(11,16),range(-2,3),SM=sm)
         # With different times, this one should fail
-        self.ts2b = SMTimeSeries(range(1,6),range(-2,3))
+        self.ts2b = SMTimeSeries(range(1,6),range(-2,3),SM=sm)
         # This should be equal to ts1
-        self.ts2c = SMTimeSeries(range(11,16),range(1,6))
+        self.ts2c = SMTimeSeries(range(11,16),range(1,6),SM=sm)
                 
     def tearDown(self):
         del self.ts1
         del self.ts2
         del self.ts2b
         del self.ts2c
+        
+    def test_zzz_teardowndir(self):
+        """this test runs at the end and removes the directories and files made for the testing"""
+        dir = self.ts2._sm._dir
+        assert dir=='./temp_dir3'
+        if os.path.exists(dir):
+            [ os.remove(dir+'/'+f) for f in os.listdir(dir) ]
+            os.rmdir(dir)
