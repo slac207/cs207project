@@ -4,7 +4,8 @@ import lazy
 import numpy as np
 from Timeseries import TimeSeries
 from ArrayTimeSeries import ArrayTimeSeries
-from StorageManager import SMTimeSeries, FileStorageManager
+from StorageManager import FileStorageManager
+from SMTimeSeries import SMTimeSeries
 import numbers
 import collections
 import timeSeriesABC
