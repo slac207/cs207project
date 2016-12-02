@@ -3,38 +3,39 @@
 # How To
 
 ### Script 1
-** Where: **
+**Where:**
 generateTS.py
 
-** What: **
+**What:**
 Generates (using tsmaker) a set of 1000 time series, each stored in a file (stored in /tsdata)
 Interpolated the tsmaker TS from 0.01 to 0.99 with 1024 points to set up a regular sampling.
 
-** How: **
+**How**
 python generateTS.py
 
 ### Script 2
-** Where: **
+**Where:**
 generateDB.py
 
-** What: **
+**What:**
 Randomly choose 20 vantage points, and create 20 database indexes (stored in /tsdb)
 
-** How: **
+**How:**
 python generateDB.py
 
 ### Script 3
-** Where: **
+**Where:**
 genSimilarity.py
 
-** What: **
+**What:**
  Takes the name of a new data file as input, and returns the name of an existing
 data file whose time series is the most similar.
 
 Compares the passed timeseries (in the first argument) the timeseries stored in
 the folder /tsdb
 
-** How: **
+**How:**
 python genSimilarity.py tsdata/ts899.dat
-Returns:
+
+**Returns:**
 tsdata/ts899.dat
