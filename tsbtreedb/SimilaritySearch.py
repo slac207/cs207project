@@ -22,21 +22,45 @@ def random_ts(a):
     return ts.TimeSeries(v, t)
 
 def stand(x, m, s):
-    "standardize timeseries x by mean m and std deviation s"
+    '''Standardize timeseries x by mean m and std deviation s
+
+    Args: 
+    x: Timeseries that is beign standardized
+    m: Mean of the timeseries after standardization
+    s: Standard deviation of the timeseries after standardization
+
+    Output:
+    A timeseries with mean 0 and standard deviation 1
+    '''
     vals = np.array(list(iter(x)))
     vals = (vals - m)/s
     return ts.TimeSeries(vals,list(x.itertimes()))
 
 def ccor(ts1, ts2):
-    "given two standardized time series, compute their cross-correlation using FFT"
-    f1 = nfft.fft(list(iter(ts1)), norm="ortho")
-    f2 = nfft.fft(np.flipud(list(iter(ts2))), norm="ortho")
-    cc = np.real(nfft.ifft(f1 * f2))
+    '''given two standardized time series, compute their cross-correlation using FFT
+
+    Args:
+    ts1, ts2: Timeseries whose correlation has to be checked
+
+    Output: Value of dot product of the timeseries for different shifts of the second timeseries
+    
+    '''
+    f1 = nfft.fft(list(iter(ts1)))
+    f2 = nfft.fft(np.flipud(list(iter(ts2))))
+    cc = np.real(nfft.ifft(f1 * f2))/(abs(ts1)*abs(ts2))
     return cc
 
 # this is just for checking the max correlation with the
 #kernelized cross-correlation
 def max_corr_at_phase(ts1, ts2):
+    '''Calculates the maximum value of the correlation for different shifts
+
+    Args:
+    ts1, ts2: Timeseries whose correlation is to be calculated
+
+    Output:
+    idx: Index of maximum correlation
+    maxcorr: Value of maximum correlation'''
     ccorts = ccor(ts1, ts2)
     idx = np.argmax(ccorts)
     maxcorr = ccorts[idx]
@@ -47,7 +71,14 @@ def max_corr_at_phase(ts1, ts2):
 #normalize the kernel there by np.sqrt(K(x,x)K(y,y)) so that the correlation
 #of a time series with itself is 1. We'll set the default multiplier to 1.
 def kernel_corr(ts1, ts2, mult=1):
-    "compute a kernelized correlation so that we can get a real distance"
+    '''Kernelized correlation calculated with an exponential kernel. The correlation value may be slightly greater than 1 due to precision issues in the calculation
+    
+    Args:
+    ts1, ts2: Timeseries whose correlation is to be caluclated
+    mult: Kernel constant
+
+    Output:
+    Value of the correlation as a float'''
     #your code here.
     ccorts = ccor(ts1, ts2)
     cc1 = ccor(ts1, ts1)
@@ -70,6 +101,7 @@ if __name__ == "__main__":
     plt.show()
     standts1 = stand(t1, t1.mean(), t1.std())
     standts2 = stand(t2, t2.mean(), t2.std())
+    print(np.std(list(iter(standts1))), np.std(list(iter(standts2))))
 
     idx, mcorr = max_corr_at_phase(standts1, standts2)
     print(idx, mcorr)
