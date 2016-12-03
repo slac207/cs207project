@@ -67,7 +67,7 @@ Code to calculate distances from vantage points which you can then use to do sim
 python SimilaritySearch.py
 
 **Returns:**
-Some test script results
+Basic test results of SimilaritySearch.py functionality
 
 ### Lab 10
 **Where:**
@@ -75,5 +75,5 @@ lab10.py
 
 **What:**
 A Database class DBDB that implements a simple key/value database.
-It lets you associate a key with a value, and store that association
+It let's you associate a key with a value, and store that association
 on disk for later retrieval.
