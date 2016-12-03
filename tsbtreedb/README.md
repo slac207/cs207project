@@ -8,7 +8,6 @@ generateTS.py
 
 **What:**
 Generates (using tsmaker) a set of 1000 time series, each stored in a file (stored in /tsdata)
-Interpolated the tsmaker TS from 0.01 to 0.99 with 1024 points to set up a regular sampling.
 
 **How:**
 python generateTS.py
@@ -49,7 +48,7 @@ Saves string into Results/results.txt
 test_tsbtreedb.py
 
 **What:**
-Tests for SimilaritySearch.py and lab10.py
+Tests for this repo, mostly on SimilaritySearch.py and lab10.py
 
 **How:**
 py.test test_tsbtreedb.py
