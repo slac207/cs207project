@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 
 curr_dir = os.getcwd().split('/')
 sys.path.append('/'.join(curr_dir[:-1]))
@@ -8,7 +9,6 @@ sys.path.append('/'.join(ts_dir))
 import timeseries.Timeseries as ts
 import SimilaritySearch as ss
 import numpy as np
-import random
 import lab10
 
 '''

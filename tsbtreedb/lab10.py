@@ -20,13 +20,15 @@ LTE_Vals : List of Vals with corresponding Keys less than or equal to key
 
 """
 
+
 class ValueRef(object):
     " a reference to a string value on disk"
+
     def __init__(self, referent=None, address=0):
         """Initialize with either or both the object to be stored
         and its disk address"""
-        self._referent = referent #value to store
-        self._address = address #address to store at
+        self._referent = referent  # value to store
+        self._address = address  # address to store at
 
     @property
     def address(self):
@@ -46,7 +48,6 @@ class ValueRef(object):
         """Decode bytes to string value"""
         return bytes.decode('utf-8')
 
-
     def get(self, storage):
         "read bytes for value from disk"
         if self._referent is None and self._address:
@@ -55,7 +56,7 @@ class ValueRef(object):
 
     def store(self, storage):
         "store bytes for value to disk"
-        #called by BinaryNode.store_refs
+        # called by BinaryNode.store_refs
         if self._referent is not None and not self._address:
             self.prepare_to_store(storage)
             self._address = storage.write(self.referent_to_bytes(self._referent))
@@ -64,7 +65,7 @@ class ValueRef(object):
 class BinaryNodeRef(ValueRef):
     "reference to a btree node on disk"
 
-    #calls the BinaryNode's store_refs
+    # calls the BinaryNode's store_refs
     def prepare_to_store(self, storage):
         "have a node store its refs"
         if self._referent:
@@ -92,7 +93,6 @@ class BinaryNodeRef(ValueRef):
         )
 
 
-
 class BinaryNode(object):
     @classmethod
     def from_node(cls, node, **kwargs):
@@ -114,16 +114,17 @@ class BinaryNode(object):
     def store_refs(self, storage):
         "method for a node to store all of its stuff"
         self.value_ref.store(storage)
-        #calls BinaryNodeRef.store. which calls
-        #BinaryNodeRef.prepate_to_store
-        #which calls this again and recursively stores
-        #the whole tree
+        # calls BinaryNodeRef.store. which calls
+        # BinaryNodeRef.prepate_to_store
+        # which calls this again and recursively stores
+        # the whole tree
         self.left_ref.store(storage)
         self.right_ref.store(storage)
 
 
 class BinaryTree(object):
     "Immutable Binary Tree class. Constructs new tree on changes"
+
     def __init__(self, storage):
         """Initialize tree with disk storage and tree node if it already exists"""
         self._storage = storage
@@ -132,9 +133,9 @@ class BinaryTree(object):
 
     def commit(self):
         "changes are final only when committed"
-        #triggers BinaryNodeRef.store
+        # triggers BinaryNodeRef.store
         self._tree_ref.store(self._storage)
-        #make sure address of new tree is stored
+        # make sure address of new tree is stored
         self._storage.commit_root_address(self._tree_ref.address)
 
     def _refresh_tree_ref(self):
@@ -144,13 +145,13 @@ class BinaryTree(object):
 
     def get(self, key):
         "get value for a key"
-        #if tree is not locked by another writer
-        #refresh the references and get new tree if needed
+        # if tree is not locked by another writer
+        # refresh the references and get new tree if needed
         if not self._storage.locked:
             self._refresh_tree_ref()
-        #get the top level node
+        # get the top level node
         node = self._follow(self._tree_ref)
-        #traverse until you find appropriate node
+        # traverse until you find appropriate node
         while node is not None:
             if key < node.key:
                 node = self._follow(node.left_ref)
@@ -166,59 +167,58 @@ class BinaryTree(object):
         "Where all Keys are less than passed key"
         "Calls recursive function follow_LTE to find such"
 
-        #if tree is not locked by another writer
-        #refresh the references and get new tree if needed
+        # if tree is not locked by another writer
+        # refresh the references and get new tree if needed
         if not self._storage.locked:
             self._refresh_tree_ref()
 
-        #get the top level node
+        # get the top level node
         node = self._follow(self._tree_ref)
 
-        #Initial Key and Val List set to empty
+        # Initial Key and Val List set to empty
         LTE_Keys = []
         LTE_Vals = []
 
-        #Recursively find Keys and Values where Key is Less Than or Equal to key
-        LTE_Keys,LTE_Vals = self.follow_LTE(key, node, LTE_Keys,LTE_Vals)
-        return LTE_Keys,LTE_Vals
+        # Recursively find Keys and Values where Key is Less Than or Equal to key
+        LTE_Keys, LTE_Vals = self.follow_LTE(key, node, LTE_Keys, LTE_Vals)
+        return LTE_Keys, LTE_Vals
 
-    def follow_LTE(self, key, node, LTE_Keys,LTE_Vals):
+    def follow_LTE(self, key, node, LTE_Keys, LTE_Vals):
         "Recursive function to add Keys and Values"
         "to lists, where Keys are less than or equal to key"
 
-        #If node is None, stop and return lists
+        # If node is None, stop and return lists
         if node is None:
-            return LTE_Keys,LTE_Vals
-        #If node's Key is <= key, add Key and Value to list
+            return LTE_Keys, LTE_Vals
+        # If node's Key is <= key, add Key and Value to list
         elif key >= node.key:
             LTE_Keys.append(node.key)
             LTE_Vals.append(self._follow(node.value_ref))
             rightNode = self._follow(node.right_ref)
-            self.follow_LTE(key, rightNode, LTE_Keys,LTE_Vals)
+            self.follow_LTE(key, rightNode, LTE_Keys, LTE_Vals)
 
-        #Always move left if current node is not None
+        # Always move left if current node is not None
         leftNode = self._follow(node.left_ref)
-        self.follow_LTE(key, leftNode, LTE_Keys,LTE_Vals)
+        self.follow_LTE(key, leftNode, LTE_Keys, LTE_Vals)
 
-        #After checking left and right nodes, return lists
-        return LTE_Keys,LTE_Vals
+        # After checking left and right nodes, return lists
+        return LTE_Keys, LTE_Vals
 
     def set(self, key, value):
         "set a new value in the tree. will cause a new tree"
-        #try to lock the tree. If we succeed make sure
-        #we dont lose updates from any other process
+        # try to lock the tree. If we succeed make sure
+        # we dont lose updates from any other process
         if self._storage.lock():
             self._refresh_tree_ref()
-        #get current top-level node and make a value-ref
+        # get current top-level node and make a value-ref
         node = self._follow(self._tree_ref)
         value_ref = ValueRef(value)
-        #insert and get new tree ref
+        # insert and get new tree ref
         self._tree_ref = self._insert(node, key, value_ref)
-
 
     def _insert(self, node, key, value_ref):
         "insert a new node creating a new path from root"
-        #create a tree ifnthere was none so far
+        # create a tree ifnthere was none so far
         if node is None:
             new_node = BinaryNode(
                 BinaryNodeRef(), key, value_ref, BinaryNodeRef())
@@ -232,7 +232,7 @@ class BinaryTree(object):
                 node,
                 right_ref=self._insert(
                     self._follow(node.right_ref), key, value_ref))
-        else: #create a new node to represent this data
+        else:  # create a new node to represent this data
             new_node = BinaryNode.from_node(node, value_ref=value_ref)
         return BinaryNodeRef(referent=new_node)
 
@@ -278,7 +278,7 @@ class BinaryTree(object):
 
     def _follow(self, ref):
         "get a node from a reference"
-        #calls BinaryNodeRef.get
+        # calls BinaryNodeRef.get
         return ref.get(self._storage)
 
     def _find_max(self, node):
@@ -299,7 +299,7 @@ class Storage(object):
         """Initialize Storage block, Set Lock to False"""
         self._f = f
         self.locked = False
-        #we ensure that we start in a sector boundary
+        # we ensure that we start in a sector boundary
         self._ensure_superblock()
 
     def _ensure_superblock(self):
@@ -354,9 +354,9 @@ class Storage(object):
 
     def write(self, data):
         "write data to disk, returning the adress at which you wrote it"
-        #first lock, get to end, get address to return, write size
-        #write data, unlock <==WRONG, dont want to unlock here
-        #your code here
+        # first lock, get to end, get address to return, write size
+        # write data, unlock <==WRONG, dont want to unlock here
+        # your code here
         self.lock()
         self._seek_end()
         object_address = self._f.tell()
@@ -375,17 +375,17 @@ class Storage(object):
         """Write the root address at position 0 of the superblock"""
         self.lock()
         self._f.flush()
-        #make sure you write root address at position 0
+        # make sure you write root address at position 0
         self._seek_superblock()
-        #write is atomic because we store the address on a sector boundary.
+        # write is atomic because we store the address on a sector boundary.
         self._write_integer(root_address)
         self._f.flush()
         self.unlock()
 
     def get_root_address(self):
         """Read in the root"""
-        #read the first integer in the file
-        #your code here
+        # read the first integer in the file
+        # your code here
         self._seek_superblock()
         root_address = self._read_integer()
         return root_address
@@ -399,6 +399,7 @@ class Storage(object):
     def closed(self):
         """Check if file is closed"""
         return self._f.closed
+
 
 class DBDB(object):
     """A Database that implements a simple key/value database.
@@ -446,6 +447,7 @@ class DBDB(object):
         """Delete a key, value pair from the Database"""
         self._assert_not_closed()
         return self._tree.delete(key)
+
 
 def connect(dbname):
     """Connect to Database dbname"""

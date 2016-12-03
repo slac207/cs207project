@@ -95,7 +95,8 @@ def max_corr_at_phase(ts1, ts2):
 # normalize the kernel there by np.sqrt(K(x,x)K(y,y)) so that the correlation
 # of a time series with itself is 1. We'll set the default multiplier to 1.
 def kernel_corr(ts1, ts2, mult=1):
-    '''Kernelized correlation calculated with an exponential kernel. The correlation value may be slightly greater than 1 due to precision issues in the calculation
+    '''Kernelized correlation calculated with an exponential kernel.
+        The correlation value may be slightly greater than 1 due to precision issues in the calculation
 
     Args:
     ts1, ts2: Timeseries whose correlation is to be caluclated

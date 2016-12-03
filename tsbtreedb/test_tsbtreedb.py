@@ -18,7 +18,8 @@ Example:
         $ py.test test_tsbtreedb.py
 
 '''
-import os, sys
+import os
+import sys
 
 curr_dir = os.getcwd().split('/')
 sys.path.append('/'.join(curr_dir[:-1]))
@@ -29,8 +30,6 @@ import timeseries.Timeseries as ts
 import SimilaritySearch as ss
 from pytest import raises
 import numpy as np
-import random
-import math
 import lab10
 
 '''
@@ -132,10 +131,10 @@ Summary: Test set and get for a DB
 
 
 def test_db_get():
-    dbName = "/tmp/test2.dbdb"
-    if os.path.exists(dbName):
-        os.remove(dbName)
-    db = lab10.connect(dbName)
+    db_name = "/tmp/test2.dbdb"
+    if os.path.exists(db_name):
+        os.remove(db_name)
+    db = lab10.connect(db_name)
     db.set("rahul", "aged")
     db.set("pavlos", "aged")
     db.set("kobe", "stillyoung")
@@ -154,10 +153,10 @@ Summary: Test set (override) and get for a DB
 
 
 def test_db_set():
-    dbName = "/tmp/test2.dbdb"
-    if os.path.exists(dbName):
-        os.remove(dbName)
-    db = lab10.connect(dbName)
+    db_name = "/tmp/test2.dbdb"
+    if os.path.exists(db_name):
+        os.remove(db_name)
+    db = lab10.connect(db_name)
     db.set("rahul", "aged")
     db.set("pavlos", "aged")
     db.set("kobe", "stillyoung")
@@ -177,11 +176,11 @@ Summary: Test getting all Less than or Equal to (Keys)
 '''
 
 
-def test_db_get_All_LTE():
-    dbName = "/tmp/test2.dbdb"
-    if os.path.exists(dbName):
-        os.remove(dbName)
-    db = lab10.connect(dbName)
+def test_db_get_all_lte():
+    db_name = "/tmp/test2.dbdb"
+    if os.path.exists(db_name):
+        os.remove(db_name)
+    db = lab10.connect(db_name)
     db.set(4.4, "ts484.dat")
     db.set(0.0, "ts3.dat")  # vantagePT
     db.set(1.3, "ts82.dat")
@@ -203,11 +202,11 @@ Summary: Test getting all Less than or Equal to (Vals)
 '''
 
 
-def test_db_get_All_LTE2():
-    dbName = "/tmp/test2.dbdb"
-    if os.path.exists(dbName):
-        os.remove(dbName)
-    db = lab10.connect(dbName)
+def test_db_get_all_lte2():
+    db_name = "/tmp/test2.dbdb"
+    if os.path.exists(db_name):
+        os.remove(db_name)
+    db = lab10.connect(db_name)
     db.set(4.4, "ts484.dat")
     db.set(0.0, "ts3.dat")  # vantagePT
     db.set(1.3, "ts82.dat")
@@ -230,10 +229,10 @@ Summary: If key isn't there, raise KeyError
 
 
 def test_db_get_error():
-    dbName = "/tmp/test2.dbdb"
-    if os.path.exists(dbName):
-        os.remove(dbName)
-    db = lab10.connect(dbName)
+    db_name = "/tmp/test2.dbdb"
+    if os.path.exists(db_name):
+        os.remove(db_name)
+    db = lab10.connect(db_name)
     db.set(4.4, "ts484.dat")
     with raises(KeyError):
         db.get(3.9)

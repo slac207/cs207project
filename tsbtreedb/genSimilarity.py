@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 
 curr_dir = os.getcwd().split('/')
 sys.path.append('/'.join(curr_dir[:-1]))
@@ -8,7 +9,6 @@ sys.path.append('/'.join(ts_dir))
 import timeseries.Timeseries as ts
 import SimilaritySearch as ss
 import numpy as np
-import random
 import lab10
 
 '''
@@ -75,13 +75,13 @@ if __name__ == "__main__":
         # dist = random.random()
         distDict[filenames[i]] = dist
 
-    ## Commented out these prints that return up to 10 of the nearest TS
-    ## Print 10 Nearest Distances (Assuming you have reviewed at least 10 TS)
-    ## print(sorted(distDict.values())[:10])
-    ## Print 10 nearest TS FIles (Assuming you have reviewed at least 10 TS)
-    ## print(sorted(distDict, key=distDict.__getitem__)[:10])
+    # Commented out these prints that return up to 10 of the nearest TS
+    # Print 10 Nearest Distances (Assuming you have reviewed at least 10 TS)
+    # print(sorted(distDict.values())[:10])
+    # Print 10 nearest TS FIles (Assuming you have reviewed at least 10 TS)
+    # print(sorted(distDict, key=distDict.__getitem__)[:10])
 
-    ## Return Nearest Timeseries
+    # Return Nearest Timeseries
     nearest = sorted(distDict, key=distDict.__getitem__)[0]
     print("#### Nearest Timeseries ####")
     print(nearest)
