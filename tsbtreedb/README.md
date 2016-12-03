@@ -75,5 +75,5 @@ lab10.py
 
 **What:**
 A Database class DBDB that implements a simple key/value database.
-It let's you associate a key with a value, and store that association
+It lets you associate a key with a value, and store that association
 on disk for later retrieval.
