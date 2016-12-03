@@ -61,7 +61,7 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
             raise IndexError("Index out of bounds")
 
     def __len__(self):
-        """Method for determing length of ArrayTimeSeries self._values"""
+        """Method for determining length of ArrayTimeSeries self._values"""
         return np.size(self._values)
 
     def values(self):
@@ -208,7 +208,7 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
             return False
 
     def mean(self, chunk=None):
-        return (np.mean(self._values))
+        return np.mean(self._values)
 
     def std(self, chunk=None):
-        return (np.std(self._values, ddof=1))
+        return np.std(self._values, ddof=1)

@@ -1,12 +1,13 @@
-from pytest import raises
+import collections
 import unittest
+
 import lazy
 import numpy as np
-from Timeseries import TimeSeries
-from ArrayTimeSeries import ArrayTimeSeries
-import numbers
-import collections
 import timeSeriesABC
+from ArrayTimeSeries import ArrayTimeSeries
+from pytest import raises
+
+from Timeseries import TimeSeries
 
 
 class TimeSeriesTest(unittest.TestCase):
@@ -158,7 +159,7 @@ class TimeSeriesTest(unittest.TestCase):
         assert (a.interpolate([5]) == TimeSeries(times=[5], values=[2]))
 
     def test_lazy(self):
-        'lazy property should be an instance of LazyOperation'
+        """lazy property should be an instance of LazyOperation"""
         assert isinstance(self.ts.lazy, lazy.LazyOperation) is True
         assert isinstance(self.ats.lazy, lazy.LazyOperation) is True
         'self.ts.lazy.eval() should be the same as self.ts'
@@ -167,8 +168,8 @@ class TimeSeriesTest(unittest.TestCase):
 
     @staticmethod
     def test_lazy_smoketest():
-        '''An involved use of lazy operations on the lazy property
-        to ensure the layers can work together'''
+        """An involved use of lazy operations on the lazy property
+        to ensure the layers can work together"""
 
         @lazy.lazy
         def check_length(a, b):

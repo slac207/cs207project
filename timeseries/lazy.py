@@ -1,4 +1,4 @@
-class LazyOperation():
+class LazyOperation:
     """ Isolate the function call from the function execution.
     out = LazyOperation(function,*args,**kwargs) defines the operation.
     out.eval() evaluates the operation.

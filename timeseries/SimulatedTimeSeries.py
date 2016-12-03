@@ -1,9 +1,9 @@
-import abc
 import itertools
-import numbers
-from timeSeriesABC import StreamTimeSeriesInterface
-from ArrayTimeSeries import ArrayTimeSeries
 import math
+import numbers
+
+from ArrayTimeSeries import ArrayTimeSeries
+from timeSeriesABC import StreamTimeSeriesInterface
 
 
 class SimulatedTimeSeries(StreamTimeSeriesInterface):

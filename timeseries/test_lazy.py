@@ -1,4 +1,3 @@
-from pytest import raises
 from lazy import lazy_add, lazy_mul, LazyOperation, lazy
 
 

@@ -1,11 +1,10 @@
-import lazy
-import numpy as np
+import math
 import numbers
-import reprlib
+import statistics as stat
+
+import numpy as np
 from binarysearch import binary_search
 from timeSeriesABC import SizedContainerTimeSeriesInterface
-import math
-import statistics as stat
 
 
 class TimeSeries(SizedContainerTimeSeriesInterface):
@@ -72,7 +71,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
             raise IndexError("Index out of bounds")
 
     def __len__(self):
-        """Method for determing length of TimeSeries self._values"""
+        """Method for determining length of TimeSeries self._values"""
         return len(self._values)
 
     def values(self):
@@ -211,7 +210,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
             return False
 
     def mean(self, chunk=None):
-        return (stat.mean(self._values))
+        return stat.mean(self._values)
 
     def std(self, chunk=None):
-        return (stat.stdev(self._values))
+        return stat.stdev(self._values)

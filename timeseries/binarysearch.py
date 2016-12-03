@@ -43,7 +43,7 @@ def binary_search(da_array, needle):
     while True:
         "needle in da_array => needle in da_array[min_index:max_index]"
         if min_index > max_index:
-            return (max_index, min_index)
+            return max_index, min_index
 
         midpoint = min_index + (max_index - min_index) // 2
         if da_array[midpoint] > needle:  # lower part
