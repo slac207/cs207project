@@ -117,9 +117,9 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         r = reprlib.Repr()
         r.maxlist = 3  # max elements displayed for lists
         cls = type(self).__name__
-        timesStr = r.repr(self._times)
-        valuesStr = r.repr(self._values)
-        return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
+        times_str = r.repr(self._times)
+        values_str = r.repr(self._values)
+        return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), times_str, values_str)
 
     def __str__(self):
         """
@@ -135,9 +135,9 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         r = reprlib.Repr()
         r.maxlist = 3  # max elements displayed for lists
         cls = type(self).__name__
-        timesStr = r.repr(self._times)
-        valuesStr = r.repr(self._values)
-        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
+        times_str = r.repr(self._times)
+        values_str = r.repr(self._values)
+        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), times_str, values_str)
 
     def items(self):
         """Returns a list of (time, value) pairs"""

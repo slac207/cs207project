@@ -85,7 +85,7 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         else:
             left_idx, right_idx = idx - 1, idx
             m = float(self._values[right_idx] - self._values[left_idx]) / (
-            self._times[right_idx] - self._times[left_idx])
+                self._times[right_idx] - self._times[left_idx])
             return (t - self._times[left_idx]) * m + self._values[left_idx]
 
     def interpolate(self, times_to_interpolate):

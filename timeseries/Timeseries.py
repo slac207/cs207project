@@ -119,7 +119,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
                 if type(idx) == tuple:
                     left_idx, right_idx = idx
                     m = float(self._values[right_idx] - self._values[left_idx]) / (
-                    self._times[right_idx] - self._times[left_idx])
+                        self._times[right_idx] - self._times[left_idx])
                     interpolated_values.append((t - self._times[left_idx]) * m + self._values[left_idx])
                 else:
                     interpolated_values.append(self._values[idx])

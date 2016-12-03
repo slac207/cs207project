@@ -41,7 +41,8 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
         # Initialize the mean and standard deviation trackers
         self._running_mean = (self._firstitem[1], 1)  # tuple of current mean, number of observations included.
         self._running_std = (self._firstitem[1], 1,
-                             0)  # tuple of current mean, number of observations included, sum of squared errors around the mean
+                             0)  # tuple of current mean, number of observations included,
+                                    # sum of squared errors around the mean
 
     def __iter__(self):
         """Generator function returning the values only"""
@@ -108,12 +109,12 @@ class SimulatedTimeSeries(StreamTimeSeriesInterface):
         yield self._firstitem[0], 0
         for item in self._items:
             t, v = item
-            mu, n, S = self._running_std
+            mu, n, s = self._running_std
             n += 1
             mu_last, mu = mu, mu + (v - mu) / n
-            S += (v - mu_last) * (v - mu)
-            self._running_std = mu, n, S
-            stdev = math.sqrt(S / (n - 1))
+            s += (v - mu_last) * (v - mu)
+            self._running_std = mu, n, s
+            stdev = math.sqrt(s / (n - 1))
             yield (t, stdev)
 
     def online_std(self):
