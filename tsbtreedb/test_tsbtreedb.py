@@ -32,6 +32,40 @@ import random
 import math
 import lab10
 
+'''
+Functions Being Tested: stand
+Summary: Standard Deviation of the timeseries
+'''
+def test_stand():
+    ts1 = ts.TimeSeries([100,101,102,103], [1, 2, 3, 4])
+    ts1_stand = ss.stand(ts1, np.mean([100,101,102,103]), np.std([100,101,102,103]))
+    assert np.std(list(iter(ts1_stand))) == 1.0
+
+'''
+Functions Being Tested: max_corr_at_phase
+Summary: Correlation of a timeseries with itself
+'''
+def test_self_maxccor():
+    ts1 = ts.TimeSeries([100,101,102,103], [1, 2, 3, 4])
+    assert ss.max_corr_at_phase(ts1, ts1)[1] == 1.0
+
+'''
+Functions Being Tested: max_corr_at_phase
+Summary: Correlation of two shifted timeseries
+'''
+def test_maxccor():
+    ts1 = ts.TimeSeries([0, 1, 2, 3, 4, 3, 2, 1, 0], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    ts2 = ts.TimeSeries([1, 2, 3, 4, 3, 2, 1, 0, 0], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    assert abs(ss.max_corr_at_phase(ts1, ts2)[1] - 1.0) < 1e-5
+
+'''
+Functions Being Tested: kernel_corr
+Summary: Correlation of two shifted timeseries using the exponential kernel
+'''
+def test_kernel_corr():
+    ts1 = ts.TimeSeries([0, 1, 2, 3, 4, 3, 2, 1, 0], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    ts2 = ts.TimeSeries([1, 2, 3, 4, 3, 2, 1, 0, 0], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    assert abs(ss.kernel_corr(ts1, ts2, 10)-1) < 1e-3
 
 '''
 Functions Being Tested: tsmaker
@@ -53,7 +87,7 @@ def test_len_random_ts():
 Functions Being Tested: kernel_corr
 Summary: Basic kernel_corr
 '''
-def test_kernel_corr():
+def test_kernel_corr2():
     t1 = ss.random_ts(2)
     assert ss.kernel_corr(t1,t1) == 1
 
@@ -61,7 +95,7 @@ def test_kernel_corr():
 Functions Being Tested: kernel_corr
 Summary: Basic kernel_corr
 '''
-def test_kernel_corr2():
+def test_kernel_corr3():
     t1 = ss.random_ts(2)
     t2 = ss.random_ts(3)
     assert ss.kernel_corr(t1,t2) != 1
