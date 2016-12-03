@@ -41,7 +41,7 @@ if __name__ == "__main__":
     filename = sys.argv[1]
     x = np.loadtxt(filename, delimiter=' ')
     origTs = ts.TimeSeries(x[:,1],x[:,0])
-    time = np.linspace(.01,.99,1024)
+    time = np.arange(0.0, 1.0, 0.01)
     testTs = origTs.interpolate(time)
 
     # Find the Nearest vantagePt
@@ -81,5 +81,10 @@ if __name__ == "__main__":
     ## print(sorted(distDict, key=distDict.__getitem__)[:10])
 
     ## Return Nearest Timeseries
+    nearest = sorted(distDict, key=distDict.__getitem__)[0]
     print("#### Nearest Timeseries ####")
-    print(sorted(distDict, key=distDict.__getitem__)[0])
+    print(nearest)
+    file_path = 'Results/results.txt'
+    text_file = open(file_path, "w")
+    text_file.write(nearest)
+    text_file.close()

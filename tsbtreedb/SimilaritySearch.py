@@ -4,12 +4,29 @@ sys.path.append('/'.join(curr_dir[:-1]))
 ts_dir = curr_dir[:-1]
 ts_dir.append('timeseries')
 sys.path.append('/'.join(ts_dir))
-
 import numpy.fft as nfft
 import numpy as np
 #below is your module. Use your ListTimeSeries or ArrayTimeSeries..
 from timeseries import Timeseries as ts
 from scipy.stats import norm
+
+'''
+
+Code to calculate distances from vantage points which you can then use to do similarity search,
+
+How to run:
+python SimilaritySearch.py
+
+Output:
+HI
+0.999071058544 1.3566298197725897 0.999380338186 1.3570526700214758
+0.994987437107 0.994987437107
+99 0.999942119235
+0.999970386717
+19 0.209255165854
+0.00670302226967
+
+'''
 
 def tsmaker(m, s, j):
     t = np.arange(0.0, 1.0, 0.01)
@@ -24,7 +41,7 @@ def random_ts(a):
 def stand(x, m, s):
     '''Standardize timeseries x by mean m and std deviation s
 
-    Args: 
+    Args:
     x: Timeseries that is beign standardized
     m: Mean of the timeseries after standardization
     s: Standard deviation of the timeseries after standardization
@@ -43,7 +60,7 @@ def ccor(ts1, ts2):
     ts1, ts2: Timeseries whose correlation has to be checked
 
     Output: Value of dot product of the timeseries for different shifts of the second timeseries
-    
+
     '''
     f1 = nfft.fft(list(iter(ts1)))
     f2 = nfft.fft(np.flipud(list(iter(ts2))))
@@ -72,7 +89,7 @@ def max_corr_at_phase(ts1, ts2):
 #of a time series with itself is 1. We'll set the default multiplier to 1.
 def kernel_corr(ts1, ts2, mult=1):
     '''Kernelized correlation calculated with an exponential kernel. The correlation value may be slightly greater than 1 due to precision issues in the calculation
-    
+
     Args:
     ts1, ts2: Timeseries whose correlation is to be caluclated
     mult: Kernel constant

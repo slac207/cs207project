@@ -8,9 +8,8 @@ generateTS.py
 
 **What:**
 Generates (using tsmaker) a set of 1000 time series, each stored in a file (stored in /tsdata)
-Interpolated the tsmaker TS from 0.01 to 0.99 with 1024 points to set up a regular sampling.
 
-**How**
+**How:**
 python generateTS.py
 
 ### Script 2
@@ -40,3 +39,41 @@ python genSimilarity.py tsdata/ts899.dat
 
 **Returns:**
 tsdata/ts899.dat
+Saves string into Results/results.txt
+
+## Additional files
+
+### Tests
+**Where:**
+test_tsbtreedb.py
+
+**What:**
+Tests for this repo, mostly on SimilaritySearch.py and lab10.py
+
+**How:**
+py.test test_tsbtreedb.py
+
+**Returns:**
+13 passed in 0.92 seconds
+
+### Similarity Search
+**Where:**
+SimilaritySearch.py
+
+**What:**
+Code to calculate distances from vantage points which you can then use to do similarity search
+
+**How:**
+python SimilaritySearch.py
+
+**Returns:**
+Basic test results of SimilaritySearch.py functionality
+
+### Lab 10
+**Where:**
+lab10.py
+
+**What:**
+A Database class DBDB that implements a simple key/value database.
+It lets you associate a key with a value, and store that association
+on disk for later retrieval.

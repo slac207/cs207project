@@ -25,12 +25,12 @@ tsdata
 
 if __name__ == "__main__":
 
-	time = np.linspace(.01,.99,1024)
 	#Generate 1000 timeseries
 	#using SimilaritySearch tsmaker function
 	for i in range(1000):
 		file_path = 'tsdata/ts'+str(i)+'.dat'
 		fp = open(file_path,'w+')
-		t1 = ss.tsmaker(0.5, 0.1, 0.01)
-		regT1 = t1.interpolate(time)
-		np.savetxt(file_path,np.transpose(np.array([list(regT1.itertimes()),list(regT1)])), delimiter=' ')
+		m = np.random.random()
+		s = np.random.random()
+		t1 = ss.tsmaker(m, s, 0.01)
+		np.savetxt(file_path,np.transpose(np.array([list(t1.itertimes()),list(t1)])), delimiter=' ')
