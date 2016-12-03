@@ -128,6 +128,7 @@ class BinaryTree(object):
         """Initialize tree with disk storage and tree node if it already exists"""
         self._storage = storage
         self._refresh_tree_ref()
+        self._tree_ref = None
 
     def commit(self):
         "changes are final only when committed"
