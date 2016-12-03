@@ -44,9 +44,9 @@ class ValueRef(object):
         return referent.encode('utf-8')
 
     @staticmethod
-    def bytes_to_referent(bytes):
+    def bytes_to_referent(in_bytes):
         """Decode bytes to string value"""
-        return bytes.decode('utf-8')
+        return in_bytes.decode('utf-8')
 
     def get(self, storage):
         "read bytes for value from disk"

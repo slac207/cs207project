@@ -85,9 +85,9 @@ def max_corr_at_phase(ts1, ts2):
     idx: Index of maximum correlation
     maxcorr: Value of maximum correlation'''
     ccorts = ccor(ts1, ts2)
-    idx = np.argmax(ccorts)
-    maxcorr = ccorts[idx]
-    return idx, maxcorr
+    cidx = np.argmax(ccorts)
+    maxcorr = ccorts[cidx]
+    return cidx, maxcorr
 
 
 # The equation for the kernelized cross correlation is given at
