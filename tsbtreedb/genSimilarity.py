@@ -1,4 +1,5 @@
 import os, sys
+
 curr_dir = os.getcwd().split('/')
 sys.path.append('/'.join(curr_dir[:-1]))
 ts_dir = curr_dir[:-1]
@@ -40,38 +41,38 @@ if __name__ == "__main__":
     # Load in the TS to Evaluate
     filename = sys.argv[1]
     x = np.loadtxt(filename, delimiter=' ')
-    origTs = ts.TimeSeries(x[:,1],x[:,0])
+    origTs = ts.TimeSeries(x[:, 1], x[:, 0])
     time = np.arange(0.0, 1.0, 0.01)
     testTs = origTs.interpolate(time)
 
     # Find the Nearest vantagePt
     minDist = float('inf')
     for j in range(20):
-        dbName = "tsdb/db"+str(j)+".dbdb"
+        dbName = "tsdb/db" + str(j) + ".dbdb"
         db = lab10.connect(dbName)
         vantagePtFile = db.get(0)
         x = np.loadtxt(vantagePtFile, delimiter=' ')
-        comparePt = ts.TimeSeries(x[:,1],x[:,0])
-        dist = 2*(1-ss.kernel_corr(comparePt,testTs))
+        comparePt = ts.TimeSeries(x[:, 1], x[:, 0])
+        dist = 2 * (1 - ss.kernel_corr(comparePt, testTs))
         if dist < minDist:
             minDist = dist
             minDbName = dbName
             minVantagePtFile = vantagePtFile
 
-    #Connect to DB Referencing the Nearest vantagePT
+    # Connect to DB Referencing the Nearest vantagePT
     db = lab10.connect(minDbName)
-    keys, filenames = db.get_All_LTE(float(2)*minDist)
+    keys, filenames = db.get_All_LTE(float(2) * minDist)
     nFiles = len(filenames)
 
-    #Dictionary Key File, Val = Distance to testTs
+    # Dictionary Key File, Val = Distance to testTs
     distDict = {}
 
-    #Get dist between testTs and all TS within key below 2*minDist
+    # Get dist between testTs and all TS within key below 2*minDist
     for i in range(nFiles):
         x = np.loadtxt(filenames[i], delimiter=' ')
-        comparePt = ts.TimeSeries(x[:,1],x[:,0])
-        dist = 2*(1-ss.kernel_corr(comparePt,testTs))
-        #dist = random.random()
+        comparePt = ts.TimeSeries(x[:, 1], x[:, 0])
+        dist = 2 * (1 - ss.kernel_corr(comparePt, testTs))
+        # dist = random.random()
         distDict[filenames[i]] = dist
 
     ## Commented out these prints that return up to 10 of the nearest TS
