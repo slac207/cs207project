@@ -345,7 +345,28 @@ class Storage(object):
         return self._f.closed
 
 class DBDB(object):
-    "Database class to manage Storage and BinaryTree operations."
+    """
+    Database class to manage Storage and BinaryTree operations.
+
+    Attributes:
+    ----------
+    _storage: Storage object to manage file writes/reads
+    _tree: BinaryTree object to manage a Red Black Tree
+
+    Example:
+    --------
+    >>> import os
+    >>> fd = os.open("/tmp/test.dbdb", os.O_RDWR | os.O_CREAT)
+    >>> f  = open(fd, 'r+b')
+    >>> db = DBDB(f)
+    >>> db.set("rahul", "aged")
+    >>> db.set("kobe", "stillyoung")
+    >>> db.get("rahul")
+    'aged'
+    >>> db.commit()
+    >>> db.close()
+    """
+
     def __init__(self, f):
         "Creates storage and tree properties"
         self._storage = Storage(f)

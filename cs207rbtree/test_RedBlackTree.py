@@ -157,24 +157,6 @@ class RedBlackTreeTest(unittest.TestCase):
         db.close()
         os.remove('/tmp/test8.dbdb')
 
-    # def test_delete_refresh(self):
-    #     "Test that we can delete a node while the storage is unlocked"
-    #     f = self.get_f("/tmp/test9.dbdb")
-    #     db = DBDB(f)
-    #     db.set("kobe", "baby")
-    #     db.set("cathy", "ancient")
-    #     db.set("allison", "veryyoung")
-    #     db._storage.unlock()
-    #     db.delete("cathy")
-    #     with raises(KeyError):
-    #         db.get("cathy")
-    #     with raises(KeyError):
-    #         db.delete("cathy")
-    #     assert db.get("allison")=="veryyoung"
-    #     assert db.get("kobe")=="baby"
-    #     db.close()
-    #     os.remove('/tmp/test9.dbdb')
-
 
 if __name__=='__main__':
     try:  # pragma: no cover
