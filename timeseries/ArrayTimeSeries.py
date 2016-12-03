@@ -154,7 +154,7 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
             return cls(values=self._values+rhs,times=self._times)
         elif isinstance(rhs,pcls):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
-                return cls(values=self._values+rhs._values,times=self._times)
+                return cls(values=self._values+rhs.get_values,times=self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points.')
         elif isinstance(rhs,np.ndarray):
@@ -179,7 +179,7 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
             return cls(values=rhs*self._values,times=self._times)
         elif isinstance(rhs,pcls):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
-                return cls(values=self._values*rhs._values,times=self._times)
+                return cls(values=self._values*rhs.get_values,times=self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
         elif isinstance(rhs,np.ndarray):
@@ -189,11 +189,11 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
         
     def _eqtimes(self,rhs):
         """Test equality of the times of two SizedContainerTimeSeriesInterface instances"""
-        return np.array_equal(self._times, rhs._times)
+        return np.array_equal(self._times, rhs.get_times)
     
     def _eqvalues(self,rhs):
         """Test equality of the values of two SizedContainerTimeSeriesInterface instances"""
-        return np.array_equal(self._values, rhs._values)
+        return np.array_equal(self._values, rhs.get_values)
        
     def __eq__(self,rhs):
         """Tests if two SizedContainerTimeSeriesInterface have same times and values"""

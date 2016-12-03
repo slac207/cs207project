@@ -20,33 +20,39 @@ class TimeSeriesTest(unittest.TestCase):
         del self.ts
         del self.ats
 
-    def test_input_diff_len(self):
+    @staticmethod
+    def test_input_diff_len():
         with raises(TypeError):
             t = TimeSeries([1,2,3],[3,1,3,4])
         with raises(TypeError):
             t = ArrayTimeSeries([1,2,3],[3,1,3,4])
 
-    def test_input_range(self):
+    @staticmethod
+    def test_input_range():
         t = TimeSeries(range(0,5))
         t = ArrayTimeSeries(values = range(1,10),times=range(10,19))
 
-    def test_input_string(self):
+    @staticmethod
+    def test_input_string():
         t = TimeSeries('abcd')
         t = ArrayTimeSeries('abcd',[0,10,20,30])
         t = ArrayTimeSeries('abcd','edsa')
 
-    def test_input_list(self):
+    @staticmethod
+    def test_input_list():
         t = TimeSeries([3,4,5])
         t = TimeSeries([])
         t = ArrayTimeSeries(values=[1,2,3,4],times=[10,20,30,40])
 
-    def test_input_tuple(self):
+    @staticmethod
+    def test_input_tuple():
         t = TimeSeries((2,3))
         t = TimeSeries(())
         t = ArrayTimeSeries((2,3),(1,2))
         t = ArrayTimeSeries((),())
 
-    def test_input_nonseq(self):
+    @staticmethod
+    def test_input_nonseq():
         with raises(TypeError):
             t = TimeSeries(3)
         with raises(TypeError):
@@ -56,11 +62,13 @@ class TimeSeriesTest(unittest.TestCase):
         with raises(TypeError):
             t = ArrayTimeSeries(range(0,2),3)
 
-    def test_string(self):
+    @staticmethod
+    def test_string():
         assert str(TimeSeries((2,3))) == "TimeSeries with 2 elements (Times: range(0, 2), Values: [2, 3])"
         assert str(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries with 2 elements (Times: array([2, 3]), Values: array([1, 2]))"
 
-    def test_repr(self):
+    @staticmethod
+    def test_repr():
         assert repr(TimeSeries((2,3))) == "TimeSeries(Length: 2, Times: range(0, 2), Values: [2, 3])"
         assert repr(ArrayTimeSeries((2,3),(1,2))) == "ArrayTimeSeries(Length: 2, Times: array([2, 3]), Values: array([1, 2]))"
 
@@ -131,7 +139,8 @@ class TimeSeriesTest(unittest.TestCase):
         assert (self.ts.values() == [0,1,2,3]).all()
         assert (self.ats.values() == [0,5,10,8,7]).all()
 
-    def test_interpolate(self):
+    @staticmethod
+    def test_interpolate():
         a = TimeSeries(times=[0,5,10],values=[1,2,3])
         b = TimeSeries(times=[2.5,7.5],values=[100,-100])
         assert(a.interpolate([1]) == TimeSeries(times=[1],values=[1.2]))
@@ -154,7 +163,8 @@ class TimeSeriesTest(unittest.TestCase):
         assert self.ts is self.ts.lazy.eval()
         assert self.ats is self.ats.lazy.eval()
 
-    def test_lazy_smoketest(self):
+    @staticmethod
+    def test_lazy_smoketest():
         '''An involved use of lazy operations on the lazy property
         to ensure the layers can work together'''
         @lazy.lazy
@@ -197,7 +207,8 @@ class TimeSeriesTest(unittest.TestCase):
         assert -(-self.ats)==self.ats
 
 
-    def test_abs(self):
+    @staticmethod
+    def test_abs():
         # absolute value of an instance and its negative should be the same.
         ts = TimeSeries(range(10))
         assert abs(ts)>0
@@ -243,7 +254,8 @@ class TimeSeriesTest(unittest.TestCase):
         assert self.ts7 is not self.ats8
         assert self.ats7!=self.ts8
 
-    def test_add_ArrayTimeSeries_TimeSeries(self):
+    @staticmethod
+    def test_add_ArrayTimeSeries_TimeSeries():
         ts1 = TimeSeries(range(10))
         ts2 = TimeSeries([10,34,23])
         ats1 = ArrayTimeSeries(values=range(10),times=range(10))
@@ -269,7 +281,8 @@ class TimeSeriesTest(unittest.TestCase):
             ats1+np.arange(10)
             
             
-    def test_sub_TimeSeries_ArrayTimeSeries(self):
+    @staticmethod
+    def test_sub_TimeSeries_ArrayTimeSeries():
         ts1 = TimeSeries(range(10))
         ts2 = TimeSeries([0,1,2,3,4,5,6,7,8,9])
         ats1 = ArrayTimeSeries(values=range(10),times=range(10))
@@ -298,7 +311,8 @@ class TimeSeriesTest(unittest.TestCase):
         with raises(TypeError):
             ats1-np.arange(10)
 
-    def test_multiply_Array_TimeSeries_TimeSeries(self):
+    @staticmethod
+    def test_multiply_Array_TimeSeries_TimeSeries():
         ts1 = TimeSeries(range(10))
         ts2 = TimeSeries([10,34,23])
         ats1 = ArrayTimeSeries(values=range(10),times=range(10))
@@ -324,7 +338,8 @@ class TimeSeriesTest(unittest.TestCase):
             ats1*np.arange(10)
 
             
-    def test_bool(self):
+    @staticmethod
+    def test_bool():
         assert not bool(TimeSeries([0,0,0]))
         assert bool(TimeSeries([0,0,1]))
         assert bool(TimeSeries([-1,0,0]))

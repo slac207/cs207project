@@ -167,7 +167,15 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         --------
         A new instance of type(self) with the same times but updated values"""
         
-        return self + (-rhs) 
+        return self + (-rhs)
+
+    @property
+    def get_values(self):
+        return self._values
+
+    @property
+    def get_times(self):
+        return self._times
     
     @abc.abstractmethod
     def __getitem__(self):

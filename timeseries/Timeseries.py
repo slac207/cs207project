@@ -160,7 +160,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
             return cls((a + rhs for a in self._values),self._times)
         elif isinstance(rhs,pcls):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
-                return cls((a + b for a, b in zip(self._values,rhs._values)),self._times)
+                return cls((a + b for a, b in zip(self._values,rhs.get_values)),self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points.')
         elif isinstance(rhs,np.ndarray):
@@ -185,7 +185,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
             return cls((a*rhs for a in self._values),self._times)
         elif isinstance(rhs,pcls):
             if (len(self)==len(rhs)) and self._eqtimes(rhs):
-                return cls((a*b for a, b in zip(self._values,rhs._values)),self._times)
+                return cls((a*b for a, b in zip(self._values,rhs.get_values)),self._times)
             else:
                 raise ValueError(str(self)+' and '+str(rhs)+' must have the same time points')
         elif isinstance(rhs,np.ndarray):
@@ -195,11 +195,11 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
 
     def _eqtimes(self,rhs):
         """Test equality of the times of two SizedContainerTimeSeriesInterface instances"""
-        return len(self._times)==len(rhs._times) and all(a==b for a,b in zip(self._times,rhs._times))
+        return len(self._times)==len(rhs.get_times) and all(a==b for a,b in zip(self._times,rhs.get_times))
 
     def _eqvalues(self,rhs):
         """Test equality of the values of two SizedContainerTimeSeriesInterface instances"""
-        return len(self._values)==len(rhs._values) and all(a==b for a,b in zip(self._values,rhs._values))
+        return len(self._values)==len(rhs.get_values) and all(a==b for a,b in zip(self._values,rhs.get_values))
 
     def __eq__(self,rhs):
         """Tests if two SizedContainerTimeSeriesInterface have same times and values"""
