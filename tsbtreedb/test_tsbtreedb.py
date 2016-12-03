@@ -1,4 +1,4 @@
-''''
+"""'
 
 Authors:
 Sophie Hilgard
@@ -17,7 +17,7 @@ Example:
         $ source activate py35
         $ py.test test_tsbtreedb.py
 
-'''
+"""
 import os
 import sys
 

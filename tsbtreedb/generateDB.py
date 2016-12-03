@@ -33,7 +33,7 @@ if __name__ == "__main__":
     dbList = []
 
     # Create TS Referencing
-    # The 20 randomally selected vantagePtFiles
+    # The 20 randomly selected vantagePtFiles
     for j in range(20):
         fileName = 'tsdata/ts' + str(indexes[j]) + '.dat'
         dbName = "tsdb/db" + str(j) + ".dbdb"

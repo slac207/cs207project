@@ -43,7 +43,7 @@ def random_ts(a):
 
 
 def stand(x, m, s):
-    '''Standardize timeseries x by mean m and std deviation s
+    """Standardize timeseries x by mean m and std deviation s
 
     Args:
     x: Timeseries that is beign standardized
@@ -52,21 +52,21 @@ def stand(x, m, s):
 
     Output:
     A timeseries with mean 0 and standard deviation 1
-    '''
+    """
     vals = np.array(list(iter(x)))
     vals = (vals - m) / s
     return ts.TimeSeries(vals, list(x.itertimes()))
 
 
 def ccor(ts1, ts2):
-    '''given two standardized time series, compute their cross-correlation using FFT
+    """given two standardized time series, compute their cross-correlation using FFT
 
     Args:
     ts1, ts2: Timeseries whose correlation has to be checked
 
     Output: Value of dot product of the timeseries for different shifts of the second timeseries
 
-    '''
+    """
     f1 = nfft.fft(list(iter(ts1)))
     f2 = nfft.fft(np.flipud(list(iter(ts2))))
     cc = np.real(nfft.ifft(f1 * f2)) / (abs(ts1) * abs(ts2))
@@ -76,14 +76,14 @@ def ccor(ts1, ts2):
 # this is just for checking the max correlation with the
 # kernelized cross-correlation
 def max_corr_at_phase(ts1, ts2):
-    '''Calculates the maximum value of the correlation for different shifts
+    """Calculates the maximum value of the correlation for different shifts
 
     Args:
     ts1, ts2: Timeseries whose correlation is to be calculated
 
     Output:
     idx: Index of maximum correlation
-    maxcorr: Value of maximum correlation'''
+    maxcorr: Value of maximum correlation"""
     ccorts = ccor(ts1, ts2)
     cidx = np.argmax(ccorts)
     maxcorr = ccorts[cidx]
@@ -95,7 +95,7 @@ def max_corr_at_phase(ts1, ts2):
 # normalize the kernel there by np.sqrt(K(x,x)K(y,y)) so that the correlation
 # of a time series with itself is 1. We'll set the default multiplier to 1.
 def kernel_corr(ts1, ts2, mult=1):
-    '''Kernelized correlation calculated with an exponential kernel.
+    """Kernelized correlation calculated with an exponential kernel.
         The correlation value may be slightly greater than 1 due to precision issues in the calculation
 
     Args:
@@ -103,7 +103,7 @@ def kernel_corr(ts1, ts2, mult=1):
     mult: Kernel constant
 
     Output:
-    Value of the correlation as a float'''
+    Value of the correlation as a float"""
     # your code here.
     ccorts = ccor(ts1, ts2)
     cc1 = ccor(ts1, ts1)
