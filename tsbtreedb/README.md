@@ -31,8 +31,9 @@ genSimilarity.py
  Takes the name of a new data file as input, and returns the name of an existing
 data file whose time series is the most similar.
 
-Compares the passed timeseries (in the first argument) the timeseries stored in
-the folder /tsdb
+Compares the passed timeseries (in the first argument) to the timeseries stored in
+folder /tsdata presuming databases in folder /tsdb are databases referencing /tsdata
+timeseries.
 
 **How:**
 python genSimilarity.py tsdata/ts899.dat
