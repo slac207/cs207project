@@ -4,7 +4,7 @@ import struct # for storage class
 import portalocker # for storage class
 
 class ValueRef(object):
-    " a reference to a string value on disk"
+    "A reference to a string value on disk"
     def __init__(self, referent=None, address=0):
         self._referent = referent # value to store
         self._address = address # address to store at
@@ -72,6 +72,10 @@ class BinaryNodeRef(ValueRef):
         )
 
 class BinaryNode(object):
+    """
+    Class that points to one node of a Binary Tree and stores references
+    to its children nodes.
+    """
     @classmethod
     def from_node(cls, node, **kwargs):
         "Clone a node with some changes from another one"
@@ -131,13 +135,13 @@ class BinaryTree(object):
         while node is not None:
             if key < node.key:
                 node = self._follow(node.left_ref)
-            elif key < node.key:
+            elif key > node.key: # this was a bug!
                 node = self._follow(node.right_ref)
             else:
                 return self._follow(node.value_ref)
         raise KeyError
 
-    def set(self, key, value):
+    def set(self, key, value): # Have questions about this one
         "Set a new value in the tree. Will cause a new tree"
         #try to lock the tree. If we succeed make sure
         #we dont lose updates from any other process
@@ -172,7 +176,7 @@ class BinaryTree(object):
 
     def delete(self, key):
         "Delete node with key, creating new tree and path"
-        if self._storage.lock():
+        if self._storage.lock(): # returns true if it was unlocked
             self._refresh_tree_ref()
         node = self._follow(self._tree_ref)
         self._tree_ref = self._delete(node, key)
@@ -224,6 +228,10 @@ class BinaryTree(object):
             node = next_node
 
 class Storage(object):
+    """
+    Storage class to interact with the file on disk.
+    Manages writing to file, locking/unlocking for editing, and closing the file."
+    """
     SUPERBLOCK_SIZE = 4096
     INTEGER_FORMAT = "!Q"
     INTEGER_LENGTH = 8
@@ -245,7 +253,7 @@ class Storage(object):
         self.unlock()
 
     def lock(self):
-        "If not locked, lock the file for writing"
+        "If not locked, lock the file for writing and return True"
         if not self.locked:
             portalocker.lock(self._f, portalocker.LOCK_EX)
             self.locked = True
@@ -337,6 +345,27 @@ class Storage(object):
         return self._f.closed
 
 class DBDB(object):
+    """
+    Database class to manage Storage and BinaryTree operations.
+
+    Attributes:
+    ----------
+    _storage: Storage object to manage file writes/reads
+    _tree: BinaryTree object to manage a Red Black Tree
+
+    Example:
+    --------
+    >>> import os
+    >>> fd = os.open("/tmp/test.dbdb", os.O_RDWR | os.O_CREAT)
+    >>> f  = open(fd, 'r+b')
+    >>> db = DBDB(f)
+    >>> db.set("rahul", "aged")
+    >>> db.set("kobe", "stillyoung")
+    >>> db.get("rahul")
+    'aged'
+    >>> db.commit()
+    >>> db.close()
+    """
 
     def __init__(self, f):
         "Creates storage and tree properties"
