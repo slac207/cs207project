@@ -177,7 +177,7 @@ class BinaryTree(object):
     def delete(self, key):
         "Delete node with key, creating new tree and path"
         if self._storage.lock(): # returns true if it was unlocked
-            self._refresh_tree_ref()
+            self._refresh_tree_ref() # pragma: no cover
         node = self._follow(self._tree_ref)
         self._tree_ref = self._delete(node, key)
 
