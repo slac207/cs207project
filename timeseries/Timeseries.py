@@ -43,7 +43,7 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
         self._values = [x for x in values]
 
 
-        if times == None: #if not provided times, need to produce them
+        if times is None: #if not provided times, need to produce them
             self._times = range(0,len(values))
         else:
             #test if times is a sequence
