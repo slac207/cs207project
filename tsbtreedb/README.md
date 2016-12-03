@@ -67,7 +67,7 @@ Code to calculate distances from vantage points which you can then use to do sim
 python SimilaritySearch.py
 
 **Returns:**
-Some test script results
+Basic test results of SimilaritySearch.py functionality
 
 ### Lab 10
 **Where:**
