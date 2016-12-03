@@ -38,20 +38,18 @@ def binary_search(da_array, needle):
 
     """
     min_index = 0
-    max_index=len(da_array) - 1
+    max_index = len(da_array) - 1
 
     while True:
-        "needle in da_array => needle in da_array[min_index:max_index]"   
-        if min_index > max_index: 
-            return (max_index,min_index)
-        
-        midpoint = min_index + (max_index - min_index)//2
-        if da_array[midpoint] > needle:#lower part
+        "needle in da_array => needle in da_array[min_index:max_index]"
+        if min_index > max_index:
+            return (max_index, min_index)
+
+        midpoint = min_index + (max_index - min_index) // 2
+        if da_array[midpoint] > needle:  # lower part
             max_index = midpoint - 1
         elif da_array[midpoint] < needle:
             min_index = midpoint + 1
         else:
             index = midpoint
             return index
-        
-        

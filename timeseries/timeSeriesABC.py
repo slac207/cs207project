@@ -7,23 +7,23 @@ class TimeSeriesInterface(abc.ABC):
     """
     Interface for TimeSeries class which inherits from ABC
     """
-    
+
     @abc.abstractmethod
     def __iter__(self):
         """Iterate over values."""
-        
+
     @abc.abstractmethod
     def itertimes(self):
         """Iterate over times."""
-        
+
     @abc.abstractmethod
     def iteritems(self):
         """Iterate over (time, value) pairs."""
-        
+
     @abc.abstractmethod
     def itervalues(self):
         """Iterate over values."""
-    
+
     @abc.abstractmethod
     def __repr__(self):
         """
@@ -31,17 +31,15 @@ class TimeSeriesInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def __str__(self): 
+    def __str__(self):
         """
         All TimeSeries must support a str function
         """
-        
-        
+
     @lazy.lazy
     def identity(self):
         # lazy implementation of the identity function
         return self
-
 
     @property
     def lazy(self):
@@ -54,27 +52,25 @@ class TimeSeriesInterface(abc.ABC):
         -------
         self.identity() : a LazyOperation instance
         """
-        return self.identity() 
-        
-        
-    @abc.abstractmethod    
+        return self.identity()
+
+    @abc.abstractmethod
     def mean(self, chunk=None):
         """
         Require ability to calculate the mean of values within a 
         TimeSeriesInterface instance.
         Optional `chunk` argument to be used for subclass instances
         with no storage.
-        """ 
-        
-    @abc.abstractmethod    
+        """
+
+    @abc.abstractmethod
     def std(self, chunk=None):
         """
         Require ability to calculate the standard deviation of values within a 
         TimeSeriesInterface instance.
         Optional `chunk` argument to be used for subclass instances
         with no storage.        
-        """          
-
+        """
 
 
 class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
@@ -91,25 +87,22 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         for i in self._values:
             yield i
 
-            
     def itertimes(self):
         for i in self._times:
             yield i
 
-            
     def iteritems(self):
-        for i,j in zip(self._times,self._values):
-            yield i,j
+        for i, j in zip(self._times, self._values):
+            yield i, j
 
-            
     def itervalues(self):
         for j in self._values:
             yield j
-        
-    def __contains__(self,item):
+
+    def __contains__(self, item):
         """Returns boolean of whether given 'item' is contained in _.values"""
         return item in self._values
-    
+
     def __repr__(self):
         """
         Returns a string representation of a SizedContainerTimeSeriesInterface
@@ -120,14 +113,14 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         where n is the length of `self`
               t displays the first three elements of _times
               v displays the first three elements of _values
-        """        
+        """
         r = reprlib.Repr()
-        r.maxlist = 3       # max elements displayed for lists
+        r.maxlist = 3  # max elements displayed for lists
         cls = type(self).__name__
-        timesStr  = r.repr(self._times)
+        timesStr = r.repr(self._times)
         valuesStr = r.repr(self._values)
         return "{}(Length: {}, Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
-    
+
     def __str__(self):
         """
         Returns a string representation of a SizedContainerTimeSeriesInterface
@@ -138,19 +131,18 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         where n is the length of `self`
               t displays the first three elements of _times
               v displays the first three elements of _values
-        """        
+        """
         r = reprlib.Repr()
-        r.maxlist = 3       # max elements displayed for lists
+        r.maxlist = 3  # max elements displayed for lists
         cls = type(self).__name__
-        timesStr  = r.repr(self._times)
+        timesStr = r.repr(self._times)
         valuesStr = r.repr(self._values)
-        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr) 
-    
+        return "{} with {} elements (Times: {}, Values: {})".format(cls, len(self._values), timesStr, valuesStr)
 
     def items(self):
         """Returns a list of (time, value) pairs"""
-        return list(zip(self._times,self._values))
-    
+        return list(zip(self._times, self._values))
+
     def __pos__(self):
         """Returns: TimeSeries instance with no change to the values or times"""
         return self
@@ -166,7 +158,7 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
         Returns:
         --------
         A new instance of type(self) with the same times but updated values"""
-        
+
         return self + (-rhs)
 
     @property
@@ -176,103 +168,103 @@ class SizedContainerTimeSeriesInterface(TimeSeriesInterface):
     @property
     def get_times(self):
         return self._times
-    
+
     @abc.abstractmethod
     def __getitem__(self):
         """
         Require indexing for sized-container based TimeSeries.
-        """   
-        
+        """
+
     @abc.abstractmethod
     def __setitem__(self):
         """
         Require assignment for sized-container based TimeSeries.
-        """ 
-        
+        """
+
     @abc.abstractmethod
     def __len__(self):
         """
         Require notion of size for sized-container based TimeSeries.
-        """ 
-        
+        """
+
     @abc.abstractmethod
     def values(self):
         """
         Require ability to return stored values for sized-container based TimeSeries.
-        """    
-        
+        """
+
     @abc.abstractmethod
     def times(self):
         """
         Require ability to return stored values for sized-container based TimeSeries.
-        """  
-        
+        """
+
     @abc.abstractmethod
     def interpolate(self):
         """
         Require notion of value interpolation for times not present originally
         for sized-container based TimeSeries.
-        """ 
-        
+        """
+
     @abc.abstractmethod
     def __neg__(self):
         """
         Require ability to negate values for sized-container based TimeSeries.
-        """   
-        
+        """
+
     @abc.abstractmethod
     def __abs__(self):
         """
         Require notion of 2-norm over values for sized-container based TimeSeries.
-        """ 
-        
+        """
+
     @abc.abstractmethod
     def __bool__(self):
         """
         Require ability to test if self._values is all zeros
-        """   
-        
+        """
+
     @abc.abstractmethod
     def __add__(self):
         """
         Require ability to add together two SizedContainerTimeSeriesInterface
         instances, assuming that their times are equivalent pairwise.
-        """       
-        
+        """
+
     @abc.abstractmethod
     def __mul__(self):
         """ 
         Require ability to multiply two SizedContainerTimeSeriesInterface
         instances, assuming that their times are equivalent pairwise.
-        """   
-        
-    @abc.abstractmethod    
-    def __eq__(self,rhs):
+        """
+
+    @abc.abstractmethod
+    def __eq__(self, rhs):
         """
         Require notion of equality between two SizedContainerTimeSeriesInterface
         instances.
-        """  
-       
-        
+        """
+
+
 class StreamTimeSeriesInterface(TimeSeriesInterface):
     """
     Abstract Base Class for timeseries data
     that arrive streaming.
     """
-    
+
     @abc.abstractmethod
-    def produce(self,chunk=1)->list:
+    def produce(self, chunk=1) -> list:
         """
         Output a list of (time,value) tuples of length chunk
         """
-    
+
     def __repr__(self):
         cls = type(self)
         return "Instance of a {} with streaming input".format(cls.__name__)
 
     def __str__(self):
         return repr(self)
-        
+
     @abc.abstractmethod
     def online_mean(self):
         """Return a SimulatedTimeSeries of the running mean."""
