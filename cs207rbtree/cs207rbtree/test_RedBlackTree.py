@@ -7,7 +7,7 @@ from cs207rbtree import *
 
 class RedBlackTreeTest(unittest.TestCase):
     
-    def get_f(dbname):
+    def get_f(self, dbname):
         "Open file with `dbname` as path."
         try:
             f = open(dbname, 'r+b')
