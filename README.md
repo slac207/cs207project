@@ -11,12 +11,12 @@
 ### `cs207rbtree` (directory) 
 Contains a `pip install`able implementation of a Red Black Tree.
 
-[ ] describe directory contents.
+- [ ] describe directory contents.
 
 ### `timeseries` 
 Contains our time series implementation.
 
-[ ] describe directory contents.
+- [ ] describe directory contents.
 
 
 --------
