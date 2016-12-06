@@ -13,7 +13,7 @@ class RedBlackTreeTest(unittest.TestCase):
             f = open(dbname, 'r+b')
         except IOError:
             fd = os.open(dbname, os.O_RDWR | os.O_CREAT)
-        return DBDB(f)
+        return cs207rbtree.DBDB(f)
 
     def test_smoke(self):
         "Smoke test to make sure unbalanced tree is working"
