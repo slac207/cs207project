@@ -29,5 +29,5 @@ def generate_time_series():
             pickle.dump(x, f)
         
 if __name__ == "__main__":
-    generate_time_series()
+    generate_time_series() #pragma: no cover
         
