@@ -3,7 +3,7 @@ import os
 from pytest import raises
 import unittest
 import numpy as np
-from RedBlackTree import *
+from cs207rbtree import *
 
 class RedBlackTreeTest(unittest.TestCase):
 
