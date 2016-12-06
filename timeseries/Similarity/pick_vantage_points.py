@@ -69,4 +69,4 @@ def pick_vantage_points(arg):
     return vantage_pts    
 
 if __name__ == "__main__":
-    pick_vantage_points(sys.argv[1:])
+    pick_vantage_points(sys.argv[1:]) # pragma: no cover

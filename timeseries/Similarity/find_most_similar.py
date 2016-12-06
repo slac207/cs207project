@@ -14,8 +14,6 @@ import pickle
 import argparse
 import shutil
 
-print(sys.path)
-
 global PATH
 PATH = 'timeseries/Similarity/'
 
@@ -162,7 +160,8 @@ def similarity_program(arg):
     else:
         print(ts)
                         
-        
+def main(args):
+    similarity_program(args[1:])
 
 if __name__ == "__main__":
-    similarity_program(sys.argv[1:])
+    similarity_program(sys.argv[1:]) # pragma: no cover
