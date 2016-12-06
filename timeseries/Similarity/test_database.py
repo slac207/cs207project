@@ -7,12 +7,14 @@ import BinarySearchDatabase
 from generate_time_series import generate_time_series
 from pick_vantage_points import pick_vantage_points
 from find_most_similar import find_most_similiar, sanity_check
+import find_most_similar
 import numpy as np
 import math
 import distances
 from scipy import signal
 import os
 import pickle
+import argparse
 
 global PATH
 PATH = 'timeseries/Similarity/'
@@ -97,7 +99,11 @@ class DataBase_tests(unittest.TestCase):
         n = 5
         ans = find_most_similiar(filename, n, vp)
         ans2 = sanity_check(filename,n)
-        assert ans == ans2              
+        assert ans == ans2     
+        
+    def test_command_line_program(self):
+        find_most_similar.main(['timeseries','Timeseries1','--n','1'])
+        find_most_similar.main(['timeseries','Timeseries1','--n','1','--save','True']) 
                     
                               
                                   
