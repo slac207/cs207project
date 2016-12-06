@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, os.path.abspath('../'))
+
 from pytest import raises
 import unittest
 import numpy as np
