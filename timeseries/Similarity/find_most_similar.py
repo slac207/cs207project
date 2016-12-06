@@ -14,7 +14,8 @@ import pickle
 import argparse
 import shutil
 
-
+global PATH
+PATH = '/Users/courtneycochrane/cs207project/timeseries/Similarity/'
 
 def sanity_check(filename,n):
     """
@@ -29,7 +30,7 @@ def sanity_check(filename,n):
         ts1 = pickle.load(f)
     
     for i in range(1000):
-        with open("GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
+        with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
             ts2 = pickle.load(f)     
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
         d.append([dist,"Timeseries"+str(i)])
@@ -54,7 +55,7 @@ def find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius):
     Returns: list of tuples (distance, timeseries id) in sorted order
     """
     #open database for that vantage point
-    db = BinarySearchDatabase.connect("VantagePointDatabases/"+str(closest_vantage_pt)+".dbdb")
+    db = BinarySearchDatabase.connect(PATH+"VantagePointDatabases/"+str(closest_vantage_pt)+".dbdb")
     
     #find all light curves within 2d of the vantage point
     light_curves_in_radius = db.get_nodes_less_than(radius)
@@ -64,7 +65,7 @@ def find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius):
     #find similiarity between these light curves and given light curve
     distance = []
     for l in light_curves_in_radius:
-        with open("GeneratedTimeseries/Timeseries"+str(l), "rb") as f:
+        with open(PATH+"GeneratedTimeseries/Timeseries"+str(l), "rb") as f:
             ts2 = pickle.load(f)
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
         distance.append([dist,"Timeseries"+str(l)]) 
@@ -92,7 +93,7 @@ def find_most_similiar(filename,n, vantage_pts):
     #find the most similiar vantage point = d 
     vantage_pts_dist = []
     for i in vantage_pts:
-        with open("GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
+        with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
             ts2 = pickle.load(f)
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
         vantage_pts_dist.append([dist,i])
@@ -118,7 +119,7 @@ def find_most_similiar(filename,n, vantage_pts):
 def similarity_program(arg):
     """This is a command line program that finds similiar timeseries"""
     vp = []
-    with open('VantagePointDatabases/vp') as f:
+    with open(PATH+'VantagePointDatabases/vp') as f:
         for line in f:
             vp.append(int(line.rstrip('\n')))    
     
@@ -129,7 +130,7 @@ def similarity_program(arg):
     parser.add_argument('--savefolder', help='Where to save result', type=str, default='SimilaritySearchResults')
     
     args = parser.parse_args(arg)
-    input_var = "GeneratedTimeseries/"+args.timeseries
+    input_var = PATH+"GeneratedTimeseries/"+args.timeseries
     n = args.n
     save = args.save
     savefolder = args.savefolder
@@ -152,7 +153,7 @@ def similarity_program(arg):
             os.mkdir(savefolder)          
 
         for i in ts:
-            with open("GeneratedTimeseries/"+str(i), "rb") as f:
+            with open(PATH+"GeneratedTimeseries/"+str(i), "rb") as f:
                 ts1 = pickle.load(f)
             with open(str(savefolder)+"/"+str(i),'wb') as f2:
                 pickle.dump(ts1, f2)
