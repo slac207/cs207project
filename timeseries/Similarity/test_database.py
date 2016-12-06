@@ -1,8 +1,6 @@
 import sys, inspect
 import os.path
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-
+sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 import unittest
 from pytest import raises
 import BinarySearchDatabase 
@@ -15,6 +13,10 @@ import distances
 from scipy import signal
 import os
 import pickle
+
+global PATH
+PATH = 'timeseries/Similarity/'
+
 
 class DataBase_tests(unittest.TestCase): 
     def setUp(self):
@@ -57,11 +59,11 @@ class DataBase_tests(unittest.TestCase):
         """tests that the generate_time_series """
         generate_time_series()
         for i in range(1000):
-            with open("GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
+            with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
                 pickle.load(f)
             
         with raises(FileNotFoundError):
-            with open("GeneratedTimeseries/Timeseries"+str(1000), "rb") as f:
+            with open(PATH+"GeneratedTimeseries/Timeseries"+str(1000), "rb") as f:
                 pickle.load(f)
             
         
@@ -69,29 +71,29 @@ class DataBase_tests(unittest.TestCase):
         vp = np.array(pick_vantage_points(20))
         assert (vp >= 0).all() and (vp <= 999).all()
         for i in range(1000):
-            db = BinarySearchDatabase.connect("VantagePointDatabases/"+str(i)+".dbdb")
+            db = BinarySearchDatabase.connect(PATH+"VantagePointDatabases/"+str(i)+".dbdb")
             db.close()
             
     def test_find_most_similiar(self):
         vp = np.array(pick_vantage_points(20))
         vp = []
-        with open('VantagePointDatabases/vp') as f:
+        with open(PATH+'VantagePointDatabases/vp') as f:
             for line in f:
                 vp.append(int(line.rstrip('\n')))
 
-        filename = "GeneratedTimeseries/Timeseries200"
+        filename = PATH+"GeneratedTimeseries/Timeseries200"
         n = 20
         ans = find_most_similiar(filename, n, vp)
         ans2 = sanity_check(filename,n)
         assert ans == ans2
         
-        filename = "GeneratedTimeseries/Timeseries932"
+        filename = PATH+"GeneratedTimeseries/Timeseries932"
         n = 3
         ans = find_most_similiar(filename, n, vp)
         ans2 = sanity_check(filename,n)
         assert ans == ans2     
         
-        filename = "GeneratedTimeseries/Timeseries32"
+        filename = PATH+"GeneratedTimeseries/Timeseries32"
         n = 5
         ans = find_most_similiar(filename, n, vp)
         ans2 = sanity_check(filename,n)

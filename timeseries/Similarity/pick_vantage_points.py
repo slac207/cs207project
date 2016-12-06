@@ -1,8 +1,8 @@
 import sys
 import os.path
 import shutil
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+import inspect
+sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 import distances
 import numpy as np
 import random
@@ -11,6 +11,9 @@ from ArrayTimeSeries import ArrayTimeSeries as ts
 import os
 import pickle
 import argparse
+
+global PATH
+PATH = 'timeseries/Similarity/'
 
 def pick_vantage_points(arg):
     """
@@ -31,26 +34,26 @@ def pick_vantage_points(arg):
         num = arg
     
     try:
-        shutil.rmtree('VantagePointDatabases')
-        os.mkdir('VantagePointDatabases')    
+        shutil.rmtree(PATH+'VantagePointDatabases')
+        os.mkdir(PATH+'VantagePointDatabases')    
     except:
-        os.mkdir('VantagePointDatabases')    
+        os.mkdir(PATH+'VantagePointDatabases')    
         
     
     vantage_pts = random.sample(range(0,1000),num)
 
     for vantage_point in vantage_pts:
         try:
-            os.remove("VantagePointDatabases/"+str(vantage_point)+".dbdb")
-            db1 = BinarySearchDatabase.connect("VantagePointDatabases/"+str(vantage_point)+".dbdb")
+            os.remove(PATH+"VantagePointDatabases/"+str(vantage_point)+".dbdb")
+            db1 = BinarySearchDatabase.connect(PATH+"VantagePointDatabases/"+str(vantage_point)+".dbdb")
         except:
-            db1 = BinarySearchDatabase.connect("VantagePointDatabases/"+str(vantage_point)+".dbdb")
+            db1 = BinarySearchDatabase.connect(PATH+"VantagePointDatabases/"+str(vantage_point)+".dbdb")
         
-        with open("GeneratedTimeseries/Timeseries"+str(vantage_point), "rb") as f:
+        with open(PATH+"GeneratedTimeseries/Timeseries"+str(vantage_point), "rb") as f:
             ts2 = pickle.load(f)
         for i in range(1000):
             if i != vantage_point:
-                with open("GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
+                with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
                     ts1 = pickle.load(f)
                 dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
                 db1.set(dist,str(i))
@@ -58,7 +61,7 @@ def pick_vantage_points(arg):
         db1.commit()
         db1.close()
         
-        f = open('VantagePointDatabases/vp', 'w')
+        f = open(PATH+'VantagePointDatabases/vp', 'w')
         for i in vantage_pts:
             f.write(str(i)+"\n")
         f.close()
