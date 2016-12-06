@@ -4,6 +4,23 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/slac207/cs207project/badge.svg?branch=master)](https://coveralls.io/github/slac207/cs207project?branch=master)
 
+# CS207 Final Project
+
+## Contents
+
+### `cs207rbtree` (directory) 
+Contains a `pip install`able implementation of a Red Black Tree.
+
+[ ] describe directory contents.
+
+### `timeseries` 
+Contains our time series implementation.
+
+[ ] describe directory contents.
+
+
+--------
+ *(below is documentation internal to the group)*
 
 # Project Workflow
 
