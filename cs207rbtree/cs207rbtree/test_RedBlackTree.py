@@ -1,11 +1,11 @@
 import sys
+import os
 sys.path.insert(0, os.path.abspath('../'))
 
 from pytest import raises
 import unittest
 import numpy as np
 from RedBlackTree import *
-import os
 
 class RedBlackTreeTest(unittest.TestCase):
 
