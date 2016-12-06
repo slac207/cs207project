@@ -114,83 +114,20 @@ class ValueRef(object):
             self.prepare_to_store(storage)
             self._address = storage.write(self.referent_to_bytes(self._referent))
 
-            
-class BinaryNodeRef(ValueRef):
-    """
-    A BinaryNodeRef object is a reference to a binary tree node on disk.
-    Inherits from ValueRef.
-    """
     
-    def prepare_to_store(self, storage):
-        """
-        Stores the node contents to disk within `storage`.
-           
-        Args
-        ----
-          storage: a Storage object
-                   (our Python representation of our data on disk)
-                   
-        Returns
-        -------
-          None.
-          
-        Notes
-        -----
-        This method calls BinaryNode.store_refs() 
-        """
-        if self._referent:
-            self._referent.store_refs(storage)
-
-    @staticmethod
-    def referent_to_bytes(referent):
-        """
-        Serializes the tree node (i.e., pickles the tree node) 
-          in preparation for disk storage.
-           
-        Args
-        ----
-          referent: node to be encoded
-                   
-        Returns
-        -------
-          A serialized tree node (e.g., a serialized BinaryNode object).
-        """
-        return pickle.dumps({
-            'left' : referent.left_ref.address,
-            'key'  : referent.key,
-            'value': referent.value_ref.address,
-            'right': referent.right_ref.address,
-        })
-
-    @staticmethod
-    def bytes_to_referent(string):
-        """
-        Deserializes the tree node (i.e., unpickles the tree node) 
-          typically after disk retrieval.
-           
-        Args
-        ----
-          string: value to be reconstituted
-                   
-        Returns
-        -------
-          A reconstituted BinaryNode object.
-        """        
-        d = pickle.loads(string)
-        return BinaryNode(
-            BinaryNodeRef(address=d['left']),
-            d['key'],
-            ValueRef(address=d['value']),
-            BinaryNodeRef(address=d['right']),
-        )
-    
-    
-class RedBlackNodeRef(BinaryNodeRef):
+class RedBlackNodeRef(ValueRef):
     """
     A RedBlackNodeRef object is a reference to a red-black 
       binary tree node on disk.
     Inherits from ValueRef.
     """
+    def prepare_to_store(self, storage):
+        """
+        Have a node store its refs.
+        """
+        if self._referent:
+            self._referent.store_refs(storage)    
+    
     
     @staticmethod
     def referent_to_bytes(referent):
@@ -237,76 +174,9 @@ class RedBlackNodeRef(BinaryNodeRef):
             d['color']
         )    
 
-    
-class BinaryNode(object):
-    """
-    A BinaryNode object contains the data of a single node in a 
-      binary tree, and stores references to the data and its two
-      child nodes.
-    """
-    
-    @classmethod
-    def from_node(cls, node, **kwargs):
-        """
-        Clones a node, but with updates as specified by addtional arguments.
-           
-        Args
-        ----
-          node:     tree node to be cloned
-          **kwargs: tree node attributes to be updated
-                   
-        Returns
-        -------
-          An updated BinaryNode object.
-        """           
-        return cls(
-            left_ref  = kwargs.get('left_ref', node.left_ref),
-            key       = kwargs.get('key', node.key),
-            value_ref = kwargs.get('value_ref', node.value_ref),
-            right_ref = kwargs.get('right_ref', node.right_ref),
-        )
-
-    def __init__(self, left_ref, key, value_ref, right_ref):
-        """
-        Class constructor.
-        A BinaryNode object consists of its data value, its address, 
-          and the addresses of its two children.
-           
-        Args
-        ----
-          left_ref:  address of left child (e.g., number of bytes from  
-                     start of file on disk, or ValueRef object)
-          key:       string associated with the data value stored
-                     in the tree.
-          value_ref: address of data value stored in this node
-          right_ref: address of right child                   
-        """
-        self.left_ref  = left_ref
-        self.key       = key
-        self.value_ref = value_ref
-        self.right_ref = right_ref
-
-    def store_refs(self, storage):
-        """
-        Method for BinaryNode object to save its contents to disk.
-        Recursively stores the entire tree to disk.
-           
-        Args
-        ----
-          storage: a Storage object
-                   (our Python representation of our data on disk)                  
-        """        
-        self.value_ref.store(storage)
-        # code below: 
-        #  calls BinaryNodeRef.store() which
-        #  calls BinaryNodeRef.prepare_to_store() which
-        #  calls BinaryNode.store_refs() on ???
-        #  thus recursively stores the whole tree
-        self.left_ref.store(storage)
-        self.right_ref.store(storage)
         
         
-class RedBlackNode(BinaryNode):
+class RedBlackNode(object):
     """
     A RedBlackNode object contains the data of a single node in a 
       binary tree, and stores references to the data and its two
@@ -358,42 +228,79 @@ class RedBlackNode(BinaryNode):
         self.color     = color    
         
         
-class BinaryTree(object):
-    """
-    Immutable Binary Tree class. Constructs new tree on changes.
-    """
-    
-    def __init__(self, storage):
+    def store_refs(self, storage):
         """
-        Class constructor.
-        The disk storage is set as a property of a BinaryTree object,
-          then all tree node references are refreshed.
+        Method for RedBlackNode object to save its contents to disk.
+        Recursively stores the entire tree to disk.
            
         Args
         ----
           storage: a Storage object
-                   (our Python representation of our data on disk)                   
+                   (our Python representation of our data on disk)                  
         """        
+        self.value_ref.store(storage)
+        self.left_ref.store(storage)
+        self.right_ref.store(storage)    
+        
+    def blacken(self):
+        if self.is_red():
+            return self.from_node(
+                self,
+                color=Color.BLACK,
+            )
+        return self
+    
+    def is_red(self):
+        """Check is node is colored black """
+        return self.color == Color.BLACK
+    
+    def is_black(self):
+        """Check is node is colored red """
+        return not self.color == Color.BLACK
+
+            
+class RedBlackTree(object):
+    """
+    Red Black Binary Tree class. 
+    Inherits from BinaryTree class, so is immutable as well 
+      (i.e., constructs new tree on changes).
+    """
+    def __init__(self,storage):
         self._storage = storage
         self._refresh_tree_ref()
-
+        
     def commit(self):
-        """
-        Commits tree changes to disk (within `_storage`).
-        Changes are final only when committed.                 
-        """                
-        # triggers BinaryNodeRef.store()
         self._tree_ref.store(self._storage)
-        # make sure address of new tree is stored()
-        self._storage.commit_root_address(self._tree_ref.address)
+        self._storage.commit_root_address(self._tree_ref.address)        
 
     def _refresh_tree_ref(self):
         """
         Gets reference to new tree if it has changed.
         """
-        self._tree_ref = BinaryNodeRef(
-            address=self._storage.get_root_address())
+        self._tree_ref = RedBlackNodeRef(
+            address=self._storage.get_root_address())        
 
+    def set(self, key, value): 
+        """
+        Sets a new value in the tree, causing a new tree to be created
+        (b/c of immutability).
+        
+        Args
+        ----
+        key:   indexes the value that we want to store
+        value: the data we want to store, under `key`
+        """
+        # try to lock the tree. If we succeed make sure
+        # we don't lose updates from any other process
+        if self._storage.lock():
+            self._refresh_tree_ref()
+        # get current top-level node and make a value-ref
+        node = self._follow(self._tree_ref)
+        value_ref = ValueRef(value)
+        # insert and get new tree ref
+        self._tree_ref = self._insert(node, key, value_ref)
+
+    
     def get(self, key):
         """
         Retrieves the value associated with the specified key.
@@ -404,9 +311,8 @@ class BinaryTree(object):
         
         Returns
         -------
-        The string value associated with `key`.
+        The value associated with `key`.
         """
-        # your code here
         # if tree is not locked by another writer
         # refresh the references and get new tree if needed
         if not self._storage.locked:
@@ -421,211 +327,7 @@ class BinaryTree(object):
                 node = self._follow(node.right_ref)
             else:
                 return self._follow(node.value_ref)
-        raise KeyError
-
-    def set(self, key, value): # Have questions about this one
-        """
-        Sets a new value in the tree, causing a new tree to be created
-        (b/c of immutability).
-        
-        Args
-        ----
-        key:   indexes the value that we want to store
-        value: the data we want to store, under `key`
-        """
-        # try to lock the tree. If we succeed make sure
-        # we don't lose updates from any other process
-        if self._storage.lock():
-            self._refresh_tree_ref()
-        # get current top-level node and make a value-ref
-        node = self._follow(self._tree_ref)
-        value_ref = ValueRef(value)
-        # insert and get new tree ref
-        self._tree_ref = self._insert(node, key, value_ref)
-
-
-    def _insert(self, node, key, value_ref):
-        """
-        Insert a new node creating a new path from tree root.
-        
-        Args
-        ----
-        node:      BinaryNode object (or None if our key/value has
-                   not been packaged as such)
-        key:       indexes the value that we want to store
-        value_ref: address of data value stored in this node
-                   (number of bytes from start of file on disk)
-        
-        Returns
-        -------
-        A BinaryNodeRef object that points to the new node.
-        """
-        # create a tree if there was none so far
-        if node is None:
-            new_node = BinaryNode(
-                BinaryNodeRef(), key, value_ref, BinaryNodeRef())
-        elif key < node.key:
-            new_node = BinaryNode.from_node(
-                node,
-                left_ref=self._insert(
-                    self._follow(node.left_ref), key, value_ref))
-        elif key > node.key:
-            new_node = BinaryNode.from_node(
-                node,
-                right_ref=self._insert(
-                    self._follow(node.right_ref), key, value_ref))
-        else: # create a new node to represent this data
-            new_node = BinaryNode.from_node(node, value_ref=value_ref)
-        return BinaryNodeRef(referent=new_node)
-
-    def delete(self, key):
-        """
-        Deletes node with specified key, creating a new tree and 
-        reconstructed paths for any nodes directly associated with 
-        the deleted node.
-        
-        Args
-        ----
-        key:       indexes the value that we want to delete        
-        """
-        if self._storage.lock(): # returns true if it was unlocked
-            self._refresh_tree_ref() # pragma: no cover
-        node = self._follow(self._tree_ref)
-        self._tree_ref = self._delete(node, key)
-
-    def _delete(self, node, key):
-        """
-        Underlying implementation of node deletion
-        (called by delete() method).
-        
-        Args
-        ----
-        node:      BinaryNode object (or None if our key/value has
-                   not been packaged as such)
-        key:       indexes the value that we want to store      
-        """
-        if node is None:
-            raise KeyError
-        elif key < node.key:
-            new_node = BinaryNode.from_node(
-                node,
-                left_ref=self._delete(
-                    self._follow(node.left_ref), key))
-        elif key > node.key:
-            new_node = BinaryNode.from_node(
-                node,
-                right_ref=self._delete(
-                    self._follow(node.right_ref), key))
-        else:
-            left = self._follow(node.left_ref)
-            right = self._follow(node.right_ref)
-            if left and right:
-                replacement = self._find_max(left)
-                left_ref = self._delete(
-                    self._follow(node.left_ref), replacement.key)
-                new_node = BinaryNode(
-                    left_ref,
-                    replacement.key,
-                    replacement.value_ref,
-                    node.right_ref,
-                )
-            elif left:
-                return node.left_ref
-            else:
-                return node.right_ref
-        return BinaryNodeRef(referent=new_node)
-
-    def _follow(self, ref):
-        """
-        Get a node value from a reference.
-        
-        Args
-        ----
-        ref: the address where the desired value is located.
-        
-        Returns
-        -------
-        The string located at at the specified address.
-        """
-        # calls BinaryNodeRef.get()
-        return ref.get(self._storage)
-
-    def _find_max(self, node):
-        """
-        Gives the node that represents the right-most maximum, relative to
-        the given node. If the given node is a terminal node, then
-        we return it. 
-        
-        Args
-        ----
-        node: the node that we want to find the relative maximum against
-        
-        Returns
-        -------
-        The BinaryNode object that is the maximum, relative to `node`.
-        """
-        while True:
-            next_node = self._follow(node.right_ref)
-            if next_node is None:
-                return node
-            node = next_node      
-            
-            
-class RedBlackTree(BinaryTree):
-    """
-    Red Black Binary Tree class. 
-    Inherits from BinaryTree class, so is immutable as well 
-      (i.e., constructs new tree on changes).
-    """
-
-    def _refresh_tree_ref(self):
-        """
-        Gets reference to new tree if it has changed.
-        """
-        self._tree_ref = RedBlackNodeRef(
-            address=self._storage.get_root_address())        
-
-    def set(self, key, value): # Have questions about this one
-        """
-        Sets a new value in the tree, causing a new tree to be created
-        (b/c of immutability).
-        
-        Args
-        ----
-        key:   indexes the value that we want to store
-        value: the data we want to store, under `key`
-        """
-        # try to lock the tree. If we succeed make sure
-        # we don't lose updates from any other process
-        if self._storage.lock():
-            self._refresh_tree_ref()
-        # get current top-level node and make a value-ref
-        node = self._follow(self._tree_ref)
-        value_ref = ValueRef(value)
-        # insert and get new tree ref
-        self._tree_ref = self._insert(node, key, value_ref)
-        # add coloring
-        self._tree_ref = self._blacken(self._follow(self._tree_ref))
-
-    def _blacken(self, node):
-        """
-        Changes a node's color to black.
-        
-        Args
-        ----
-        node:      RedBlackNode-like object (or None if our key/value has
-                   not been packaged as such)
-        
-        Returns
-        -------
-        A RedBlackNodeRef object that points to the new node.
-        """ 
-        if node is None:
-            return RedBlackNodeRef(node)
-            
-        return RedBlackNodeRef(
-                     RedBlackNode.from_node(node, color=Color.BLACK)   
-               )
+        raise KeyError    
         
     def rotate_left(self, node): 
         """
@@ -636,7 +338,6 @@ class RedBlackTree(BinaryTree):
         
         A "left rotation" is when we switch the positions of `node` and
           its right child (call it RC) -- so `node` becomes the left child of RC.
-          
         
         Args
         ----
@@ -648,28 +349,13 @@ class RedBlackTree(BinaryTree):
         A RedBlackNodeRef object that points to the new node.
         """
         
-        # get the right child
-        rightChild = self._follow(node.right_ref)
-        
-        # if there's a value in the left grandchild...
-        if self._follow(rightChild.left_ref) is not None:
-            # copy the grandchild
-            newNode = RedBlackNode.from_node(self._follow(rightChild.left_ref),
-                                             left_ref  = RedBlackNodeRef(),
-                                             right_ref = RedBlackNodeRef(),
-                                             color     = node.color)
-            newNodeRef = RedBlackNodeRef(referent = newNode)
-        else: 
-            # otherwise just make an empty node
-            newNodeRef = RedBlackNodeRef()
-        
-        # create a new node, whose right child the node we just created
-        newChild = RedBlackNode.from_node(node, 
-                                          right_ref = newNodeRef)
-        
-        # create another node, who left child is the node we just created
-        rotatedChild = RedBlackNode.from_node(rightChild,
-                                              left_ref = RedBlackNodeRef(referent=newChild))
+        rotatedChild = RedBlackNode(RedBlackNodeRef(RedBlackNode.from_node(
+            node,
+            right_ref = self._follow(node.right_ref).left_ref)),
+                                    self._follow(node.right_ref).key,
+                                    self._follow(node.right_ref).value_ref,
+                                    self._follow(node.right_ref).right_ref,
+                                    self._follow(node.right_ref).color)
         
         return rotatedChild
         
@@ -685,38 +371,27 @@ class RedBlackTree(BinaryTree):
         
         Args
         ----
-        node:      RedBlackNode object (or None if our key/value has
-                   not been packaged as such)
+        node:      RedBlackNode object
         
         Returns
         -------
         A RedBlackNodeRef object that points to the new node.
         """
         
-        # get the right child
-        leftChild = self._follow(node.left_ref)
+        rotatedChild = RedBlackNode(
+            self._follow(node.left_ref).left_ref,
+            self._follow(node.left_ref).key,
+            self._follow(node.left_ref).value_ref,
+            self._follow(node.left_ref).color,            
+            
+            RedBlackNodeRef(
+                RedBlackNode.from_node(
+                    node,
+                    left_ref = self._follow(node.left_ref).right_ref)),
+        self._follow(node.left_ref).color)
         
-        # if there's a value in the right grandchild...
-        if self._follow(leftChild.right_ref) is not None:
-            # copy the grandchild
-            newNode = RedBlackNode.from_node(self._follow(leftChild.right_ref),
-                                             left_ref  = RedBlackNodeRef(),
-                                             right_ref = RedBlackNodeRef(),
-                                             color     = node.color)
-            newNodeRef = RedBlackNodeRef(referent = newNode)
-        else: 
-            # otherwise just make an empty node
-            newNodeRef = RedBlackNodeRef()
+        return rotatedChild
         
-        # create a new node, whose right child the node we just created
-        newChild = RedBlackNode.from_node(node, 
-                                          left_ref = newNodeRef)
-        
-        # create another node, who left child is the node we just created
-        rotatedChild = RedBlackNode.from_node(leftChild,
-                                              right_ref = RedBlackNodeRef(referent=newChild))
-        
-        return rotatedChild        
         
     def recolor(self, node):
         """
@@ -724,16 +399,15 @@ class RedBlackTree(BinaryTree):
         
         Args
         ----
-        node:      RedBlackNode object (or None if our key/value has
-                   not been packaged as such)
+        node:      RedBlackNode object 
         
         Returns
         -------
         The new recolored node.
         
         """
-        leftChild  = self._blacken(self._follow(node.left_ref))
-        rightChild = self._blacken(self._follow(node.right_ref))        
+        leftChild  = RedBlackNodeRef(self._blacken(self._follow(node.left_ref)))
+        rightChild = RedBlackNodeRef(self._blacken(self._follow(node.right_ref)))        
         
         return RedBlackNode.from_node(node,
                                       left_ref  = leftChild,
@@ -746,54 +420,72 @@ class RedBlackTree(BinaryTree):
         
         Args
         ----
-        node:      RedBlackNode object (or None if our key/value has
-                   not been packaged as such)
+        node:      RedBlackNode object 
         
         Returns
         -------
         The node that was passed to the function.   
         """
         # if new node is already red, we're done.
-        if self._isRed(node) | (node is None):
+        if node.is_red():
             return node
         
         leftChild  = self._follow(node.left_ref)
         rightChild = self._follow(node.right_ref)
         
-        if self._isRed(leftChild): 
+        if leftChild and leftChild.is_red(): 
             # if the left and right children are red, 
             # make `node` red and its children black (i.e., recolor)
-            if self._isRed(rightChild): 
+            if rightChild and rightChild.is_red(): 
                 return self.recolor(node)
+            
             # if this particular grandchild is red,
             #   rotate then recolor
-            if self._isRed(self._follow(leftChild.left_ref)):
+            if self._follow(leftChild.left_ref).is_red():
                 return self.recolor(self.rotate_right(node))
             # if this particular grandchild is red,
             #   rotate then recolor
-            if self._isRed(self._follow(leftChild.right_ref)):
+            if self._follow(leftChild.right_ref).is_red():
                 new_leftChild = self.rotate_left(leftChild)
                 newNode = RedBlackNode.from_node(node,
-                                                 left_ref = RedBlackNodeRef(referent = new_leftChild))
+                                                 left_ref = RedBlackNodeRef(new_leftChild))
                 return self.recolor(self.rotate_right(newNode))
         
         # the process we did above for the left child, we repeat for the right
-        if self._isRed(rightChild):
-            if self._isRed(self._follow(rightChild.right_ref)):
+        if rightChild and rightChild.is_red():
+            if self._follow(rightChild.right_ref).is_red():
                 return self.recolor(self.rotate_left(node))
-            if self._isRed(self._follow(rightChild.left_ref)):
+            if self._follow(rightChild.left_ref).is_red():
                 new_rightChild = self.rotate_right(rightChild)
                 newNode = RedBlackNode.from_node(node,
-                                                 right_ref = RedBlackNodeRef(referent = new_rightChild))
+                                                 right_ref = RedBlackNodeRef(new_rightChild))
                 return self.recolor(self.rotate_left(newNode))
         
         return node 
+         
     
-    def rootKey(self):
-        """
-        Returns the key stored in the root.
-        """
-        return self._follow(self._tree_ref).key
+    def get_nodes_less_than(self, key):
+        """Find all nodes that have a key value <= 'key'"""
+        #if tree is not locked by another writer
+        #refresh the references and get new tree if needed
+        if not self._storage.locked:
+            self._refresh_tree_ref()
+            
+        node = self._follow(self._tree_ref)
+        stack = []
+        solution = []
+        while node is not None or len(stack)>0:
+
+            if node is not None:
+                stack.append(node)
+                node = self._follow(node.left_ref)
+            else:
+                node = stack.pop()
+                if node.key > key:
+                    return solution
+                solution.append(self._follow(node.value_ref))
+                node = self._follow(node.right_ref)
+        return solution 
     
     def _insert(self, node, key, value_ref):
         """
@@ -801,8 +493,7 @@ class RedBlackTree(BinaryTree):
         
         Args
         ----
-        node:      RedBlackNode object (or None if our key/value has
-                   not been packaged as such)
+        node:      RedBlackNode object 
         key:       indexes the value that we want to store
         value_ref: address of data value stored in this node
                    (number of bytes from start of file on disk)
@@ -811,55 +502,37 @@ class RedBlackTree(BinaryTree):
         -------
         A RedBlackNodeRef object that points to the new node.
         """
-        # create a tree if there was none so far
+        return RedBlackNodeRef(self._follow(self.update(
+            node,
+            key,
+            value_ref)).blacken())
+                                            
+    def _follow(self, ref):
+        """
+        Get a node from a reference
+        """
+        return ref.get(self._storage)   
+    
+    
+    def update(self, node, key, value_ref):
+        """Recursively update and balance along the way"""
         if node is None:
-            new_node = RedBlackNode(
-                RedBlackNodeRef(), key, value_ref, RedBlackNodeRef())
+            return RedBlackNodeRef(self.balance(RedBlackNode(
+                RedBlackNodeRef(), 
+                key, 
+                value_ref, 
+                RedBlackNodeRef(), 
+                Color.RED)))  
+        elif key==node.key:
+            return RedBlackNodeRef(self.balance(RedBlackNode.from_node(
+                node, value_ref=value_ref)))       
+        
         elif key < node.key:
-            newLeft_ref = self._insert(self._follow(node.left_ref), 
-                                       key,
-                                       value_ref)
-            newLeft     = self.balance(self._follow(newLeft_ref))
-            new_node    = self.balance(RedBlackNode.from_node(node,
-                            left_ref = RedBlackNodeRef(referent=newLeft)))
-        elif key > node.key:
-            newRight_ref = self._insert(self._follow(node.right_ref), 
-                                        key, 
-                                        value_ref)
-            newRight     = self.balance(self._follow(newRight_ref))
-            new_node     = self.balance(RedBlackNode.from_node(node,
-                            right_ref = RedBlackNodeRef(referent=newRight)))
-        else: # create a new node to represent this data
-            new_node = RedBlackNode.from_node(node, value_ref=value_ref)
-        return RedBlackNodeRef(referent=new_node)   
-        
-    def _isRed(self, node):
-        """
-        Checks whether the specified node is red.
-        
-        Args
-        ----
-        node:      RedBlackNode object (or None if our key/value has
-                   not been packaged as such)
-        """
-        if node is None:
-            return False
-        else:
-            return node.color == Color.RED  
-            
-    def _isBlack(self, node):
-        """
-        Checks whether the specified node is black.
-        
-        Args
-        ----
-        node:      RedBlackNode object (or None if our key/value has
-                   not been packaged as such)
-        """
-        if node is None:
-            return False
-        else:
-            return node.color == Color.BLACK          
+            return RedBlackNodeRef(self.balance(RedBlackNode.from_node(node,
+                left_ref=self.update(self._follow(node.left_ref), key, value_ref))))        
+        elif node.key < key:
+            return RedBlackNodeRef(self.balance(RedBlackNode.from_node(node,
+                right_ref=self.update(self._follow(node.right_ref), key, value_ref))))      
 
             
 class Storage(object):
@@ -1044,3 +717,19 @@ class DBDB(object):
     
     def rootKey(self):
         return self._tree.rootKey()
+    
+    def get_nodes_less_than(self, key):
+        self._assert_not_closed()
+        return self._tree.get_nodes_less_than(key) 
+    
+    def in_order_traversal(self):
+        self._assert_not_closed()
+        return self._tree.in_order_traversal() 
+    
+def connect(dbname):
+    try:
+        f = open(dbname, 'r+b')
+    except IOError:
+        fd = os.open(dbname, os.O_RDWR | os.O_CREAT)
+        f = os.fdopen(fd, 'r+b')
+    return DBDB(f)

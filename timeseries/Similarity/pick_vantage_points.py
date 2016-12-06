@@ -3,10 +3,13 @@ import os.path
 import shutil
 import inspect
 sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(os.path.dirname(currentdir))
 import distances
 import numpy as np
 import random
-import BinarySearchDatabase
+from cs207rbtree import RedBlackTree as Database
+#import BinarySearchDatabase as Database
 from ArrayTimeSeries import ArrayTimeSeries as ts
 import os
 import pickle
@@ -45,9 +48,9 @@ def pick_vantage_points(arg):
     for vantage_point in vantage_pts:
         try:
             os.remove(PATH+"VantagePointDatabases/"+str(vantage_point)+".dbdb")
-            db1 = BinarySearchDatabase.connect(PATH+"VantagePointDatabases/"+str(vantage_point)+".dbdb")
+            db1 = Database.connect(PATH+"VantagePointDatabases/"+str(vantage_point)+".dbdb")
         except:
-            db1 = BinarySearchDatabase.connect(PATH+"VantagePointDatabases/"+str(vantage_point)+".dbdb")
+            db1 = Database.connect(PATH+"VantagePointDatabases/"+str(vantage_point)+".dbdb")
         
         with open(PATH+"GeneratedTimeseries/Timeseries"+str(vantage_point), "rb") as f:
             ts2 = pickle.load(f)

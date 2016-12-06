@@ -2,9 +2,12 @@ import sys
 import os.path
 import inspect
 sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(os.path.dirname(currentdir))
 import numpy as np
 import random
-import BinarySearchDatabase
+from cs207rbtree import RedBlackTree as Database
+#import BinarySearchDatabase as Database
 from ArrayTimeSeries import ArrayTimeSeries as ts
 import os
 import distances
@@ -55,10 +58,12 @@ def find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius):
     Returns: list of tuples (distance, timeseries id) in sorted order
     """
     #open database for that vantage point
-    db = BinarySearchDatabase.connect(PATH+"VantagePointDatabases/"+str(closest_vantage_pt)+".dbdb")
+    db = Database.connect(PATH+"VantagePointDatabases/"+str(closest_vantage_pt)+".dbdb")
     
     #find all light curves within 2d of the vantage point
     light_curves_in_radius = db.get_nodes_less_than(radius)
+    print(light_curves_in_radius)
+    
     light_curves_in_radius.append(str(closest_vantage_pt)) # add in the vantage pt
     db.close()    
     
@@ -146,16 +151,16 @@ def similarity_program(arg):
     ts = find_most_similiar(input_var,n, vp)
     
     if save == True:
-        if os.path.isdir(savefolder):
-            shutil.rmtree(savefolder)
-            os.mkdir(savefolder) 
+        if os.path.isdir(PATH+savefolder):
+            shutil.rmtree(PATH+savefolder)
+            os.mkdir(PATH+savefolder) 
         else:
-            os.mkdir(savefolder)          
+            os.mkdir(PATH+savefolder)          
 
         for i in ts:
             with open(PATH+"GeneratedTimeseries/"+str(i), "rb") as f:
                 ts1 = pickle.load(f)
-            with open(str(savefolder)+"/"+str(i),'wb') as f2:
+            with open(PATH+str(savefolder)+"/"+str(i),'wb') as f2:
                 pickle.dump(ts1, f2)
     else:
         print(ts)
