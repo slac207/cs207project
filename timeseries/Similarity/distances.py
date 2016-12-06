@@ -1,7 +1,7 @@
 import sys
 import os.path
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+import inspect
+sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 import numpy.fft as nfft
 import numpy as np
 from ArrayTimeSeries import ArrayTimeSeries as ts
