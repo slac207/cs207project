@@ -6,6 +6,7 @@ before_install:
     - pip install coveralls
     - pip install portalocker
     - pip install scipy
+    - pip install cs207rbtree
 script:
     - py.test
 after_success:
