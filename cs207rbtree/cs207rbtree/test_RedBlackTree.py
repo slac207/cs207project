@@ -9,27 +9,27 @@ class RedBlackTreeTest(unittest.TestCase):
 
     def test_smoke(self):
         "Smoke test to make sure unbalanced tree is working"
-        db = self.get_f("/tmp/test1.dbdb")
+        db = get_f("/tmp/test1.dbdb")
         db.set("rahul", "aged")
         db.set("pavlos", "aged")
         db.set("kobe", "stillyoung")
         assert db.get("pavlos")=="aged"
         db.commit()
         db.close()
-        newdb = self.get_f("/tmp/test1.dbdb")
+        newdb = get_f("/tmp/test1.dbdb")
         assert newdb.get("pavlos")=="aged"
         newdb.close()
         os.remove('/tmp/test1.dbdb')
 
     def test_inits(self):
         "Test init methods."
-        db = self.get_f("/tmp/test2.dbdb")
+        db = get_f("/tmp/test2.dbdb")
         db.close()
         os.remove('/tmp/test2.dbdb')
 
     def test_set_get(self):
         "Test that we can set a value and then retrieve it with get()."
-        db = self.get_f("/tmp/test3.dbdb")
+        db = get_f("/tmp/test3.dbdb")
         db.set("pavlos", "aged")
         assert db.get("pavlos")=="aged"
         db.close()
@@ -37,21 +37,21 @@ class RedBlackTreeTest(unittest.TestCase):
 
     def test_set_commit_get(self):
         "Test that we can set a value then retrieve it after committing."
-        db = self.get_f("/tmp/test4.dbdb")
+        db = get_f("/tmp/test4.dbdb")
         db.set("pavlos", "aged")
         db.commit()
         db.close()
-        db = self.get_f("/tmp/test4.dbdb")
+        db = get_f("/tmp/test4.dbdb")
         assert db.get("pavlos") == "aged"
         db.close()
         os.remove('/tmp/test4.dbdb')
 
     def test_set_no_commit(self):
         "Test that getting after setting without committing will raise a KeyError."
-        db = self.get_f("/tmp/test5.dbdb")
+        db = get_f("/tmp/test5.dbdb")
         db.set("pavlos", "aged")
         db.close()
-        db = self.get_f("/tmp/test5.dbdb")
+        db = get_f("/tmp/test5.dbdb")
         with raises(KeyError):
             db.get("pavlos")=="aged"
         db.close()
@@ -59,7 +59,7 @@ class RedBlackTreeTest(unittest.TestCase):
 
     def test_get_multiple(self):
         "Test that we can set multiple values."
-        db = self.get_f("/tmp/test6.dbdb")
+        db = get_f("/tmp/test6.dbdb")
         db.set("kobe", "baby")
         db.set("rahul", "veryyoung")
         db.set("pavlos", "stillyoung")
@@ -74,7 +74,7 @@ class RedBlackTreeTest(unittest.TestCase):
 
     def test_delete(self):
         "Test that we can delete a node."
-        db = self.get_f("/tmp/test7.dbdb")
+        db = get_f("/tmp/test7.dbdb")
         db.set("kobe", "baby")
         db.set("allison", "veryyoung")
         db.set("greg", "stillyoung")
@@ -94,7 +94,7 @@ class RedBlackTreeTest(unittest.TestCase):
 
     def test_close(self):
         "Test that we can close a file."
-        db = self.get_f("/tmp/test8.dbdb")
+        db = get_f("/tmp/test8.dbdb")
         db.close()
         with raises(ValueError):
             db._assert_not_closed()
@@ -102,7 +102,7 @@ class RedBlackTreeTest(unittest.TestCase):
 
     def test_delete_root(self):
         "Test that we can delete a root node and have expected behavior."
-        db = self.get_f("/tmp/test7.dbdb")
+        db = get_f("/tmp/test7.dbdb")
         db.set("kobe", "baby")
         db.set("yi", "old")
         db.set("cathy", "ancient")
@@ -125,21 +125,21 @@ class RedBlackTreeTest(unittest.TestCase):
         Test that we can set a value, replace it with a new value, 
         and the new value will be there post-commit.
         """
-        db = self.get_f("/tmp/test8.dbdb")
+        db = get_f("/tmp/test8.dbdb")
         db.set("pavlos", "aged")
         assert db.get("pavlos") == "aged"
         db.set("pavlos", "young")
         assert db.get("pavlos") == "young"
         db.commit()
         db.close()
-        db = self.get_f("/tmp/test8.dbdb")
+        db = get_f("/tmp/test8.dbdb")
         assert db.get("pavlos") == "young"
         db.close()
         os.remove('/tmp/test8.dbdb')
 
     def test_set_set(self):
         "Test that we can set a value and then replace it with a new value."
-        db = self.get_f("/tmp/test9.dbdb")
+        db = get_f("/tmp/test9.dbdb")
         db.set("pavlos", "aged")
         assert db.get("pavlos") == "aged"
         db.set("pavlos", "young")
@@ -149,7 +149,7 @@ class RedBlackTreeTest(unittest.TestCase):
         
     def test_getRoot(self):
         "Test that we can correctly recall the root key."
-        db = self.get_f("/tmp/test10.dbdb")
+        db = get_f("/tmp/test10.dbdb")
         db.set("kobe", "baby")
         db.set("rahul", "veryyoung")
         db.set("pavlos", "stillyoung")
@@ -159,7 +159,7 @@ class RedBlackTreeTest(unittest.TestCase):
         
     def test_nonexistantKey(self):
         "Test that we can correctly reject nonexistant keys."
-        db = self.get_f("/tmp/test11.dbdb")
+        db = get_f("/tmp/test11.dbdb")
         db.set("rahul", "veryyoung")
         db.set("pavlos", "stillyoung")
         db.commit()
