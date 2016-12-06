@@ -6,15 +6,14 @@ import numpy as np
 from cs207rbtree import *
 
 class RedBlackTreeTest(unittest.TestCase):
-
-		def get_f(dbname):
-    		"Open file with `dbname` as path."
-    		try:
-        		f = open(dbname, 'r+b')
-    		except IOError:
-        		fd = os.open(dbname, os.O_RDWR | os.O_CREAT)
-        		f = os.fdopen(fd, 'r+b')
-    		return DBDB(f)
+    
+    def get_f(dbname):
+        "Open file with `dbname` as path."
+        try:
+            f = open(dbname, 'r+b')
+        except IOError:
+            fd = os.open(dbname, os.O_RDWR | os.O_CREAT)
+        return DBDB(f)
 
     def test_smoke(self):
         "Smoke test to make sure unbalanced tree is working"
