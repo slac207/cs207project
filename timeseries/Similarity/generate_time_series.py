@@ -6,7 +6,6 @@ sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0
 import distances
 import numpy as np
 import random
-import BinarySearchDatabase
 from ArrayTimeSeries import ArrayTimeSeries as ts
 import os
 import pickle

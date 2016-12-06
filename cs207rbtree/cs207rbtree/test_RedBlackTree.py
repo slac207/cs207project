@@ -81,26 +81,6 @@ class RedBlackTreeTest(unittest.TestCase):
         db.close()
         os.remove('/tmp/test6.dbdb')
 
-    def test_delete(self):
-        "Test that we can delete a node."
-        db = self.get_f("/tmp/test7.dbdb")
-        db.set("kobe", "baby")
-        db.set("allison", "veryyoung")
-        db.set("greg", "stillyoung")
-        db.set("yi", "old")
-        db.set("cathy", "ancient")
-        db.delete("greg")
-        with raises(KeyError):
-            db.get("greg")
-        with raises(KeyError):
-            db.delete("greg")
-        assert db.get("allison")=="veryyoung"
-        assert db.get("yi")=="old"
-        assert db.get("cathy")=="ancient"
-        assert db.get("kobe")=="baby"
-        db.close()
-        os.remove('/tmp/test7.dbdb')
-
     def test_close(self):
         "Test that we can close a file."
         db = self.get_f("/tmp/test8.dbdb")
@@ -108,26 +88,6 @@ class RedBlackTreeTest(unittest.TestCase):
         with raises(ValueError):
             db._assert_not_closed()
         os.remove('/tmp/test8.dbdb')
-
-    def test_delete_root(self):
-        "Test that we can delete a root node and have expected behavior."
-        db = self.get_f("/tmp/test7.dbdb")
-        db.set("kobe", "baby")
-        db.set("yi", "old")
-        db.set("cathy", "ancient")
-        db.set("greg", "stillyoung")
-        db.set("allison", "veryyoung")
-        db.delete("kobe")
-        with raises(KeyError):
-            db.get("kobe")
-        with raises(KeyError):
-            db.delete("kobe")
-        assert db.get("allison")=="veryyoung"
-        assert db.get("yi")=="old"
-        assert db.get("cathy")=="ancient"
-        assert db.get("greg")=="stillyoung"
-        db.close()
-        os.remove('/tmp/test7.dbdb')
 
     def test_set_set_commit(self):
         """
@@ -155,16 +115,6 @@ class RedBlackTreeTest(unittest.TestCase):
         assert db.get("pavlos") == "young"
         db.close()
         os.remove('/tmp/test9.dbdb')
-
-    def test_getRoot(self):
-        "Test that we can correctly recall the root key."
-        db = self.get_f("/tmp/test10.dbdb")
-        db.set("kobe", "baby")
-        db.set("rahul", "veryyoung")
-        db.set("pavlos", "stillyoung")
-        assert db.rootKey() == "pavlos"
-        db.close()
-        os.remove('/tmp/test10.dbdb')
 
     def test_nonexistantKey(self):
         "Test that we can correctly reject nonexistant keys."
