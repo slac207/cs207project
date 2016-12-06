@@ -1,8 +1,8 @@
 import sys
 import os.path
+import inspect
 import shutil
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 import distances
 import numpy as np
 import random
@@ -12,7 +12,7 @@ import os
 import pickle
 
 global PATH
-PATH = '/Users/courtneycochrane/cs207project/timeseries/Similarity/'
+PATH = 'timeseries/Similarity/'
 
 
 def generate_time_series():

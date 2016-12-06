@@ -1,7 +1,6 @@
 import sys, inspect
 import os.path
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 import unittest
 from pytest import raises
 from ArrayTimeSeries import ArrayTimeSeries as ts

@@ -1,7 +1,7 @@
 import sys
 import os.path
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+import inspect
+sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 import numpy as np
 import random
 import BinarySearchDatabase
@@ -14,8 +14,10 @@ import pickle
 import argparse
 import shutil
 
+print(sys.path)
+
 global PATH
-PATH = '/Users/courtneycochrane/cs207project/timeseries/Similarity/'
+PATH = 'timeseries/Similarity/'
 
 def sanity_check(filename,n):
     """
