@@ -3,17 +3,18 @@ import os
 from pytest import raises
 import unittest
 import numpy as np
-import cs207rbtree
+import RedBlackTree
 
 class RedBlackTreeTest(unittest.TestCase):
-    
+
     def get_f(self, dbname):
         "Open file with `dbname` as path."
         try:
             f = open(dbname, 'r+b')
         except IOError:
             fd = os.open(dbname, os.O_RDWR | os.O_CREAT)
-        return cs207rbtree.DBDB(f)
+            f = os.fdopen(fd, 'r+b')
+        return RedBlackTree.DBDB(f)
 
     def test_smoke(self):
         "Smoke test to make sure unbalanced tree is working"
@@ -130,7 +131,7 @@ class RedBlackTreeTest(unittest.TestCase):
 
     def test_set_set_commit(self):
         """
-        Test that we can set a value, replace it with a new value, 
+        Test that we can set a value, replace it with a new value,
         and the new value will be there post-commit.
         """
         db = self.get_f("/tmp/test8.dbdb")
@@ -154,7 +155,7 @@ class RedBlackTreeTest(unittest.TestCase):
         assert db.get("pavlos") == "young"
         db.close()
         os.remove('/tmp/test9.dbdb')
-        
+
     def test_getRoot(self):
         "Test that we can correctly recall the root key."
         db = self.get_f("/tmp/test10.dbdb")
@@ -163,8 +164,8 @@ class RedBlackTreeTest(unittest.TestCase):
         db.set("pavlos", "stillyoung")
         assert db.rootKey() == "pavlos"
         db.close()
-        os.remove('/tmp/test10.dbdb') 
-        
+        os.remove('/tmp/test10.dbdb')
+
     def test_nonexistantKey(self):
         "Test that we can correctly reject nonexistant keys."
         db = self.get_f("/tmp/test11.dbdb")
@@ -173,7 +174,7 @@ class RedBlackTreeTest(unittest.TestCase):
         db.commit()
         with raises(KeyError):
             db.get("kobe")
-        os.remove('/tmp/test11.dbdb')   
+        os.remove('/tmp/test11.dbdb')
 
 if __name__=='__main__':
     try:  # pragma: no cover
