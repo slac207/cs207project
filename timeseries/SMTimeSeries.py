@@ -17,7 +17,7 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
         SMTimeSeries.from_ts(ts,id=id,SM=SM)
     """
 
-    def __init__(self,times=None,values=None,id=None,SM=None,get_from_SM=False):
+    def __init__(self,times=None,values=None,id=None,SM=None,get_from_SM=False,nosave=False):
         # Set the storage manager; make a new one if not given.
         if SM:
             self._sm = SM
@@ -28,6 +28,10 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
         if get_from_SM:
             self._ts = self._sm.get(id)
             self._id = id
+        elif nosave:
+            # Initialize elsewhere (get self._ts and self._id), without saving into the database.
+            pass
+            
         
         # If not, a timeseries was given.  It needs to be stored.
         else:
@@ -59,7 +63,7 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
     @classmethod
     def from_ops(cls,ts,SM=None):
         """return a SMTimeSeries instance from operations among SMTimeSeries instances; do not save it."""
-        new_ts = cls(times=range(5),values=range(5),SM=SM)
+        new_ts = cls(SM=SM,nosave=True)
         new_ts._ts = ts
         new_ts._id = None
         return new_ts
