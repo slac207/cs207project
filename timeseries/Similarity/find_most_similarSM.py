@@ -29,11 +29,11 @@ def sanity_check(filename,n):
     """
     ans = []
     d = []
-    with open(filename, "rb") as f:
+    with open(filename, "rb") as f: ####hereeee
         ts1 = pickle.load(f)
     
     for i in range(1000):
-        with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
+        with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f: ##here
             ts2 = pickle.load(f)     
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
         d.append([dist,"Timeseries"+str(i)])
@@ -70,10 +70,10 @@ def find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius):
     #find similiarity between these light curves and given light curve
     distance = []
     for l in light_curves_in_radius:
-        with open(PATH+"GeneratedTimeseries/Timeseries"+str(l), "rb") as f:
+        with open(PATH+"GeneratedTimeseries/Timeseries"+str(l), "rb") as f: #####hereeee
             ts2 = pickle.load(f)
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
-        distance.append([dist,"Timeseries"+str(l)]) 
+        distance.append([dist,"Timeseries"+str(l)])  ####?????
     return distance
 
     
@@ -92,13 +92,13 @@ def find_most_similiar(filename,n, vantage_pts):
     file_names = []
     
     #load the given file
-    with open(filename, "rb") as f:
+    with open(filename, "rb") as f: ####here
         ts1 = pickle.load(f)
        
     #find the most similiar vantage point = d 
     vantage_pts_dist = []
     for i in vantage_pts:
-        with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
+        with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f: ####here
             ts2 = pickle.load(f)
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
         vantage_pts_dist.append([dist,i])
