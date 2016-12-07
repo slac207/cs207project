@@ -1,6 +1,6 @@
 from socketserver import BaseRequestHandler, ThreadingTCPServer
 from server import * #Deserializer
-#from Similarity.find_most_similar import find_most_similiar
+from Similarity.find_most_similar import find_most_similiar
 
 class DatabaseServer(BaseRequestHandler): 
     
@@ -48,8 +48,11 @@ class DatabaseServer(BaseRequestHandler):
         return 'success!'
         
     def _sim_with_id(self,tsdbop):
+        id_list = find_most_similiar(tsdbop['id'],tsdbop['nclosest'],self.server.data['vantage_points'],self.server.data['storage_manager'])
+        result = TSDBOp_SimSearch_ID('simsearch_id')
+        result['id'] = id_list
         print('sim_with_id')
-        return 'success!'
+        return result
         
     def _ts_with_id(self,tsdbop):
         print('ts_with_id')
@@ -68,7 +71,7 @@ class DatabaseServer(BaseRequestHandler):
             
 if __name__ == '__main__':
     serv = ThreadingTCPServer(('', 20000), DatabaseServer) 
-    serv.data = ['input data goes here']
+    serv.data = {'vantage_points':'VP','storage_manager':'SM'}
     serv.deserializer = Deserializer()
     serv.serve_forever()
     

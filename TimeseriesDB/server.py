@@ -184,50 +184,52 @@ typemap = {
   'TSfromID': TSDBOp_TSfromID
 }
 
-class Server():
-    # Somehow make this a server
-    # rename it
-    # 
-    
-    def __init__(self):
-        # generate TS, pick VPs. 
-        self.deserializer = Deserializer()
-        pass
-        
-    def _get_data(self):
-        pass
-        #return data
-    
-    #get it on the socket, then (perhaps in a thread)
-    def data_received(self, data):
-            self.deserializer.append(data)
-            if self.deserializer.ready():
-                msg = self.deserializer.deserialize()
-                status = TSDBStatus.OK  # until proven otherwise.
-                response = TSDBOp_Return(status, None)  # until proven otherwise.
-                try:
-                    tsdbop = TSDBOp.from_json(msg)
-                except TypeError as e:
-                    status = TSDBStatus.INVALID_OPERATION
-                    response = TSDBOp_Return(status, None)
-                if status is TSDBStatus.OK:
-                    if isinstance(tsdbop, TSDBOp_SimSearch_TS):
-                        response = self._sim_with_ts(tsdbop)
-                    elif isinstance(tsdbop, TSDBOp_SimSearch_ID):
-                        response = self._sim_with_id(tsdbop)
-                    elif isinstance(tsdbop, TSDBOp_TSfromID):
-                        response = self._ts_with_id(tsdbop)
-                    else:
-                        response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
+#!!!! Add nclosest to TSDBOp dictionaries (optionally)
 
-                serialize(response.to_json())
-                #send it out
+# class Server():
+    # # Somehow make this a server
+    # # rename it
+    # # 
+    
+    # def __init__(self):
+        # # generate TS, pick VPs. 
+        # self.deserializer = Deserializer()
+        # pass
+        
+    # def _get_data(self):
+        # pass
+        # #return data
+    
+    # #get it on the socket, then (perhaps in a thread)
+    # def data_received(self, data):
+            # self.deserializer.append(data)
+            # if self.deserializer.ready():
+                # msg = self.deserializer.deserialize()
+                # status = TSDBStatus.OK  # until proven otherwise.
+                # response = TSDBOp_Return(status, None)  # until proven otherwise.
+                # try:
+                    # tsdbop = TSDBOp.from_json(msg)
+                # except TypeError as e:
+                    # status = TSDBStatus.INVALID_OPERATION
+                    # response = TSDBOp_Return(status, None)
+                # if status is TSDBStatus.OK:
+                    # if isinstance(tsdbop, TSDBOp_SimSearch_TS):
+                        # response = self._sim_with_ts(tsdbop)
+                    # elif isinstance(tsdbop, TSDBOp_SimSearch_ID):
+                        # response = self._sim_with_id(tsdbop)
+                    # elif isinstance(tsdbop, TSDBOp_TSfromID):
+                        # response = self._ts_with_id(tsdbop)
+                    # else:
+                        # response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
+
+                # serialize(response.to_json())
+                # #send it out
             
-    def _sim_with_ts(self,tsdbop):
-        pass
+    # def _sim_with_ts(self,tsdbop):
+        # pass
         
-    def _sim_with_id(self,tsdbop):
-        pass
+    # def _sim_with_id(self,tsdbop):
+        # pass
         
-    def _ts_with_id(self,tsdbop):
-        pass
+    # def _ts_with_id(self,tsdbop):
+        # pass
