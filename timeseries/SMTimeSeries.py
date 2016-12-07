@@ -56,6 +56,14 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
         """return a SMTimeSeries instance from a given timeseries that implements the SizedContainerTimeSeriesInterface."""
         return cls(times=ts.times(),values=ts.values(),SM=SM,id=id)
     
+    @classmethod
+    def from_ops(cls,ts,SM=None):
+        """return a SMTimeSeries instance from operations among SMTimeSeries instances; do not save it."""
+        new_ts = cls(times=range(5),values=range(5),SM=SM)
+        new_ts._ts = ts
+        new_ts._id = None
+        return new_ts
+
     @property
     def SM(self):
         """Return the storage manager used by the SMTimeSeries instance."""
@@ -112,13 +120,15 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
         
         """
         cls = type(self)
-        return cls.from_ts(self._ts.interpolate(times_to_interpolate),SM=self.SM)
+        return cls.from_ops(self._ts.interpolate(times_to_interpolate),SM=self.SM)
+        #return cls.from_ts(self._ts.interpolate(times_to_interpolate),SM=self.SM)
 
     def __neg__(self):
         """Returns: TimeSeries instance with negated values 
         but no change to times"""
         cls = type(self)
-        return cls.from_ts(-self._ts,SM=self.SM)
+        return cls.from_ops(-self._ts,SM=self.SM)
+        #return cls.from_ts(-self._ts,SM=self.SM)
 
     def __abs__(self):
         """Returns: L2-norm of the TimeSeries values"""
@@ -142,7 +152,8 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
         --------
         A new TimeSeries instance with the same times but updated values"""
         cls = type(self)
-        return cls.from_ts(self._ts+rhs,SM=self.SM)
+        return cls.from_ops(self._ts+rhs,SM=self.SM)
+        #return cls.from_ts(self._ts+rhs,SM=self.SM)
 
     def __mul__(self, rhs):
         """
@@ -155,7 +166,8 @@ class SMTimeSeries(SizedContainerTimeSeriesInterface):
         --------
         A new TimeSeries instance with the same times but updated `_values`."""
         cls = type(self)
-        return cls.from_ts(self._ts*rhs,SM=self.SM)
+        return cls.from_ops(self._ts*rhs,SM=self.SM)
+        #return cls.from_ts(self._ts*rhs,SM=self.SM)
         
     def __eq__(self,rhs):
         """Tests if two SizedContainerTimeSeriesInterface have same times and values"""
