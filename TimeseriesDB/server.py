@@ -229,5 +229,5 @@ class Server():
     def _sim_with_id(self,tsdbop):
         pass
         
-    def _ts_sith_id(self,tsdbop):
+    def _ts_with_id(self,tsdbop):
         pass
