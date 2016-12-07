@@ -15,6 +15,8 @@ from TimeseriesDB.generate_SMTimeseries import generate_time_series #script to g
 from pick_vantage_points import pick_vantage_points #script to pick vantage pts
 from find_most_similar import find_most_similiar, sanity_check #scipts that find most similiar
 from SMTimeSeries import SMTimeSeries as ts #use SMTimeseries
+from ArrayTimeSeries import ArrayTimeSeries as arrayts
+import distances
 
 global PATH
 PATH = 'timeseries/Similarity/'
@@ -65,7 +67,6 @@ class DataBase_tests(unittest.TestCase):
             db.close()
             
     def test_find_most_similiar(self):
-
         filename = 200
         n = 20
         ans = find_most_similiar(filename, n, self.vp, self.sm)
@@ -82,9 +83,29 @@ class DataBase_tests(unittest.TestCase):
         n = 5
         ans = find_most_similiar(filename, n, self.vp, self.sm)
         ans2 = sanity_check(filename,n, self.sm)
+        assert np.array_equal(ans,ans2)   
+        
+        #check to make sure we caught exception if an invalid id is passed
+        filename = 100000
+        n = 5
+        with raises(KeyError):
+            ans = find_most_similiar(filename, n, self.vp, self.sm)
+        
+    def test_find_most_similiar_newTS(self):
+        filename = distances.tsmaker(100, 100, 1000)
+        n = 20
+        ans = find_most_similiar(filename, n, self.vp, self.sm)
+        ans2 = sanity_check(filename,n,self.sm)
         assert np.array_equal(ans,ans2)     
+        
+        filename = distances.tsmaker(100, 100, 1000)
+        n = 3
+        ans = find_most_similiar(filename, n, self.vp, self.sm)
+        ans2 = sanity_check(filename,n, self.sm)
+        assert np.array_equal(ans,ans2)     
+        
+
             
-    
                                   
 if __name__=='__main__':
     try:  # pragma: no cover
