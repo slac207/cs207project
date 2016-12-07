@@ -139,15 +139,32 @@ class TSDBOp(dict):
         return typemap[json_dict['op']].from_json(json_dict)
 
 
-class TSDBOp_withTS(TSDBOp):
+class TSDBOp_SimSearch_TS(TSDBOp):
     def __init__(self, ts):
-        super().__init__('with_ts')
+        super().__init__('simsearch_ts')
         self['ts'] = ts
 
     @classmethod
     def from_json(cls, json_dict):
         return cls(ts.ArrayTimeSeries(*(json_dict['ts'])))
 
+class TSDBOp_SimSearch_ID(TSDBOp):
+    def __init__(self, idee):
+        super().__init__('simsearch_id')
+        self['id'] = idee
+
+    @classmethod
+    def from_json(cls, json_dict):
+        return cls(json_dict['id'])
+
+class TSDBOp_TSfromID(TSDBOp):
+    def __init__(self, idee):
+        super().__init__('TSfromID')
+        self['id'] = idee
+
+    @classmethod
+    def from_json(cls, json_dict):
+        return cls(json_dict['id'])
 
 class TSDBOp_Return(TSDBOp):
 
@@ -159,40 +176,58 @@ class TSDBOp_Return(TSDBOp):
     def from_json(cls, json_dict):  #should not be used, this is to return to client
         return cls(json_dict['status'], json_dict['payload'])
 
-class TSDBOp_withID(TSDBOp):
-    def __init__(self, idee):
-        super().__init__('with_id')
-        self['id'] = idee
-
-    @classmethod
-    def from_json(cls, json_dict):
-        return cls(json_dict['id'])
 
 # This simplifies reconstructing TSDBOp instances from network data.
 typemap = {
-  'with_ts': TSDBOp_withTS,
-  'with_id': TSDBOp_withID,
+  'simsearch_ts': TSDBOp_SimSearch_TS,
+  'simsearch_id': TSDBOp_SimSearch_ID,
+  'TSfromID': TSDBOp_TSfromID
 }
 
-#get it on the socket, then (perhaps in a thread)
-def data_received(self, data):
-        self.deserializer.append(data)
-        if self.deserializer.ready():
-            msg = self.deserializer.deserialize()
-            status = TSDBStatus.OK  # until proven otherwise.
-            response = TSDBOp_Return(status, None)  # until proven otherwise.
-            try:
-                tsdbop = TSDBOp.from_json(msg)
-            except TypeError as e:
-                response = TSDBOp_Return(TSDBStatus.INVALID_OPERATION, None)
-            if status is TSDBStatus.OK:
-                if isinstance(tsdbop, TSDBOp_withTS):
-                    response = self._with_ts(tsdbop)
-                elif isinstance(tsdbop, TSDBOp_withID):
-                    response = self._with_id(tsdbop)
-                else:
-                    response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
+class Server():
+    # Somehow make this a server
+    # rename it
+    # 
+    
+    def __init__(self):
+        # generate TS, pick VPs. 
+        self.deserializer = Deserializer()
+        pass
+        
+    def _get_data(self):
+        pass
+        #return data
+    
+    #get it on the socket, then (perhaps in a thread)
+    def data_received(self, data):
+            self.deserializer.append(data)
+            if self.deserializer.ready():
+                msg = self.deserializer.deserialize()
+                status = TSDBStatus.OK  # until proven otherwise.
+                response = TSDBOp_Return(status, None)  # until proven otherwise.
+                try:
+                    tsdbop = TSDBOp.from_json(msg)
+                except TypeError as e:
+                    status = TSDBStatus.INVALID_OPERATION
+                    response = TSDBOp_Return(status, None)
+                if status is TSDBStatus.OK:
+                    if isinstance(tsdbop, TSDBOp_SimSearch_TS):
+                        response = self._sim_with_ts(tsdbop)
+                    elif isinstance(tsdbop, TSDBOp_SimSearch_ID):
+                        response = self._sim_with_id(tsdbop)
+                    elif isinstance(tsdbop, TSDBOp_TSfromID):
+                        response = self._ts_with_id(tsdbop)
+                    else:
+                        response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
 
-            serialize(response.to_json())
-            #send it out
+                serialize(response.to_json())
+                #send it out
             
+    def _sim_with_ts(self,tsdbop):
+        pass
+        
+    def _sim_with_id(self,tsdbop):
+        pass
+        
+    def _ts_sith_id(self,tsdbop):
+        pass
