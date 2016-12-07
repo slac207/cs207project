@@ -65,7 +65,6 @@ class SimilarityTest(unittest.TestCase):
         
         
         
-        
 if __name__=='__main__':
     try:  # pragma: no cover
         unittest.main()  # pragma: no cover
