@@ -1,24 +1,22 @@
-import sys
-import os.path
-import shutil
-import inspect
+import sys, os, shutil, inspect
 sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(os.path.dirname(currentdir))
+sys.path.insert(0,currentdir)
+sys.path.insert(0,parentdir+'/cs207rbtree')
 import distances
 import numpy as np
 import random
-from cs207rbtree import RedBlackTree as Database
-#import BinarySearchDatabase as Database
-from ArrayTimeSeries import ArrayTimeSeries as ts
-import os
-import pickle
 import argparse
+
+from cs207rbtree import RedBlackTree as Database
+from StorageManager import FileStorageManager
+from SMTimeSeries import SMTimeSeries as ts
 
 global PATH
 PATH = 'timeseries/Similarity/'
 
-def pick_vantage_points(arg):
+def pick_vantage_points(arg, sm):
     """
     Code which picks 20 vantage points and produces a database for each one.
     The database stores (key,value) pairs where:
@@ -52,12 +50,11 @@ def pick_vantage_points(arg):
         except:
             db1 = Database.connect(PATH+"VantagePointDatabases/"+str(vantage_point)+".dbdb")
         
-        with open(PATH+"GeneratedTimeseries/Timeseries"+str(vantage_point), "rb") as f:
-            ts2 = pickle.load(f)
+        ts2 = ts.from_db(sm,vantage_point) #load in the timeseries from the Storage Manager 
+
         for i in range(1000):
             if i != vantage_point:
-                with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
-                    ts1 = pickle.load(f)
+                ts1 = ts.from_db(sm,i) #load in the timeseries from the Storage Manager 
                 dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
                 db1.set(dist,str(i))
     
@@ -70,6 +67,3 @@ def pick_vantage_points(arg):
         f.close()
         
     return vantage_pts    
-
-if __name__ == "__main__":
-    pick_vantage_points(sys.argv[1:]) # pragma: no cover
