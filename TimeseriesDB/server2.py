@@ -1,5 +1,6 @@
 from socketserver import BaseRequestHandler, ThreadingTCPServer
-from Similarity.find_most_similar import find_most_similiar
+from server import * #Deserializer
+#from Similarity.find_most_similar import find_most_similiar
 
 class DatabaseServer(BaseRequestHandler): 
     
@@ -19,9 +20,9 @@ class DatabaseServer(BaseRequestHandler):
     
     #get it on the socket, then (perhaps in a thread)
     def data_received(self, data):
-            self.deserializer.append(data)
-            if self.deserializer.ready():
-                msg = self.deserializer.deserialize()
+            self.server.deserializer.append(data)
+            if self.server.deserializer.ready():
+                msg = self.server.deserializer.deserialize()
                 status = TSDBStatus.OK  # until proven otherwise.
                 response = TSDBOp_Return(status, None)  # until proven otherwise.
                 try:
@@ -39,18 +40,20 @@ class DatabaseServer(BaseRequestHandler):
                     else:
                         response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
 
-                serial_response = serialize(response.to_json())
+                serial_response = serialize(TSDBOp.to_json(response))
                 self.request.send(serial_response)
             
     def _sim_with_ts(self,tsdbop):
-        pass
+        print('sim_with_ts')
+        return 'success!'
         
     def _sim_with_id(self,tsdbop):
-        pass
+        print('sim_with_id')
+        return 'success!'
         
-    def _ts_sith_id(self,tsdbop):
-        pass
-        
+    def _ts_with_id(self,tsdbop):
+        print('ts_with_id')
+        return 'success!'
         
     def handle(self):
         print('Got connection from', self.client_address) 
@@ -66,5 +69,6 @@ class DatabaseServer(BaseRequestHandler):
 if __name__ == '__main__':
     serv = ThreadingTCPServer(('', 20000), DatabaseServer) 
     serv.data = ['input data goes here']
+    serv.deserializer = Deserializer()
     serv.serve_forever()
     
