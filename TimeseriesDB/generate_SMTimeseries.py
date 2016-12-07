@@ -1,16 +1,9 @@
-import sys
-import os.path
-import inspect
-import shutil
+import sys, os, inspect, shutil
 sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 import timeseries.Similarity.distances as distances
 import numpy as np
 import random
-#from ArrayTimeSeries import ArrayTimeSeries as ts
 from StorageManager import FileStorageManager
-import os
-import pickle
-
 
 def generate_time_series():
     #make the FileStorageManager where we'll store all the Timeseries

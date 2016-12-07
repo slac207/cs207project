@@ -1,26 +1,22 @@
-import sys
-import os.path
-import inspect
+import sys, os, inspect, shutil
 sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(os.path.dirname(currentdir))
+sys.path.insert(0,currentdir)
+sys.path.insert(0,parentdir+'/cs207rbtree')
 import numpy as np
 import random
-from cs207rbtree.cs207rbtree import RedBlackTree as Database
-#import BinarySearchDatabase as Database
-from ArrayTimeSeries import ArrayTimeSeries as ts
-import os
-import distances
-import sys
+
+from cs207rbtree import RedBlackTree as Database
+from SMTimeSeries import SMTimeSeries as ts
 from pick_vantage_points import pick_vantage_points
-import pickle
-import argparse
-import shutil
+import distances
+ 
 
 global PATH
 PATH = 'timeseries/Similarity/'
 
-def sanity_check(filename,n):
+def sanity_check(filename,n,sm):
     """
     Function that manually finds the n most similiar timeseries to the given
     timeseries. Serves as a check of the vantage point method
@@ -29,14 +25,12 @@ def sanity_check(filename,n):
     """
     ans = []
     d = []
-    with open(filename, "rb") as f:
-        ts1 = pickle.load(f)
+    ts1 = ts.from_db(sm,int(filename))
     
     for i in range(1000):
-        with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
-            ts2 = pickle.load(f)     
+        ts2 = ts.from_db(sm,i)  
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
-        d.append([dist,"Timeseries"+str(i)])
+        d.append([dist,i])
         
     d.sort(key=lambda x: x[0])
     for i in range(1,n+1):
@@ -45,7 +39,7 @@ def sanity_check(filename,n):
     return ans
 
 
-def find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius):
+def find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius, sm):
     """
     Given a vantage point and a radius, find the points that fall within the
     circle around the vantage point. Then calculates the distance from all of these
@@ -62,7 +56,6 @@ def find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius):
     
     #find all light curves within 2d of the vantage point
     light_curves_in_radius = db.get_nodes_less_than(radius)
-    print(light_curves_in_radius)
     
     light_curves_in_radius.append(str(closest_vantage_pt)) # add in the vantage pt
     db.close()    
@@ -70,14 +63,13 @@ def find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius):
     #find similiarity between these light curves and given light curve
     distance = []
     for l in light_curves_in_radius:
-        with open(PATH+"GeneratedTimeseries/Timeseries"+str(l), "rb") as f:
-            ts2 = pickle.load(f)
+        ts2 = ts.from_db(sm,int(l))
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
-        distance.append([dist,"Timeseries"+str(l)]) 
+        distance.append([dist,int(l)]) 
     return distance
 
     
-def find_most_similiar(filename,n, vantage_pts):
+def find_most_similiar(filename,n, vantage_pts, sm):
     """
     Finds n most similiar time series to the time series of interest (filename)
     by using the supplied vantage points
@@ -92,14 +84,12 @@ def find_most_similiar(filename,n, vantage_pts):
     file_names = []
     
     #load the given file
-    with open(filename, "rb") as f:
-        ts1 = pickle.load(f)
+    ts1 = ts.from_db(sm,filename)
        
     #find the most similiar vantage point = d 
     vantage_pts_dist = []
     for i in vantage_pts:
-        with open(PATH+"GeneratedTimeseries/Timeseries"+str(i), "rb") as f:
-            ts2 = pickle.load(f)
+        ts2 = ts.from_db(sm,i)
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
         vantage_pts_dist.append([dist,i])
     
@@ -109,7 +99,7 @@ def find_most_similiar(filename,n, vantage_pts):
     for i in range(n):
         closest_vantage_pt = vantage_pts_dist[i][1]
         radius = 2*vantage_pts_dist[i][0]
-        pts_in_radius = find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius)
+        pts_in_radius = find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius, sm)
         for j in pts_in_radius:
             if j not in all_pts_to_check:
                 all_pts_to_check.append(j)
@@ -121,52 +111,3 @@ def find_most_similiar(filename,n, vantage_pts):
         
     return file_names
 
-def similarity_program(arg):
-    """This is a command line program that finds similiar timeseries"""
-    vp = []
-    with open(PATH+'VantagePointDatabases/vp') as f:
-        for line in f:
-            vp.append(int(line.rstrip('\n')))    
-    
-    parser = argparse.ArgumentParser(description="TimeSeries Similiarity Search")
-    parser.add_argument('timeseries', help="TimeSeries", type=str)
-    parser.add_argument('--n', help='finds n most similiar timeseries', type=int, default=1)
-    parser.add_argument('--save', help='Save results?', type=bool, default=False)
-    parser.add_argument('--savefolder', help='Where to save result', type=str, default='SimilaritySearchResults')
-    
-    args = parser.parse_args(arg)
-    input_var = PATH+"GeneratedTimeseries/"+args.timeseries
-    n = args.n
-    save = args.save
-    savefolder = args.savefolder
-
-    #Ensure that the file given is valid
-    if not os.path.isfile(input_var):
-        return "Invalid timeseries filename"
-      
-    if n < 1 or n > len(vp):
-        return "N must be between 1 and # vantage points"
-          
-    
-    ts = find_most_similiar(input_var,n, vp)
-    
-    if save == True:
-        if os.path.isdir(PATH+savefolder):
-            shutil.rmtree(PATH+savefolder)
-            os.mkdir(PATH+savefolder) 
-        else:
-            os.mkdir(PATH+savefolder)          
-
-        for i in ts:
-            with open(PATH+"GeneratedTimeseries/"+str(i), "rb") as f:
-                ts1 = pickle.load(f)
-            with open(PATH+str(savefolder)+"/"+str(i),'wb') as f2:
-                pickle.dump(ts1, f2)
-    else:
-        print(ts)
-                        
-def main(args):
-    similarity_program(args[1:])
-
-if __name__ == "__main__":
-    similarity_program(sys.argv[1:]) # pragma: no cover
