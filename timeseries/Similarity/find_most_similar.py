@@ -11,6 +11,7 @@ from cs207rbtree import RedBlackTree as Database
 from SMTimeSeries import SMTimeSeries as ts
 from pick_vantage_points import pick_vantage_points
 import distances
+from timeSeriesABC import SizedContainerTimeSeriesInterface 
  
 
 global PATH
@@ -25,8 +26,16 @@ def sanity_check(filename,n,sm):
     """
     ans = []
     d = []
-    ts1 = ts.from_db(sm,int(filename))
     
+    if isinstance(filename,SizedContainerTimeSeriesInterface):
+        ts1 = filename 
+    else:
+        try:
+            #load the given file
+            ts1 = ts.from_db(sm,int(filename))
+        except KeyError: #if the id is invalid
+            raise KeyError    
+        
     for i in range(1000):
         ts2 = ts.from_db(sm,i)  
         dist = distances.distance(distances.stand(ts1,ts1.mean(),ts1.std()), distances.stand(ts2,ts2.mean(),ts2.std()), mult=1)
@@ -83,10 +92,17 @@ def find_most_similiar(filename,n, vantage_pts, sm):
     
     file_names = []
     
-    #load the given file
-    ts1 = ts.from_db(sm,filename)
+    if isinstance(filename,SizedContainerTimeSeriesInterface):
+        ts1 = filename
+    else:
+        try:
+            #load the given file
+            ts1 = ts.from_db(sm,filename)
+        except KeyError: #if the id is invalid
+            raise KeyError
        
-    #find the most similiar vantage point = d 
+    #find the most similiar vantage point = d by calculating the distance from
+    #the given TS to each vantage point 
     vantage_pts_dist = []
     for i in vantage_pts:
         ts2 = ts.from_db(sm,i)
