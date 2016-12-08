@@ -20,8 +20,8 @@ def serialize(json_obj):
     json_bytes_len = len(json_bytes)
     header = int.to_bytes(json_bytes_len+LENGTH_FIELD_LENGTH,LENGTH_FIELD_LENGTH,'little')
     msg = header+json_bytes
-    return msg
-    
+    return msg    
+
 
 class Deserializer(object):
     '''A buffering and bytes-to-json engine.
