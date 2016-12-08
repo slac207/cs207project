@@ -55,8 +55,13 @@ class DatabaseServer(BaseRequestHandler):
         return result
         
     def _ts_with_id(self,tsdbop):
+        ts = self.server.data['storage_manager'].get(tsdbop['id'])
+        ts_list = [ts.times(),ts.values()]
+        result = TSDBOp_TSfromID('TSfromID')
+        result['ts'] = ts_list
+        
         print('ts_with_id')
-        return 'success!'
+        return result
         
     def handle(self):
         print('Got connection from', self.client_address) 
