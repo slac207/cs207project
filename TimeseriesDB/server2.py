@@ -1,6 +1,12 @@
 from socketserver import BaseRequestHandler, ThreadingTCPServer
 from server import * #Deserializer
-from Similarity.find_most_similar import find_most_similiar
+sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(os.path.dirname(currentdir))
+sys.path.insert(0,currentdir)
+sys.path.insert(0, parentdir)
+from Similarity.find_most_similar import find_most_similiar, sanity_check
+from simsearch_init import initialize_simsearch_parameters
 
 class DatabaseServer(BaseRequestHandler): 
     
@@ -20,35 +26,38 @@ class DatabaseServer(BaseRequestHandler):
     
     #get it on the socket, then (perhaps in a thread)
     def data_received(self, data):
-            self.server.deserializer.append(data)
-            if self.server.deserializer.ready():
-                msg = self.server.deserializer.deserialize()
-                status = TSDBStatus.OK  # until proven otherwise.
-                response = TSDBOp_Return(status, None)  # until proven otherwise.
-                try:
-                    tsdbop = TSDBOp.from_json(msg)
-                except TypeError as e:
-                    status = TSDBStatus.INVALID_OPERATION
-                    response = TSDBOp_Return(status, None)
-                if status is TSDBStatus.OK:
-                    if isinstance(tsdbop, TSDBOp_SimSearch_TS):
-                        response = self._sim_with_ts(tsdbop)
-                    elif isinstance(tsdbop, TSDBOp_SimSearch_ID):
-                        response = self._sim_with_id(tsdbop)
-                    elif isinstance(tsdbop, TSDBOp_TSfromID):
-                        response = self._ts_with_id(tsdbop)
-                    else:
-                        response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
-
-                serial_response = serialize(TSDBOp.to_json(response))
-                self.request.send(serial_response)
+        self.server.deserializer.append(data)
+        if self.server.deserializer.ready():
+            msg = self.server.deserializer.deserialize()
+            status = TSDBStatus.OK  # until proven otherwise.
+            response = TSDBOp_Return(status, None)  # until proven otherwise.
+            try:
+                tsdbop = TSDBOp.from_json(msg)
+            except TypeError as e:
+                status = TSDBStatus.INVALID_OPERATION
+                response = TSDBOp_Return(status, None)
+            if status is TSDBStatus.OK:
+                if isinstance(tsdbop, TSDBOp_SimSearch_TS):
+                    response = self._sim_with_ts(tsdbop)
+                elif isinstance(tsdbop, TSDBOp_SimSearch_ID):
+                    response = self._sim_with_id(tsdbop)
+                elif isinstance(tsdbop, TSDBOp_TSfromID):
+                    response = self._ts_with_id(tsdbop)
+                else:
+                    response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
+            serial_response = serialize(json.dumps(response.to_json()))
+            self.request.send(serial_response)
             
     def _sim_with_ts(self,tsdbop):
+        id_list = find_most_similiar(tsdbop['ts'],5,self.server.data['vantage_points'],self.server.data['storage_manager'])
+        result = TSDBOp_SimSearch_TS('simsearch_ts')
+        result['ts'] = id_list        
         print('sim_with_ts')
-        return 'success!'
+        return result
         
     def _sim_with_id(self,tsdbop):
-        id_list = find_most_similiar(tsdbop['id'],tsdbop['nclosest'],self.server.data['vantage_points'],self.server.data['storage_manager'])
+        #id_list = find_most_similiar(tsdbop['id'],tsdbop['nclosest'],self.server.data['vantage_points'],self.server.data['storage_manager'])
+        id_list = find_most_similiar(tsdbop['id'],5,self.server.data['vantage_points'],self.server.data['storage_manager'])
         result = TSDBOp_SimSearch_ID('simsearch_id')
         result['id'] = id_list
         print('sim_with_id')
@@ -76,7 +85,7 @@ class DatabaseServer(BaseRequestHandler):
             
 if __name__ == '__main__':
     serv = ThreadingTCPServer(('', 20000), DatabaseServer) 
-    serv.data = {'vantage_points':'VP','storage_manager':'SM'}
+    serv.data = initialize_simsearch_parameters()
     serv.deserializer = Deserializer()
     serv.serve_forever()
     

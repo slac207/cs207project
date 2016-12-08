@@ -3,7 +3,9 @@ sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(os.path.dirname(currentdir))
 sys.path.insert(0,currentdir)
-sys.path.insert(0,parentdir+'/cs207rbtree')
+sys.path.insert(0,parentdir)
+#sys.path.insert(0,parentdir+'/timeseries/Similarity')
+
 import distances
 import numpy as np
 import random
@@ -34,6 +36,9 @@ def pick_vantage_points(arg, sm):
     except:
         num = arg
     
+    print("P",parentdir)
+    print("C", currentdir)
+
     try:
         shutil.rmtree(PATH+'VantagePointDatabases')
         os.mkdir(PATH+'VantagePointDatabases')    
