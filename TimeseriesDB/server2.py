@@ -5,6 +5,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(os.path.dirname(currentdir))
 sys.path.insert(0,currentdir)
 sys.path.insert(0, parentdir)
+sys.path.insert(0,parentdir+'/cs207project/timeseries/Similarity/VantagePointDatabases')
 from Similarity.find_most_similar import find_most_similiar, sanity_check
 from simsearch_init import initialize_simsearch_parameters
 
@@ -50,14 +51,16 @@ class DatabaseServer(BaseRequestHandler):
             
     def _sim_with_ts(self,tsdbop):
         id_list = find_most_similiar(tsdbop['ts'],5,self.server.data['vantage_points'],self.server.data['storage_manager'])
-        result = TSDBOp_SimSearch_TS('simsearch_ts')
-        result['ts'] = id_list        
+        result = TSDBOp_SimSearch_ID('simsearch_ts')
+        result['id'] = id_list        
         print('sim_with_ts')
         return result
         
     def _sim_with_id(self,tsdbop):
+        print('loc 1')
         #id_list = find_most_similiar(tsdbop['id'],tsdbop['nclosest'],self.server.data['vantage_points'],self.server.data['storage_manager'])
         id_list = find_most_similiar(tsdbop['id'],5,self.server.data['vantage_points'],self.server.data['storage_manager'])
+        print('loc 2')
         result = TSDBOp_SimSearch_ID('simsearch_id')
         result['id'] = id_list
         print('sim_with_id')
@@ -65,11 +68,12 @@ class DatabaseServer(BaseRequestHandler):
         
     def _ts_with_id(self,tsdbop):
         ts = self.server.data['storage_manager'].get(tsdbop['id'])
-        ts_list = [ts.times(),ts.values()]
-        result = TSDBOp_TSfromID('TSfromID')
+        ts_list = [list(ts.times()),list(ts.values())]
+        result = TSDBOp_SimSearch_TS('TSfromID')
         result['ts'] = ts_list
         
         print('ts_with_id')
+        print(result)
         return result
         
     def handle(self):
@@ -84,8 +88,12 @@ class DatabaseServer(BaseRequestHandler):
             #self.request.send(msg)
             
 if __name__ == '__main__':
+    z = '-----------------------------------'
     serv = ThreadingTCPServer(('', 20000), DatabaseServer) 
+    print('location a',z)
     serv.data = initialize_simsearch_parameters()
+    print('location b',z)
     serv.deserializer = Deserializer()
+    print('location c',z)
     serv.serve_forever()
     

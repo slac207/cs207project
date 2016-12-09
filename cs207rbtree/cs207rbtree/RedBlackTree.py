@@ -567,7 +567,7 @@ class Storage(object):
     def lock(self):
         "If not locked, lock the file for writing and return True."
         if not self.locked:
-            portalocker.lock(self._f, portalocker.LOCK_EX)
+            #portalocker.lock(self._f, portalocker.LOCK_EX)
             self.locked = True
             return True
         else:
@@ -577,7 +577,7 @@ class Storage(object):
         "If locked, flush and unlock the file"
         if self.locked:
             self._f.flush()
-            portalocker.unlock(self._f)
+            #portalocker.unlock(self._f)
             self.locked = False
 
     def _seek_end(self):
