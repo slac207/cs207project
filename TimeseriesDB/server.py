@@ -121,7 +121,13 @@ class TSDBOp(dict):
             elif isinstance(v, TSDBStatus):
                 json_dict[k] = v.name
             elif isinstance(v, list):
-                json_dict[k] = [self.to_json(i) for i in v]
+                try:
+                    json_dict[k] = json.dumps(v)
+                except:
+                    if hasattr(self,'to_json'):
+                        json_dict[k] = [self.to_json(i) for i in v]
+                    else:
+                        raise TypeError('Cannot convert object to JSON: '+str(v))
             elif isinstance(v, dict):
                 json_dict[k] = self.to_json(v)
             elif hasattr(v, 'to_json'):
