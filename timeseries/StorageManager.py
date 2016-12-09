@@ -47,8 +47,8 @@ class FileStorageManager(StorageManagerInterface):
         self._dir = directory
         self._id = None
         self._idx_file = self._dir+'/index.p'
-        with open(self._idx_file,'wb') as f:
-            pickle.dump(self._index,f)
+        #with open(self._idx_file,'wb') as f:
+        #    pickle.dump(self._index,f)
         
     @staticmethod
     def _make_ts(ts):
