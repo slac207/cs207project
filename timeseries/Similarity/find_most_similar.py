@@ -16,6 +16,7 @@ from timeSeriesABC import SizedContainerTimeSeriesInterface
 
 global PATH
 PATH = 'timeseries/Similarity/'
+#PATH = '../timeseries/Similarity/'
 
 def sanity_check(filename,n,sm):
     """
