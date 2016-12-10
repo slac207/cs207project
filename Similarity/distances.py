@@ -4,7 +4,7 @@ import inspect
 sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 import numpy.fft as nfft
 import numpy as np
-from ArrayTimeSeries import ArrayTimeSeries as ts
+from timeseries.ArrayTimeSeries import ArrayTimeSeries as ts
 from scipy.stats import norm
 
 def tsmaker(m, s, j):

@@ -12,8 +12,8 @@ import random
 import argparse
 
 from cs207rbtree import RedBlackTree as Database
-from StorageManager import FileStorageManager
-from SMTimeSeries import SMTimeSeries as ts
+from timeseries.StorageManager import FileStorageManager
+from timeseries.SMTimeSeries import SMTimeSeries as ts
 
 global PATH
 PATH = os.path.dirname(os.path.abspath(__file__))+'/'

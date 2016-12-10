@@ -7,8 +7,8 @@ import distances
 import numpy as np
 import random
 #from ArrayTimeSeries import ArrayTimeSeries as ts
-from SMTimeSeries import SMTimeSeries as ts
-from StorageManager import FileStorageManager
+from timeseries.SMTimeSeries import SMTimeSeries as ts
+from timeseries.StorageManager import FileStorageManager
 import os
 import pickle
 

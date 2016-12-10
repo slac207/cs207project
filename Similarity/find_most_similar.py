@@ -8,10 +8,10 @@ import numpy as np
 import random
 
 from cs207rbtree import RedBlackTree as Database
-from SMTimeSeries import SMTimeSeries as ts
+from timeseries.SMTimeSeries import SMTimeSeries as ts
 from pick_vantage_points import pick_vantage_points
 import distances
-from timeSeriesABC import SizedContainerTimeSeriesInterface 
+from timeseries.timeSeriesABC import SizedContainerTimeSeriesInterface 
  
 
 global PATH
