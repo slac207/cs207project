@@ -1,7 +1,7 @@
 import numpy as np
-from timeSeriesABC import SizedContainerTimeSeriesInterface
-from ArrayTimeSeries import ArrayTimeSeries
-from StorageManager import FileStorageManager
+from timeseries.timeSeriesABC import SizedContainerTimeSeriesInterface
+from timeseries.ArrayTimeSeries import ArrayTimeSeries
+from timeseries.StorageManager import FileStorageManager
 
 class SMTimeSeries(SizedContainerTimeSeriesInterface):
     """

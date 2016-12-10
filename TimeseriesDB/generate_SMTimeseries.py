@@ -1,6 +1,6 @@
 import sys, os, inspect, shutil
 sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
-import timeseries.Similarity.distances as distances
+import Similarity.distances as distances
 import numpy as np
 import random
 from StorageManager import FileStorageManager
