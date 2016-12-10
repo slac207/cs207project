@@ -7,7 +7,8 @@ from StorageManager import FileStorageManager
 
 def generate_time_series():
     #make the FileStorageManager where we'll store all the Timeseries
-    fsm = FileStorageManager(directory='TimeseriesDB/FSM_filestorage')
+    PATH = os.path.dirname(os.path.abspath(__file__))+'/'
+    fsm = FileStorageManager(directory=PATH+'FSM_filestorage')
     
     #script to generate and store 1000 timeseries
     for i in range(1000):

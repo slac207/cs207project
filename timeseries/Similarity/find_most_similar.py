@@ -15,7 +15,12 @@ from timeSeriesABC import SizedContainerTimeSeriesInterface
  
 
 global PATH
-PATH = 'timeseries/Similarity/'
+print('\n\n\n')
+print(os.path.dirname(os.path.abspath(__file__)))
+print(os.getcwd())
+print('\n\n\n')
+PATH = os.path.dirname(os.path.abspath(__file__))+'/'
+#PATH = 'timeseries/Similarity/'
 #PATH = '../timeseries/Similarity/'
 
 def sanity_check(filename,n,sm):
