@@ -6,7 +6,7 @@ before_install:
     - pip install coveralls
     - pip install portalocker
     - pip install scipy
-    - python setup.py install
+    - pip install cs207project
 script:
     - py.test
 after_success:
