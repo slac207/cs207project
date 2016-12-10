@@ -6,10 +6,11 @@ before_install:
     - pip install coveralls
     - pip install portalocker
     - pip install scipy
-    - pip install cs207rbtree
-    - pip install timeseries
-    - pip install TimeseriesDB
-    - pip install Similarity
+    - pip install -e .
+    #- pip install cs207rbtree
+    #- pip install timeseries
+    #- pip install TimeseriesDB
+    #- pip install Similarity
 script:
     - py.test
 after_success:
