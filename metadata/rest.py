@@ -48,13 +48,23 @@ class Metadata(db.Model):
     __tablename__ = 'metadata'
 
     ts_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    action = db.Column(db.String(80), nullable=False)
+    mean = db.Column(db.Float(80))
+    std = db.Column(db.Float(80))
+    blarg = db.Column(db.Float(80))
+    level = db.Column(db.String(80))
+
+    def __init__(self, ts_id, mean, std, blarg, level):
+        self.ts_id = ts_id
+        self.mean = mean
+        self.std = std
+        self.blarg = blarg
+        self.level = level
 
     def __repr__(self):
         return '<User %r>' % self.ts_id
 
     def to_dict(self):
-        return dict(action=self.action, task_id=self.ts_id)
+        return dict(action=self.action, ts_id=self.ts_id)
 
 def connectDBServer(requestDict):
     s = socket(AF_INET, SOCK_STREAM)
