@@ -16,7 +16,8 @@ from StorageManager import FileStorageManager
 from SMTimeSeries import SMTimeSeries as ts
 
 global PATH
-PATH = 'timeseries/Similarity/'
+PATH = os.path.dirname(os.path.abspath(__file__))+'/'
+#PATH = 'timeseries/Similarity/'
 #PATH = '../timeseries/Similarity/'
 
 def pick_vantage_points(arg, sm):
