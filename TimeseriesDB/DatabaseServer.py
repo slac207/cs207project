@@ -10,16 +10,7 @@ from Similarity.find_most_similar import find_most_similiar, sanity_check
 from simsearch_init import initialize_simsearch_parameters
 
 class DatabaseServer(BaseRequestHandler): 
-    
-    
-    # def __init__(self):
-        # # generate TS, pick VPs. 
-        # self.deserializer = Deserializer()
-        # pass
-    
-    # def __init__(self,*args):
-        # super(self).__init__(*args)
-        # print('test text added to init')
+    """Docstring"""
     
     def _get_data(self):
         pass
@@ -93,10 +84,8 @@ class DatabaseServer(BaseRequestHandler):
 if __name__ == '__main__':
     z = '-----------------------------------'
     serv = ThreadingTCPServer(('', 20000), DatabaseServer) 
-    print('location a',z)
     serv.data = initialize_simsearch_parameters()
-    print('location b',z)
     serv.deserializer = Deserializer()
-    print('location c',z)
+    print('Ready',z)
     serv.serve_forever()
     

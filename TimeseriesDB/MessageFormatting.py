@@ -113,39 +113,7 @@ class TSDBOp(dict):
             json_dict = json.dumps(obj)
             return json_dict
         except:
-            raise TypeError('Cannot convert object to JSON: '+str(obj))
-            
-        
-        # # This is both an interface function and its own helper function.
-        # # It recursively converts elements in a hierarchical data structure
-        # # into a JSON-encodable form. It does *not* handle class instances
-        # # unless they have a 'to_json' method.
-        # #print(">>>",self.items())
-        # if obj is None:
-            # obj = self
-        # json_dict = {}
-        # if isinstance(obj, str) or not hasattr(obj, '__len__') or obj is None:
-            # return obj
-        # for k, v in obj.items():
-            # if isinstance(v, str) or not hasattr(v, '__len__') or v is None:
-                # json_dict[k] = v
-            # elif isinstance(v, TSDBStatus):
-                # json_dict[k] = v.name
-            # elif isinstance(v, list):
-                # try:
-                    # json_dict[k] = json.dumps(v)
-                # except:
-                    # if hasattr(self,'to_json'):
-                        # json_dict[k] = [self.to_json(i) for i in v]
-                    # else:
-                        # raise TypeError('Cannot convert object to JSON: '+str(v))
-            # elif isinstance(v, dict):
-                # json_dict[k] = self.to_json(v)
-            # elif hasattr(v, 'to_json'):
-                # json_dict[k] = v.to_json()
-            # else:
-                # raise TypeError('Cannot convert object to JSON: '+str(v))
-        # return json_dict
+            raise TypeError('Cannot convert object to JSON: '+str(obj))        
 
     @classmethod
     def from_json(cls, json_dict):
@@ -218,52 +186,3 @@ typemap = {
   'TSfromID': TSDBOp_TSfromID
 }
 
-#!!!! Add nclosest to TSDBOp dictionaries (optionally)
-
-# class Server():
-    # # Somehow make this a server
-    # # rename it
-    # # 
-    
-    # def __init__(self):
-        # # generate TS, pick VPs. 
-        # self.deserializer = Deserializer()
-        # pass
-        
-    # def _get_data(self):
-        # pass
-        # #return data
-    
-    # #get it on the socket, then (perhaps in a thread)
-    # def data_received(self, data):
-            # self.deserializer.append(data)
-            # if self.deserializer.ready():
-                # msg = self.deserializer.deserialize()
-                # status = TSDBStatus.OK  # until proven otherwise.
-                # response = TSDBOp_Return(status, None)  # until proven otherwise.
-                # try:
-                    # tsdbop = TSDBOp.from_json(msg)
-                # except TypeError as e:
-                    # status = TSDBStatus.INVALID_OPERATION
-                    # response = TSDBOp_Return(status, None)
-                # if status is TSDBStatus.OK:
-                    # if isinstance(tsdbop, TSDBOp_SimSearch_TS):
-                        # response = self._sim_with_ts(tsdbop)
-                    # elif isinstance(tsdbop, TSDBOp_SimSearch_ID):
-                        # response = self._sim_with_id(tsdbop)
-                    # elif isinstance(tsdbop, TSDBOp_TSfromID):
-                        # response = self._ts_with_id(tsdbop)
-                    # else:
-                        # response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
-
-                # serialize(response.to_json())
-                # #send it out
-            
-    # def _sim_with_ts(self,tsdbop):
-        # pass
-        
-    # def _sim_with_id(self,tsdbop):
-        # pass
-        
-    # def _ts_with_id(self,tsdbop):
-        # pass
