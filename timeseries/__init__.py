@@ -5,7 +5,7 @@ try:
 except:
     __version__ = 'unknown'
                       
-from timeseries.lazy import *                      
+from timeseries import lazy                  
 from timeseries.timeSeriesABC import *             
 from timeseries.ArrayTimeSeries import *
 from timeseries.binarysearch import *

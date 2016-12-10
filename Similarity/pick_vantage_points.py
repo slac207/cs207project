@@ -1,24 +1,14 @@
 import sys, os, shutil, inspect
-sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(os.path.dirname(currentdir))
-sys.path.insert(0,currentdir)
-sys.path.insert(0,parentdir)
-#sys.path.insert(0,parentdir+'/timeseries/Similarity')
-
-import distances
+from Similarity import distances
 import numpy as np
 import random
 import argparse
-
-from cs207rbtree import RedBlackTree as Database
+from cs207rbtree import RedBlackTree as Database 
 from timeseries.StorageManager import FileStorageManager
-from timeseries.SMTimeSeries import SMTimeSeries as ts
+from timeseries.SMTimeSeries import SMTimeSeries as ts 
 
 global PATH
 PATH = os.path.dirname(os.path.abspath(__file__))+'/'
-#PATH = 'timeseries/Similarity/'
-#PATH = '../timeseries/Similarity/'
 
 def pick_vantage_points(arg, sm):
     """
@@ -37,9 +27,6 @@ def pick_vantage_points(arg, sm):
         num = args.n
     except:
         num = arg
-    
-    print("P",parentdir)
-    print("C", currentdir)
 
     try:
         shutil.rmtree(PATH+'VantagePointDatabases')

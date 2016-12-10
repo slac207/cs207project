@@ -1,5 +1,5 @@
 from pytest import raises
-from lazy import lazy_add, lazy_mul, LazyOperation, lazy
+from timeseries.lazy import lazy_add, lazy_mul, LazyOperation, lazy
 
 def test_type():
     assert isinstance(lazy_add(2,3),LazyOperation)==True

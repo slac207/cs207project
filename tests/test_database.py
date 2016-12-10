@@ -1,26 +1,18 @@
 import sys, inspect
 import os
-sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(os.path.dirname(currentdir))
-sys.path.insert(0,currentdir)
-sys.path.insert(0,parentdir+'/cs207rbtree')
-
 import unittest
 from pytest import raises
 import numpy as np
-
 from cs207rbtree import RedBlackTree #import RBTree
 from TimeseriesDB.generate_SMTimeseries import generate_time_series #script to generate time series
-from pick_vantage_points import pick_vantage_points #script to pick vantage pts
-from find_most_similar import find_most_similiar, sanity_check #scipts that find most similiar
-from SMTimeSeries import SMTimeSeries as ts #use SMTimeseries
-from ArrayTimeSeries import ArrayTimeSeries as arrayts
-import distances
+from Similarity.pick_vantage_points import pick_vantage_points #script to pick vantage pts
+from Similarity.find_most_similar import find_most_similiar, sanity_check 
+from timeseries.SMTimeSeries import SMTimeSeries as ts #use SMTimeseries
+from timeseries.ArrayTimeSeries import ArrayTimeSeries as arrayts
+from Similarity import distances
 
 global PATH
-PATH = 'timeseries/Similarity/'
-
+PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'/Similarity/'
 
 class DataBase_tests(unittest.TestCase): 
     def setUp(self):

@@ -1,12 +1,11 @@
-import sys, inspect
+import sys
 import os.path
-sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 import unittest
 from pytest import raises
-from ArrayTimeSeries import ArrayTimeSeries as ts
+from timeseries.ArrayTimeSeries import ArrayTimeSeries as ts
 import numpy as np
 import math
-import distances
+from Similarity import distances
 from scipy import signal
 
 class SimilarityTest(unittest.TestCase):   

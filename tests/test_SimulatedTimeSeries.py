@@ -1,9 +1,9 @@
 from pytest import raises
 import unittest
-import lazy
+from timeseries.lazy import lazy, LazyOperation
 import numpy as np
-from SimulatedTimeSeries import SimulatedTimeSeries, InputError
-from ArrayTimeSeries import ArrayTimeSeries
+from timeseries.SimulatedTimeSeries import SimulatedTimeSeries, InputError
+from timeseries.ArrayTimeSeries import ArrayTimeSeries
 import collections
 import itertools
 from random import normalvariate, random
@@ -92,7 +92,7 @@ class SimulatedTimeSeriesTest(unittest.TestCase):
     def test_lazy(self):
         ts = SimulatedTimeSeries(iter(range(10)))
         tslazy = ts.lazy
-        assert isinstance(tslazy,lazy.LazyOperation)
+        assert isinstance(tslazy,LazyOperation)
         assert isinstance(tslazy.eval(),SimulatedTimeSeries)
 
     def test_online_mean(self):

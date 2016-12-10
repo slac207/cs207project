@@ -1,27 +1,15 @@
-import sys, os, inspect, shutil
-sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(os.path.dirname(currentdir))
-sys.path.insert(0,currentdir)
-sys.path.insert(0,parentdir+'/cs207rbtree')
+import sys, os
 import numpy as np
 import random
 
 from cs207rbtree import RedBlackTree as Database
 from timeseries.SMTimeSeries import SMTimeSeries as ts
-from pick_vantage_points import pick_vantage_points
-import distances
+from Similarity.pick_vantage_points import pick_vantage_points
+from Similarity import distances
 from timeseries.timeSeriesABC import SizedContainerTimeSeriesInterface 
  
-
 global PATH
-print('\n\n\n')
-print(os.path.dirname(os.path.abspath(__file__)))
-print(os.getcwd())
-print('\n\n\n')
 PATH = os.path.dirname(os.path.abspath(__file__))+'/'
-#PATH = 'timeseries/Similarity/'
-#PATH = '../timeseries/Similarity/'
 
 def sanity_check(filename,n,sm):
     """

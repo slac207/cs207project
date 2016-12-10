@@ -1,8 +1,8 @@
 import unittest, os
 from pytest import raises
-from StorageManager import FileStorageManager
-from ArrayTimeSeries import ArrayTimeSeries
-from timeSeriesABC import SizedContainerTimeSeriesInterface
+from timeseries.StorageManager import FileStorageManager
+from timeseries.ArrayTimeSeries import ArrayTimeSeries
+from timeseries.timeSeriesABC import SizedContainerTimeSeriesInterface
 import numpy as np
 
 class FileStorageManagerTest(unittest.TestCase):

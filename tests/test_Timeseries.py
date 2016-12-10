@@ -1,14 +1,14 @@
 from pytest import raises
 import unittest, os, time
-import lazy
+from timeseries.lazy import lazy, LazyOperation
 import numpy as np
-from Timeseries import TimeSeries
-from ArrayTimeSeries import ArrayTimeSeries
-from StorageManager import FileStorageManager
-from SMTimeSeries import SMTimeSeries
+from timeseries.Timeseries import TimeSeries
+from timeseries.ArrayTimeSeries import ArrayTimeSeries
+from timeseries.StorageManager import FileStorageManager
+from timeseries.SMTimeSeries import SMTimeSeries
 import numbers
 import collections
-import timeSeriesABC
+from timeseries import timeSeriesABC
 
 
 class SizedContainerTimeSeriesInterfaceTest(unittest.TestCase):
@@ -136,7 +136,7 @@ class SizedContainerTimeSeriesInterfaceTest(unittest.TestCase):
         if self.ts is None:
             return
         # lazy property should be an instance of LazyOperation
-        assert isinstance(self.ts.lazy,lazy.LazyOperation)==True
+        assert isinstance(self.ts.lazy,LazyOperation)==True
         # self.ts.lazy.eval() should be the same as self.ts
         assert self.ts is self.ts.lazy.eval()
 

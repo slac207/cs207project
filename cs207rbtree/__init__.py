@@ -5,5 +5,4 @@ try:
 except:
     __version__ = 'unknown'
     
-from cs207rbtree.RedBlackTree import RedBlackTree
-from cs207rbtree.RedBlackTree import connect
+from cs207rbtree import RedBlackTree

@@ -1,4 +1,4 @@
-from binarysearch import binary_search
+from timeseries.binarysearch import binary_search
 
 import unittest
 import numpy as np
