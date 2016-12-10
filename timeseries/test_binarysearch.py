@@ -40,5 +40,4 @@ class MyTest(unittest.TestCase):
     def test_non_numeric_inf(self):
         self.assertEqual(binary_search([1,2,np.inf],np.inf),(2,'FOUND')) 
      
-        
-    
+  

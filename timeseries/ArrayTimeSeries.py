@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import numpy as np
 import numbers
 from timeSeriesABC import SizedContainerTimeSeriesInterface
@@ -214,3 +215,4 @@ class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
     
     def std(self, chunk=None):
         return(np.std(self._values, ddof=1))        
+
