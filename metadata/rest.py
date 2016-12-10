@@ -88,6 +88,7 @@ def get_all_metadata():
     """
     # Need to access the postgres table and select all
     log.info('Getting all Metadata')
+    print(Metadata.query.all())
     return jsonify(dict(metadata=Metadata.query.all()))
 
 # @app.route('/timeseries', methods=['POST'])
