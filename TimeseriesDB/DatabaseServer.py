@@ -1,5 +1,5 @@
 from socketserver import BaseRequestHandler, ThreadingTCPServer
-from MessageFormatting import * #Deserializer
+from TimeseriesDB.MessageFormatting import * #Deserializer
 sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(os.path.dirname(currentdir))
@@ -7,7 +7,7 @@ sys.path.insert(0,currentdir)
 sys.path.insert(0, parentdir)
 sys.path.insert(0,parentdir+'/cs207project/timeseries/Similarity/VantagePointDatabases')
 from Similarity.find_most_similar import find_most_similiar, sanity_check
-from simsearch_init import initialize_simsearch_parameters
+from TimeseriesDB.simsearch_init import initialize_simsearch_parameters
 
 class DatabaseServer(BaseRequestHandler): 
     """Docstring"""

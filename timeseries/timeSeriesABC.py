@@ -1,5 +1,5 @@
 import abc
-import lazy
+from timeseries.lazy import *
 import reprlib
 
 
@@ -37,7 +37,7 @@ class TimeSeriesInterface(abc.ABC):
         """
         
         
-    @lazy.lazy
+    @lazy
     def identity(self):
         # lazy implementation of the identity function
         return self
