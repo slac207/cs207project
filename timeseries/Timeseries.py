@@ -213,3 +213,4 @@ class TimeSeries(SizedContainerTimeSeriesInterface):
     
     def std(self, chunk=None):
         return(stat.stdev(self._values))
+

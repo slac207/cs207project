@@ -727,3 +727,4 @@ class test_TimeSeries_SMTimeSeries_Interactions(SizedContainerTimeSeriesInterfac
         if os.path.exists(dir):
             [ os.remove(dir+'/'+f) for f in os.listdir(dir) ]
             os.rmdir(dir)
+
