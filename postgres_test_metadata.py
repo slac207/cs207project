@@ -2,6 +2,7 @@ import psycopg2
 import numpy as np
 import sys
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from sqlalchemy import create_engine
 import pandas as pd
 import sys
 import os
@@ -37,7 +38,7 @@ db = 'ubuntu'
 url = 'postgresql://{}:{}@{}:{}/{}'
 url = url.format(user, password, host, port, db)
 connection = psycopg2.connect("dbname=ubuntu user=ubuntu")
-engine = create_engine('postgresql:///ubuntu')
+engine = create_engine('postgresql://ubuntu:cs207password@localhost:5432/ubuntu')
 cursor = connection.cursor()
 ourschema="""
 DROP TABLE IF EXISTS "metadata";
