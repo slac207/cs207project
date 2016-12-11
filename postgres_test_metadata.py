@@ -8,9 +8,10 @@ import os
 import inspect
 sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0])
 #sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from StorageManager import FileStorageManager
-from SMTimeSeries import SMTimeSeries as ts
-import distances
+from timeseries.StorageManager import FileStorageManager
+from timeseries.SMTimeSeries import SMTimeSeries as ts
+from timeseries.Similarity import distances
+
 sm = FileStorageManager(directory='./FSM_filestorage')
 sm.reload_index()
 print(sm)
@@ -28,6 +29,13 @@ all_metadata = pd.DataFrame(metadata, columns=['id', 'mean', 'std', 'blarg', 'le
 
 connection = None
 # open a connection to our database
+user = 'ubuntu'
+password = 'cs207password'
+host = '172.31.56.49'
+port = '5432'
+db = 'ubuntu'
+url = 'postgresql://{}:{}@{}:{}/{}'
+url = url.format(user, password, host, port, db)
 connection = psycopg2.connect("dbname=ubuntu user=ubuntu")
 engine = create_engine('postgresql:///ubuntu')
 cursor = connection.cursor()

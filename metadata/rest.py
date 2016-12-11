@@ -29,7 +29,7 @@ app.json_encoder = ProductJSONEncoder
 
 user = 'ubuntu'
 password = 'cs207password'
-host = '54.175.144.132'
+host = '172.31.56.49'
 port = '5432'
 db = 'ubuntu'
 url = 'postgresql://{}:{}@{}:{}/{}'
@@ -235,4 +235,4 @@ def not_found(error):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     #db.create_all()
-    app.run(port=5006)
+    app.run(port=5001)
