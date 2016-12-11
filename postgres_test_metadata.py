@@ -12,7 +12,7 @@ from timeseries.StorageManager import FileStorageManager
 from timeseries.SMTimeSeries import SMTimeSeries as ts
 from timeseries.Similarity import distances
 
-sm = FileStorageManager(directory='./FSM_filestorage')
+sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
 sm.reload_index()
 print(sm)
 level_options = ['A','B','C','D','E','F']
@@ -31,7 +31,7 @@ connection = None
 # open a connection to our database
 user = 'ubuntu'
 password = 'cs207password'
-host = '172.31.56.49'
+host = '172.31.56.49' # try 127.0.0.0
 port = '5432'
 db = 'ubuntu'
 url = 'postgresql://{}:{}@{}:{}/{}'
