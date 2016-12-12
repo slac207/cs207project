@@ -1,17 +1,17 @@
-#mkdir ~/flaskproj
-#cd ~/flaskproj
+mkdir ~/cs207project/metadata/
+cd ~/cs207project/metadata/
 
-# # to ~/flaskproj/flaskproj.py:
-# # a Flask file, such as:
-# echo '''from flask import Flask
-# app = Flask(__name__)
+# to ~/flaskproj/flaskproj.py:
+# a Flask file, such as:
+echo '''from flask import Flask
+app = Flask(__name__)
 
-# @app.route("/")
-# def hello():
-    # return "<h1 style='color:green'>Hello There!</h1>"
+@app.route("/")
+def hello():
+    return "<h1 style='color:green'>Hello There!</h1>"
 
-# if __name__ == "__main__":
-    # app.run(host="0.0.0.0")''' > ~/cs207project/metadataflaskproj/flaskproj.py
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")''' > ~/cs207project/metadata/rest.py
 
     
 # to ~/flaskproj/wsgi.py:

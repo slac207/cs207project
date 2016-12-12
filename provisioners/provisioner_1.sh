@@ -38,7 +38,7 @@ printf "\nInstalling Flask and SQL Alchemy ...\n"
 source ~/venvs/flaskproj/bin/activate
 
 # install flask and SQLAlchemy for Python3
-pip install flask Flask-SQLAlchemy uwsgi
+pip install flask Flask-SQLAlchemy uwsgi numpy
 
 # install and configure nginx
 printf "\n*******************************************************"
