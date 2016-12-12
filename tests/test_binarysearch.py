@@ -39,6 +39,12 @@ class MyTest(unittest.TestCase):
     #test for whether inf is valid input in array         
     def test_non_numeric_inf(self):
         self.assertEqual(binary_search([1,2,np.inf],np.inf),(2,'FOUND')) 
-     
-        
     
+    
+if __name__=='__main__':
+    try:  # pragma: no cover
+        unittest.main()  # pragma: no cover
+    except SystemExit as inst:  # pragma: no cover
+        if inst.args[0] is True:  # pragma: no cover
+            raise  # pragma: no cover
+
