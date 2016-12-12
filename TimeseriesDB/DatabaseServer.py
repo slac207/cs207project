@@ -10,7 +10,6 @@ class DatabaseServer(BaseRequestHandler):
     3. Returns the timeseries from its ID
     
     """
-
     def _get_data(self):
         pass
     
