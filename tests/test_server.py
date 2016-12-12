@@ -16,24 +16,33 @@ import sys
 from scipy.stats import norm
 import multiprocessing
 
-
 class Server_Tests(unittest.TestCase):
     
-    def setUp(self):
-        TCPServer.allow_reuse_address = True
-        self.serv = TCPServer(('', 20000), DatabaseServer)
+    def setUp(self):     
+        ThreadingTCPServer.allow_reuse_address = True
+        self.port = 2000
+        try:
+            self.serv = ThreadingTCPServer(('', self.port), DatabaseServer)
+        except:
+            self.port += 1
+            self.serv = ThreadingTCPServer(('', self.port), DatabaseServer)
+                
         self.serv.data = initialize_simsearch_parameters()
         self.serv.deserializer = Deserializer()        
         self.serv_thread = threading.Thread(target=self.serv.serve_forever)
         self.serv_thread.setDaemon(True)
-        self.serv_thread.start()        
+        self.serv_thread.start()   
+        self.serv_thread2 = threading.Thread(target=self.serv.serve_forever)
+        self.serv_thread2.setDaemon(True)
+        self.serv_thread2.start()           
         
     def tearDown(self):
         self.serv.socket.close()
         self.serv.server_close()
 
         
-    def test_serializer_deserializer(self):
+    def test_suite(self):
+        #test_serializer_deserializer(self):
         #test the serializing
         msg = {'op':'TSfromID','id':12,'courtesy':'please'}
         serialized = serialize(json.dumps(msg))
@@ -45,10 +54,11 @@ class Server_Tests(unittest.TestCase):
         response = ds.deserialize()
         #check that serializing and then deserializing leaves us with the original message  
         assert response == msg   
+        #PORT += 1
         
-    def test_queries(self):
+    #def test_queries(self):
         s = socket(AF_INET, SOCK_STREAM)        
-        s.connect(('localhost', 20000))
+        s.connect(('localhost', self.port))
         
         #query for similarity search with an ID
         d2 = {'op':'simsearch_id','id':12,'n_closest':2,'courtesy':'please'}
@@ -101,51 +111,48 @@ class Server_Tests(unittest.TestCase):
         assert 'payload' in response_impolite
             
         s.close()
+        #PORT += 1
         
     #def test_multiple_queries(self):
-        #def query_1():
-    ##function to compute simsearch
-            #print("QUERY1")
-            #s = socket(AF_INET, SOCK_STREAM)
-            #s.connect(('localhost', 20000))
-            #print("CONNECTED")
-            #d2 = {'op':'simsearch_id','id':12,'n_closest':2,'courtesy':'please'}
-            #s2 = serialize(json.dumps(d2))    
-            #print("Sending")
-            #s.send(s2)
-            #print("Receiving")
-            #msg = s.recv(8192)
-            #print("Msg being deserialized")
-            #ds = Deserializer()
-            #ds.append(msg)
-            #ds.ready()
-            #response = ds.deserialize()
-            #print(response)
-            #s.close()
+        def query_1():
+            #function to compute simsearch
+            s = socket(AF_INET, SOCK_STREAM)
+            s.connect(('localhost',self. port))
+            d2 = {'op':'simsearch_id','id':12,'n_closest':2,'courtesy':'please'}
+            s2 = serialize(json.dumps(d2))    
+            s.send(s2)
+            msg = s.recv(8192)
+            ds = Deserializer()
+            ds.append(msg)
+            ds.ready()
+            response = ds.deserialize()
+            assert type(response['id'][0]) == type(response['id'][1]) == int 
+            s.close()
+            return
         
-        #def query_2():
-            ##function to return timeseries from id
-            #print("QUERY2")
-            #s = socket(AF_INET, SOCK_STREAM)
-            #s.connect(('localhost', 20000))
-            #d2 = {'op':'TSfromID','id':12,'courtesy':'please'}
-            #s2 = serialize(json.dumps(d2))        
-            #s.send(s2)
-            #msg = s.recv(8192)
-            #ds = Deserializer()
-            #ds.append(msg)
-            #ds.ready()
-            #response = ds.deserialize()
-            #print(response)
-            #s.close()            
+        def query_2():
+            #function to return timeseries from id
+            s = socket(AF_INET, SOCK_STREAM)
+            s.connect(('localhost', self.port))
+            d2 = {'op':'TSfromID','id':12,'courtesy':'please'}
+            s2 = serialize(json.dumps(d2)) 
+            s.send(s2)
+            msg = s.recv(8192)
+            ds = Deserializer()
+            ds.append(msg)
+            ds.ready()
+            response = ds.deserialize()
+            assert len(response['ts']) == 2 
+            s.close()
+            return
             
-        
-        #self.p = multiprocessing.Process(target=query_1) 
-        ##self.p2 = multiprocessing.Process(target=query_2) 
-        #self.p.start()
-        #self.p2.start()    
-        
-                
+        self.p = multiprocessing.Process(target=query_1) 
+        self.p2 = multiprocessing.Process(target=query_2) 
+        self.p.start()
+        self.p2.start() 
+        self.p.join()
+        self.p2.join()
+        #PORT += 1
           
         
 if __name__=='__main__':
