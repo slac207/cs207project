@@ -20,8 +20,8 @@ import multiprocessing
 class Server_Tests(unittest.TestCase):
     
     def setUp(self):
-        ThreadingTCPServer.allow_reuse_address = True
-        self.serv = ThreadingTCPServer(('', 20000), DatabaseServer)
+        TCPServer.allow_reuse_address = True
+        self.serv = TCPServer(('', 20000), DatabaseServer)
         self.serv.data = initialize_simsearch_parameters()
         self.serv.deserializer = Deserializer()        
         self.serv_thread = threading.Thread(target=self.serv.serve_forever)
