@@ -46,7 +46,7 @@ response = ds.deserialize() #response is now in dictionary form like the origina
 ```
 
 ## Testing 
-There is one testing file for the code in this module and it is both contained in the [test folder](https://github.com/slac207/cs207project/tree/master/tests). These files can be run using `python setup.py test`. 
+There is one testing file for the code in this module and it is contained in the [test folder](https://github.com/slac207/cs207project/tree/master/tests). These files can be run using `python setup.py test`. 
 
 1. test_server.py: tests for accuracy of the three queries we support as well as tests the serializer/deserializer
 

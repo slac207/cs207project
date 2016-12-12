@@ -299,7 +299,6 @@ class RedBlackTree(object):
         value_ref = ValueRef(value)
         # insert and get new tree ref
         self._tree_ref = self._insert(node, key, value_ref)
-
     
     def get(self, key):
         """
@@ -323,7 +322,7 @@ class RedBlackTree(object):
         while node is not None:
             if key < node.key:
                 node = self._follow(node.left_ref)
-            elif key > node.key: # this was a bug!
+            elif key > node.key: 
                 node = self._follow(node.right_ref)
             else:
                 return self._follow(node.value_ref)
@@ -567,7 +566,7 @@ class Storage(object):
     def lock(self):
         "If not locked, lock the file for writing and return True."
         if not self.locked:
-            #portalocker.lock(self._f, portalocker.LOCK_EX)
+            portalocker.lock(self._f, portalocker.LOCK_EX)
             self.locked = True
             return True
         else:
@@ -577,7 +576,7 @@ class Storage(object):
         "If locked, flush and unlock the file"
         if self.locked:
             self._f.flush()
-            #portalocker.unlock(self._f)
+            portalocker.unlock(self._f)
             self.locked = False
 
     def _seek_end(self):

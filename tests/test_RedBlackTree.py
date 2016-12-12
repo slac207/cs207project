@@ -3,7 +3,10 @@ import os
 from pytest import raises
 import unittest
 import numpy as np
-from cs207rbtree import RedBlackTree 
+from cs207rbtree import RedBlackTree
+from threading import Thread
+from portalocker.utils import Lock
+import portalocker
 
 class RedBlackTreeTest(unittest.TestCase):
 
@@ -116,8 +119,24 @@ class RedBlackTreeTest(unittest.TestCase):
         with raises(KeyError):
             db.get("kobe")
         db.close()
-        os.remove('/tmp/test11.dbdb')        
+        os.remove('/tmp/test11.dbdb')   
+        
+    def test_portalocker_locking(self): 
+        """Tests to make sure we have the proper locking behavior so 
+        that our databases allows simulataneous reads but not writes """
+        
+        db = RedBlackTree.connect("/tmp/test12.dbdb")
+        db.set("Laura", "Ware") 
 
+        alock = Lock("/tmp/test12.dbdb", timeout=5)
+        with self.assertRaises(portalocker.AlreadyLocked): 
+            alock.acquire()        
+        
+        db.close()
+        os.remove('/tmp/test12.dbdb')
+        
+        
+        
 if __name__=='__main__':
     try:  # pragma: no cover
         unittest.main()  # pragma: no cover

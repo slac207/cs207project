@@ -14,6 +14,7 @@ import threading
 from socket import socket, AF_INET, SOCK_STREAM
 import sys
 from scipy.stats import norm
+import multiprocessing
 
 
 class Server_Tests(unittest.TestCase):
@@ -30,6 +31,7 @@ class Server_Tests(unittest.TestCase):
     def tearDown(self):
         self.serv.socket.close()
         self.serv.server_close()
+
         
     def test_serializer_deserializer(self):
         #test the serializing
@@ -45,7 +47,7 @@ class Server_Tests(unittest.TestCase):
         assert response == msg   
         
     def test_queries(self):
-        s = socket(AF_INET, SOCK_STREAM)
+        s = socket(AF_INET, SOCK_STREAM)        
         s.connect(('localhost', 20000))
         
         #query for similarity search with an ID
@@ -87,22 +89,64 @@ class Server_Tests(unittest.TestCase):
         response = ds.deserialize() 
         assert len(response['ts']) == 2 #returned back times and values
         
-        ##nonpolite query test
-        #d2_impolite = {'op':'simsearch_id','id':12,'n_closest':2}
-        #print("FIRST PLACE")
-        #s2_impolite = serialize(json.dumps(d2_impolite))  
-        #print("SECOND PLACE")
-        #s.send(s2_impolite)      
-        #print("THIRD PLACE")
-        #with raises(Exception):
-            #msg_impolite = s.recv(8192)  
+        #nonpolite query test, passes back a none operation
+        d2_impolite = {'op':'simsearch_id','id':12,'n_closest':2}
+        s2_impolite = serialize(json.dumps(d2_impolite))  
+        s.send(s2_impolite)              
+        msg_impolite = s.recv(8192)  
+        ds = Deserializer()
+        ds.append(msg_impolite)
+        ds.ready()
+        response_impolite = ds.deserialize()  
+        assert 'payload' in response_impolite
             
-        #print("YUP ERROR")
-        #print("FOURTH PLACE")
-        #with raises(TSDBOperationError): 
-                      
-        
         s.close()
+        
+    #def test_multiple_queries(self):
+        #def query_1():
+    ##function to compute simsearch
+            #print("QUERY1")
+            #s = socket(AF_INET, SOCK_STREAM)
+            #s.connect(('localhost', 20000))
+            #print("CONNECTED")
+            #d2 = {'op':'simsearch_id','id':12,'n_closest':2,'courtesy':'please'}
+            #s2 = serialize(json.dumps(d2))    
+            #print("Sending")
+            #s.send(s2)
+            #print("Receiving")
+            #msg = s.recv(8192)
+            #print("Msg being deserialized")
+            #ds = Deserializer()
+            #ds.append(msg)
+            #ds.ready()
+            #response = ds.deserialize()
+            #print(response)
+            #s.close()
+        
+        #def query_2():
+            ##function to return timeseries from id
+            #print("QUERY2")
+            #s = socket(AF_INET, SOCK_STREAM)
+            #s.connect(('localhost', 20000))
+            #d2 = {'op':'TSfromID','id':12,'courtesy':'please'}
+            #s2 = serialize(json.dumps(d2))        
+            #s.send(s2)
+            #msg = s.recv(8192)
+            #ds = Deserializer()
+            #ds.append(msg)
+            #ds.ready()
+            #response = ds.deserialize()
+            #print(response)
+            #s.close()            
+            
+        
+        #self.p = multiprocessing.Process(target=query_1) 
+        ##self.p2 = multiprocessing.Process(target=query_2) 
+        #self.p.start()
+        #self.p2.start()    
+        
+                
+          
         
 if __name__=='__main__':
     try:  # pragma: no cover
