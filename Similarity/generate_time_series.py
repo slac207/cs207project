@@ -9,12 +9,12 @@ import os
 import pickle
 
 global PATH
-PATH = os.path.dirname(os.path.abspath(__file__))+'/'
+PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'/'
 
 def generate_time_series():
-    #script to generate and store 1000 timeseries
+    #script to generate and store (with the File Storage Manager) 1000 timeseries
     
-    fsm = FileStorageManager(directory='./FSM_filestorage')
+    fsm = FileStorageManager(directory=PATH+'TimeseriesDB/FSM_filestorage')
     
     for i in range(1000):
         x = distances.tsmaker(100, 100, 1000)
