@@ -1,8 +1,8 @@
 ===========
-timeSeries
+cs207rbtree
 ===========
 
-This is the documentation of **timeSeries**.
+This is the documentation of **cs207rbtree**.
 
 .. note::
 

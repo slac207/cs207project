@@ -1,6 +1,6 @@
 import numpy as np
 import numbers
-from timeSeriesABC import SizedContainerTimeSeriesInterface
+from timeseries.timeSeriesABC import SizedContainerTimeSeriesInterface
 
 class ArrayTimeSeries(SizedContainerTimeSeriesInterface):
     """
