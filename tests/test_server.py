@@ -20,8 +20,14 @@ import multiprocessing
 class Server_Tests(unittest.TestCase):
     
     def setUp(self):
-        TCPServer.allow_reuse_address = True
-        self.serv = TCPServer(('', 20000), DatabaseServer)
+        ThreadingTCPServer.allow_reuse_address = True
+        self.port = 20000
+        try:
+            self.serv = ThreadingTCPServer(('', port), DatabaseServer)
+        except:
+            self.port += 1
+            self.serv = ThreadingTCPServer(('', self.port), DatabaseServer)
+                
         self.serv.data = initialize_simsearch_parameters()
         self.serv.deserializer = Deserializer()        
         self.serv_thread = threading.Thread(target=self.serv.serve_forever)
@@ -51,7 +57,7 @@ class Server_Tests(unittest.TestCase):
         
     def test_queries(self):
         s = socket(AF_INET, SOCK_STREAM)        
-        s.connect(('localhost', 20000))
+        s.connect(('localhost', self.port))
         
         #query for similarity search with an ID
         d2 = {'op':'simsearch_id','id':12,'n_closest':2,'courtesy':'please'}
@@ -109,7 +115,7 @@ class Server_Tests(unittest.TestCase):
         def query_1():
             #function to compute simsearch
             s = socket(AF_INET, SOCK_STREAM)
-            s.connect(('localhost', 20000))
+            s.connect(('localhost', self.port))
             d2 = {'op':'simsearch_id','id':12,'n_closest':2,'courtesy':'please'}
             s2 = serialize(json.dumps(d2))    
             s.send(s2)
@@ -125,7 +131,7 @@ class Server_Tests(unittest.TestCase):
         def query_2():
             #function to return timeseries from id
             s = socket(AF_INET, SOCK_STREAM)
-            s.connect(('localhost', 20000))
+            s.connect(('localhost', self.port))
             d2 = {'op':'TSfromID','id':12,'courtesy':'please'}
             s2 = serialize(json.dumps(d2)) 
             s.send(s2)
