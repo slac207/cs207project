@@ -1,6 +1,6 @@
 # Data Files
 TimeseriesDB/FSM_filestorage/
-timeseries/Similarity/VantagePointDatabases/
+Similarity/VantagePointDatabases/
 
 # Annoying Mac files
 .DS_Store
