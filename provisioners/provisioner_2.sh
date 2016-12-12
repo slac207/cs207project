@@ -36,7 +36,7 @@ vacuum = true
 die-on-term = true''' > ~/cs207project/metadata/flaskproj.ini
 
 #sudo rm /etc/nginx/sites-available/default
-#sudo rm /etc/nginx/sites-enabled/default
+sudo rm /etc/nginx/sites-enabled/default
 
 sudo systemctl start flaskproj
 sudo systemctl enable flaskproj
