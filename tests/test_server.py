@@ -15,18 +15,19 @@ from socket import socket, AF_INET, SOCK_STREAM
 import sys
 from scipy.stats import norm
 import multiprocessing
-
+global PORT
+PORT = 2000
 
 class Server_Tests(unittest.TestCase):
     
     def setUp(self):
         ThreadingTCPServer.allow_reuse_address = True
-        self.port = 20000
+        
         try:
-            self.serv = ThreadingTCPServer(('', self.port), DatabaseServer)
+            self.serv = ThreadingTCPServer(('', PORT), DatabaseServer)
         except:
-            self.port += 1
-            self.serv = ThreadingTCPServer(('', self.port), DatabaseServer)
+            PORT += 1
+            self.serv = ThreadingTCPServer(('', PORT), DatabaseServer)
                 
         self.serv.data = initialize_simsearch_parameters()
         self.serv.deserializer = Deserializer()        
@@ -54,6 +55,7 @@ class Server_Tests(unittest.TestCase):
         response = ds.deserialize()
         #check that serializing and then deserializing leaves us with the original message  
         assert response == msg   
+        PORT += 1
         
     def test_queries(self):
         s = socket(AF_INET, SOCK_STREAM)        
@@ -110,6 +112,7 @@ class Server_Tests(unittest.TestCase):
         assert 'payload' in response_impolite
             
         s.close()
+        PORT += 1
         
     def test_multiple_queries(self):
         def query_1():
@@ -150,6 +153,7 @@ class Server_Tests(unittest.TestCase):
         self.p2.start() 
         self.p.join()
         self.p2.join()
+        PORT += 1
           
         
 if __name__=='__main__':
