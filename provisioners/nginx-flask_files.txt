@@ -18,6 +18,12 @@ WantedBy=multi-user.target
 server {
     listen 80;
     server_name server_domain_or_IP;
+    
+    root /home/ubuntu/www/html;
+
+    location = / {
+        try_files $uri $uri/ =404;
+    }
 
     location / {
         include uwsgi_params;
