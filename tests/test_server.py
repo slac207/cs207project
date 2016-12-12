@@ -23,7 +23,7 @@ class Server_Tests(unittest.TestCase):
         ThreadingTCPServer.allow_reuse_address = True
         self.port = 20000
         try:
-            self.serv = ThreadingTCPServer(('', port), DatabaseServer)
+            self.serv = ThreadingTCPServer(('', self.port), DatabaseServer)
         except:
             self.port += 1
             self.serv = ThreadingTCPServer(('', self.port), DatabaseServer)
