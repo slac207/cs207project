@@ -1,3 +1,4 @@
+mkdir ~/cs207project/
 mkdir ~/cs207project/metadata/
 cd ~/cs207project/metadata/
 
