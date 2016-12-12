@@ -53,6 +53,7 @@ def find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius, sm):
     radius: radius of circle to consider
     
     Returns: list of tuples (distance, timeseries id) in sorted order
+    
     """
     #open database for that vantage point
     db = Database.connect(PATH+"VantagePointDatabases/"+str(closest_vantage_pt)+".dbdb")
@@ -82,6 +83,8 @@ def find_most_similiar(filename,n, vantage_pts, sm):
     vantage_pts: a list of the vantage point numbers 
     
     Returns: list of n most similiar filenames
+    
+    Notes: Correct behavior is not gaurenteed when n > the number of vantage points 
     """
     
     file_names = []

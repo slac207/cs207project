@@ -1,12 +1,8 @@
 import json
 import enum
 import sys, os, inspect
-sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir+'/timeseries')
-import ArrayTimeSeries as ts
-# from .tsdb_error import *
+import timeseries as ts
+from TimeseriesDB.tsdb_error import *
 
 
 LENGTH_FIELD_LENGTH = 4
@@ -38,17 +34,21 @@ class Deserializer(object):
         self.buflen = -1
 
     def append(self, data):
+        """Appends data to the buf"""
         self.buf += data
         self._maybe_set_length()
 
     def _maybe_set_length(self):
+        """Extract the length of the buffer"""
         if self.buflen < 0 and len(self.buf) >= LENGTH_FIELD_LENGTH:
             self.buflen = int.from_bytes(self.buf[0:LENGTH_FIELD_LENGTH], byteorder="little")
 
     def ready(self):
+        """If we read in the full message, can proceed"""
         return (self.buflen > 0 and len(self.buf) >=    self.buflen)
 
     def deserialize(self):
+        """Turns bytes into json object"""
         json_str = self.buf[LENGTH_FIELD_LENGTH:self.buflen].decode()
         self.buf = self.buf[(self.buflen):]
         self.buflen = -1
@@ -57,56 +57,23 @@ class Deserializer(object):
         try:
             #Note how now everything is assumed to be an OrderedDict
             obj = json.loads(json_str)
-            #print("OBJ", obj)
             return obj
-        except json.JSONDecodeError:
+        #raise a Decode error if invalid JSON object
+        except json.JSONDecodeError: 
             print('Invalid JSON object received:\n'+str(json_str))
             return None
-            
-            
-
-class TSDBError(Exception):
-    pass
-
-class TSDBOperationError(Exception):
-    pass
-
-class TSDBConnectionError(Exception):
-    pass
-
-class TSDBStatus(enum.IntEnum):
-    OK = 0
-    UNKNOWN_ERROR = 1
-    INVALID_OPERATION = 2
-    INVALID_KEY = 3
-    INVALID_COMPONENT = 4
-    PYPE_ERROR = 5
-
-    @staticmethod
-    def encoded_length():
-        return 3
-
-    def encode(self):
-        return str.encode('{:3d}'.format(self.value))
-
-    @classmethod
-    def from_bytes(cls, data):
-        return cls(int(data.decode()))
+        
     
 
-# Interface classes for TSDB network operations.
-# These are a little clunky (extensibility is meh), but it does provide strong
-# typing for TSDB ops and a straightforward mechanism for conversion to/from
-# JSON objects.
-
-
 class TSDBOp(dict):
+    """Base Class for the different TSDB operations that inherits from a dictionary
+    and requires a dictionary 'op' key with a valid operation in typemap"""
+    
     def __init__(self, op):
         self['op'] = op
 
     def to_json(self, obj=None):
-        # json.dumps seems to be easier to work with and automatically handles
-        # hierarchical data structures.
+        """Converts a TSDBOp objects into a JSON object """
         if obj is None:
             obj = self
         try:
@@ -117,14 +84,19 @@ class TSDBOp(dict):
 
     @classmethod
     def from_json(cls, json_dict):
-        if 'op' not in json_dict:
+        """Converts a JSON object into a TSDBOp object"""
+        
+        #json_dict must contain key 'op'
+        if 'op' not in json_dict: 
             raise TypeError('Not a TSDB Operation: '+str(json_dict))
-        if json_dict['op'] not in typemap:
+        #can only support ops in our typemap
+        if json_dict['op'] not in typemap: 
             raise TypeError('Invalid TSDB Operation: '+str(json_dict['op']))
         return typemap[json_dict['op']].from_json(json_dict)
 
 
 class TSDBOp_SimSearch_TS(TSDBOp):
+    """Class for performing similarity searches with a new timeseries"""    
     def __init__(self, ts, **kwargs):
         super().__init__('simsearch_ts')
         self['ts'] = ts
@@ -133,6 +105,8 @@ class TSDBOp_SimSearch_TS(TSDBOp):
 
     @classmethod
     def from_json(cls, json_dict):
+        """Converts a JSON object into a TSDBOp_SimSearch_TS object"""
+        
         if 'n_closest' not in json_dict:
             json_dict['n_closest'] = 5
         if ('courtesy' not in json_dict) or (json_dict['courtesy'].lower()!='please'):
@@ -141,6 +115,7 @@ class TSDBOp_SimSearch_TS(TSDBOp):
         return cls(ts.ArrayTimeSeries(*(json_dict['ts'])),n_closest=json_dict['n_closest'])
 
 class TSDBOp_SimSearch_ID(TSDBOp):
+    """Class for performing similarity searches with an existing timeseries"""  
     def __init__(self, idee, **kwargs):
         super().__init__('simsearch_id')
         self['id'] = idee
@@ -149,6 +124,8 @@ class TSDBOp_SimSearch_ID(TSDBOp):
         
     @classmethod
     def from_json(cls, json_dict):
+        """Converts a JSON object into a TSDBOp_Simsearch_ID object"""
+        
         if 'n_closest' not in json_dict:
             json_dict['n_closest'] = 5
         if ('courtesy' not in json_dict) or (json_dict['courtesy'].lower()!='please'):
@@ -157,12 +134,15 @@ class TSDBOp_SimSearch_ID(TSDBOp):
         return cls(json_dict['id'],n_closest=json_dict['n_closest'])
 
 class TSDBOp_TSfromID(TSDBOp):
+    """Class for fetching timeseries based on ID"""  
     def __init__(self, idee):
         super().__init__('TSfromID')
         self['id'] = idee
 
     @classmethod
     def from_json(cls, json_dict):
+        """Converts a JSON object into a TSDBOp_TSfromID object"""
+         
         if ('courtesy' not in json_dict) or (json_dict['courtesy'].lower()!='please'):
             print('Impolite TSDB Operation: please include the courtesy "please" (key="courtesy",value="please"')
             raise TypeError('Impolite TSDB Operation: please include the courtesy "please" (key="courtesy",value="please"')
