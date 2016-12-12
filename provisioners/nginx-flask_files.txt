@@ -1,0 +1,27 @@
+# sudo vim /etc/systemd/system/flaskproj.service
+[Unit]
+Description=uWSGI instance to serve flaskproj
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/cs207project/metadata
+Environment='PATH=/home/ubuntu/venvs/flaskproj/bin'
+ExecStart=/home/ubuntu/venvs/flaskproj/bin/uwsgi --ini flaskproj.ini
+
+[Install]
+WantedBy=multi-user.target
+
+
+# sudo vim /etc/nginx/sites-available/flaskproj
+server {
+    listen 80;
+    server_name server_domain_or_IP;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/home/ubuntu/cs207project/metadata/flaskproj.sock;
+    }
+}
+
