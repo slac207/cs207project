@@ -1,0 +1,104 @@
+# sudo vim /etc/systemd/system/flaskproj.service
+[Unit]
+Description=uWSGI instance to serve flaskproj
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/flaskproj
+Environment='PATH=/home/ubuntu/venvs/flaskproj/bin'
+ExecStart=/home/ubuntu/venvs/flaskproj/bin/uwsgi --ini flaskproj.ini
+
+[Install]
+WantedBy=multi-user.target
+
+
+# sudo vim /etc/nginx/sites-available/flaskproj
+server {
+    listen 80;
+    server_name server_domain_or_IP;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/home/ubuntu/flaskproj/flaskproj.sock;
+    }
+}
+
+
+||||||||||||||||||||||||||||||
+-----ALL INSTRUCTIONS---------
+||||||||||||||||||||||||||||||
+
+$ source venvs/flaskproj/bin/activate
+$ pip install uwsgi flask
+
+ to ~/flaskproj/flaskproj.py:
+ a Flask file
+ 
+[to test:] $ sudo ufw allow 5000
+
+ to ~/flaskproj/wsgi.py:
+from flaskproj import app
+
+if __name__ == "__main__":
+    app.run()
+-------------------------   
+    
+[to test:] $ uwsgi --socket 0.0.0.0:5000 --protocol=http -w wsgi:app
+
+$ deactivate
+
+to ~/flaskproj/flaskproj.ini:
+[uwsgi]
+module = wsgi:app
+
+master = true
+processes = 5
+
+socket = flaskproj.sock
+chmod-socket = 660
+vacuum = true
+
+die-on-term = true
+---------------------------
+
+to /etc/systemd/system/flaskproj.service (with sudo):
+[Unit]
+Description=uWSGI instance to serve flaskproj
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/flaskproj
+Environment="PATH=/home/ubuntu/venvs/flaskproj/bin"
+ExecStart=/home/ubuntu/venvs/flaskproj/bin/uwsgi --ini flaskproj.ini
+
+[Install]
+WantedBy=multi-user.target
+----------------------------------------
+
+#from ~/flaskproj (or anywhere??), run:
+$ sudo systemctl start flaskproj
+$ sudo systemctl enable flaskproj
+
+to /etc/nginx/sites-available/flaskproj:
+server {
+    listen 80;
+    server_name server_domain_or_IP;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/home/ubuntu/flaskproj/flaskproj.sock;
+    }
+}
+
+$  sudo ln -s /etc/nginx/sites-available/flaskproj /etc/nginx/sites-enabled
+
+[test for syntax errors:] $ sudo nginx -t
+$ sudo systemctl restart nginx
+
+[Firewall]
+$ sudo ufw delete allow 5000
+$ sudo ufw allow 'Nginx Full'    
