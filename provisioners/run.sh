@@ -6,9 +6,11 @@ chmod a+x *.sh
 # Install components
 ~/cs207project/provisioners/install_components.sh
 
-# Connect nginx with Flask via wWSGI
-~/cs207project/provisioners/nginx-flask.sh
-
 # Run database server as a systemd process
 ~/cs207project/provisioners/dbserver.sh
 
+# Populate postgres database
+~/cs207project/provisioners/postgres_setup.sh
+
+# Connect nginx with Flask via wWSGI
+~/cs207project/provisioners/nginx-flask.sh
