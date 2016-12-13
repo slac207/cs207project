@@ -1,5 +1,8 @@
 Create an Ubuntu 16.04 instance on Amazon EC2.
-Connect via ssh (sudo ssh -i "pair.sem" ubuntu@public_ip)
+Make sure the security group allows HTTP access on port 80.
+Connect via ssh:
+$ chmod 0400 pair.sem 
+$ sudo ssh -i "pair.sem" ubuntu@public_ip
 Run the following commands to provision the system:
 
 git clone https://github.com/slac207/cs207project.git
