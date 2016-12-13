@@ -2,7 +2,7 @@ server {
     listen 80;
     server_name server_domain_or_IP;
 
-    root /home/ubuntu/www/html;
+    root /home/ubuntu/cs207project/www/html;
 
     location = / {
         try_files $uri $uri/index.html $uri/ =404;
