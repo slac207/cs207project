@@ -7,7 +7,7 @@ sudo apt-get --upgrade
 # install Python3 pip and development essentials + the psycopg2 library for PostgreSQL access
 printf "\n*******************************************************"
 printf "\nInstalling virtualenv, python3-pip, python3-dev, and psycopg2 ...\n"
-sudo apt-get install virtualenv python3-pip python3-dev python3-psycopg2
+sudo apt-get install virtualenv python3-pip python3-dev python3-psycopg2 libpq-dev
 
 printf "\n*******************************************************"
 printf "\nUpgrading pip ...\n"
@@ -24,12 +24,13 @@ source ~/venvs/flaskproj/bin/activate
 printf "\n*******************************************************"
 printf "\nInstall CS207 project packages ...\n"
 cd ~/cs207project
-python setup.py install
+pip install -e .
+#python setup.py install
 
 # install numpy, scipy, pandas, portalocker
 printf "\n*******************************************************"
 printf "\nInstalling numpy, scipy, pandas, portalocker ...\n"
-pip install numpy, scipy, pandas, portalocker
+pip install numpy scipy pandas portalocker psycopg2
 
 # install flask and SQLAlchemy
 printf "\n*******************************************************"
