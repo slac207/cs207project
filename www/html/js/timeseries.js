@@ -97,9 +97,9 @@
     		// Create a formdata object and add the files
     		var dataUpload = new FormData();
     		
-    		dataUpload.append( ts: document.getElementById("fileSelect").files[0] );
+    		// dataUpload.append( "ts",  );
     		
-    		console.log( dataUpload );
+    		console.log( document.getElementById("fileSelect").files[0] );
     		
     		var simurl = publicIP + "/simquery" + "?topn=" + numSim;
     		
@@ -108,7 +108,7 @@
     		$.ajax({
       		  url: simurl,
     		    type: 'POST',
-    		    data: dataUpload,
+    		    data: document.getElementById("fileSelect").files[0],
     		    cache: false,
      		    contentType: 'application/json; charset=utf-8',
       			dataType: 'json',
@@ -122,7 +122,7 @@
    		  .done(function (result) {
         
         	var newData = result.id;
-        	$(newData).appendTo('#dataTest')
+        	console.log(newData)
 
       	});
      		

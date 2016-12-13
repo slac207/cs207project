@@ -66,6 +66,13 @@ tr:nth-child(even) {
     background-color: #eee;
 }
 
+pre {
+  font-family:     "Courier New"
+                    Courier
+                    monospace;
+  color: green;
+}
+
 #header {
 	position: relative;
 	width: 800px;
