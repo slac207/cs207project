@@ -1,0 +1,32 @@
+server {
+    listen 80;
+    server_name server_domain_or_IP;
+
+    root /home/ubuntu/www/html;
+
+    location = / {
+        try_files $uri $uri/index.html $uri/ =404;
+    }
+
+
+    location /files {
+        try_files $uri $uri/index.html $uri/ =404;
+    }
+
+    location /css {
+        try_files $uri $uri/ =404;
+    }
+
+    location /js {
+        try_files $uri $uri/ =404;
+    }
+
+    location /index.html {
+        try_files $uri $uri/index.html $uri/ =404;
+    }
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/home/ubuntu/cs207project/APIServer/flaskproj.sock;
+    }
+}

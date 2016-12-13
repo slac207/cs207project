@@ -1,18 +1,17 @@
 from socketserver import BaseRequestHandler, ThreadingTCPServer
-from TimeseriesDB.MessageFormatting import *
+from TimeseriesDB.MessageFormatting import * 
 from Similarity.find_most_similar import find_most_similiar, sanity_check
 from TimeseriesDB.simsearch_init import initialize_simsearch_parameters
 
-class DatabaseServer(BaseRequestHandler):
+class DatabaseServer(BaseRequestHandler): 
     """Server that receives data and performs 3 operations based on the request:
-    1. Finds the n most similiar timeseries to an existing timeseries
+    1. Finds the n most similiar timeseries to an existing timeseries 
     2. Finds the n most similiar timeseries to a new timeseries
     3. Returns the timeseries from its ID
-
+    
     """
     def _get_data(self):
         pass
-
     #get it on the socket
     def data_received(self, data):
         self.server.deserializer.append(data)
@@ -35,7 +34,7 @@ class DatabaseServer(BaseRequestHandler):
                     response = self._ts_with_id(tsdbop)
                 else:
                     response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
-
+            
             #convert back to bytes in order to send it back
             serial_response = serialize(response.to_json())
             self.request.send(serial_response)
@@ -44,7 +43,7 @@ class DatabaseServer(BaseRequestHandler):
         """Returns the n most similiar timeseries given a new ts"""
         id_list = find_most_similiar(tsdbop['ts'],tsdbop['n_closest'],self.server.data['vantage_points'],self.server.data['storage_manager'])
         result = TSDBOp_SimSearch_ID('simsearch_ts')
-        result['id'] = id_list
+        result['id'] = id_list    
         return result
 
     def _sim_with_id(self,tsdbop):
@@ -64,18 +63,18 @@ class DatabaseServer(BaseRequestHandler):
 
     def handle(self):
         """Handler for all incoming messages"""
-        print('Got connection from', self.client_address)
+        print('Got connection from', self.client_address)         
         while True:
             msg = self.request.recv(2048)
             self.data_received(msg)
             if not msg:
                 break
-
+            
 
 if __name__ == '__main__':
     z = '-----------------------------------'
     ThreadingTCPServer.allow_reuse_address = True
-    serv = ThreadingTCPServer(('', 20000), DatabaseServer)
+    serv = ThreadingTCPServer(('', 20000), DatabaseServer) 
     serv.data = initialize_simsearch_parameters()
     serv.deserializer = Deserializer()
     print('Ready',z)

@@ -1,13 +1,13 @@
 import sys, os, inspect, shutil
-sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0]) 
-import timeseries.Similarity.distances as distances
+import Similarity.distances as distances
 import numpy as np
 import random
-from StorageManager import FileStorageManager
+from timeseries.StorageManager import FileStorageManager
 
 def generate_time_series():
     #make the FileStorageManager where we'll store all the Timeseries
-    fsm = FileStorageManager(directory='TimeseriesDB/FSM_filestorage')
+    PATH = os.path.dirname(os.path.abspath(__file__))+'/'
+    fsm = FileStorageManager(directory=PATH+'FSM_filestorage')
     
     #script to generate and store 1000 timeseries
     for i in range(1000):
