@@ -2,11 +2,11 @@
 cd ~/cs207project/APIServer
 
 printf "\n*******************************************************"
-print "\n Set up uWSGI"
+printf "\n Set up uWSGI"
 
 # Crutch: make flask file
-cp rest.py rest_real.py
-cp ~/cs207project/provisioners/files/rest.py ./rest.py
+# cp rest.py rest_real.py
+# cp ~/cs207project/provisioners/files/rest.py ./rest.py
 
 # Entry point for wsgi into flask
 cp ~/cs207project/provisioners/files/wsgi.py ./wsgi.py
@@ -26,7 +26,7 @@ sudo systemctl status flaskproj
 
 
 printf "\n*******************************************************"
-print "\n Set up nginx to communicate with uWSGI"
+printf "\n Set up nginx to communicate with uWSGI"
 
 # Remove the nginx default site
 sudo rm /etc/nginx/sites-enabled/default
