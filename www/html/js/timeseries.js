@@ -97,9 +97,9 @@
     		// Create a formdata object and add the files
     		var dataUpload = new FormData();
     		
-    		dataUpload.append( ts: document.getElementById("fileSelect").files[0] )
+    		dataUpload.append( ts: document.getElementById("fileSelect").files[0] );
     		
-    		console.log( dataUpload )
+    		console.log( dataUpload );
     		
     		var simurl = publicIP + "/simquery" + "?topn=" + numSim;
     		
