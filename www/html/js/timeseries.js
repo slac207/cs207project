@@ -102,6 +102,8 @@
     		
     		var simurl = publicIP + "/simquery" + "?topn=" + numSim;
     		
+    		console.log(dataUpload);
+    		
         $(JSON.stringify({ ts: dataUpload })).appendTo('#dataTest')
 
     		$.ajax({
