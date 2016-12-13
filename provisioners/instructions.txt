@@ -1,7 +1,7 @@
 git clone https://github.com/slac207/cs207project.git
 cd ~/cs207project/provisioners
 chmod a+x run.sh
-./run
+./run.sh
 
 When prompted by postgres=#, paste:
 alter user postgres password 'password'; create user ubuntu createdb createuser password 'cs207password'; create database ubuntu owner ubuntu; \q
