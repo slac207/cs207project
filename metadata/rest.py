@@ -41,8 +41,8 @@ app.json_encoder = ProductJSONEncoder
 
 user = 'ubuntu'
 password = 'cs207password'
-#host = '172.31.56.49'
-host = 'localhost'
+host = '172.31.56.49'
+#host = 'localhost'
 port = '5432'
 db = 'ubuntu'
 url = 'postgresql://{}:{}@{}:{}/{}'
