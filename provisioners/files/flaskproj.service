@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/cs207project/metadata
+WorkingDirectory=/home/ubuntu/cs207project/APIServer
 Environment='PATH=/home/ubuntu/venvs/flaskproj/bin'
 ExecStart=/home/ubuntu/venvs/flaskproj/bin/uwsgi --ini flaskproj.ini
 

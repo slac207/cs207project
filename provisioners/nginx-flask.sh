@@ -1,5 +1,5 @@
 
-cd ~/cs207project/metadata
+cd ~/cs207project/APIServer
 
 printf "\n*******************************************************"
 print "\n Set up uWSGI"
