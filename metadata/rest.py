@@ -2,15 +2,26 @@ import logging
 from flask import Flask, request, abort, jsonify, make_response
 from flask.ext.sqlalchemy import SQLAlchemy, DeclarativeMeta
 from json import JSONEncoder
+from sqlalchemy import *
 import sys
 import json
 import os
 import inspect
+from sqlalchemy.dialects.postgresql import INTEGER, REAL, CHAR
+# from sqlalchemy.dialects.postgresql import \
+#     ARRAY, BIGINT, BIT, BOOLEAN, BYTEA, CHAR, CIDR, DATE, \
+#     DOUBLE_PRECISION, ENUM, FLOAT, HSTORE, INET, INTEGER, \
+#     INTERVAL, JSON, JSONB, MACADDR, NUMERIC, OID, REAL, SMALLINT, TEXT, \
+#     TIME, TIMESTAMP, UUID, VARCHAR, INT4RANGE, INT8RANGE, NUMRANGE, \
+#     DATERANGE, TSRANGE, TSTZRANGE, TSVECTOR
 #import psycopg2
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 #sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0])
 from TimeseriesDB.MessageFormatting import *
 from socket import socket, AF_INET, SOCK_STREAM
+from timeseries.StorageManager import FileStorageManager
+from timeseries.SMTimeSeries import SMTimeSeries as ts
+
 
 log = logging.getLogger(__name__)
 
@@ -29,15 +40,17 @@ app.json_encoder = ProductJSONEncoder
 
 user = 'ubuntu'
 password = 'cs207password'
-host = '172.31.56.49'
+#host = '172.31.56.49'
+host = 'localhost'
 port = '5432'
 db = 'ubuntu'
 url = 'postgresql://{}:{}@{}:{}/{}'
 url = url.format(user, password, host, port, db)
 app.config['SQLALCHEMY_DATABASE_URI'] = url # 'sqlite:////tmp/tasks.db'
 db = SQLAlchemy(app)
-
-class Metadata(db.Model):
+db.Model.metadata.reflect(db.engine)
+#engine1 = create_engine('postgresql://ubuntu:cs207password@localhost:5432/ubuntu')
+class MetaTable(db.Model):
     """
     "id" INTEGER PRIMARY KEY NOT NULL ,
     "MEAN" DECIMAL,
@@ -45,27 +58,24 @@ class Metadata(db.Model):
     "BLARG" DECIMAL,
     "LEVEL" VARCHAR
     """
-    __tablename__ = 'metadata'
+    metadata1=MetaData(db.engine)
+    print(metadata1)
+    __table__ = Table('metadata', metadata1,
+        Column('id', INTEGER, primary_key=True),
+        Column('mean', FLOAT),
+        Column('std', FLOAT),
+        Column('blarg', FLOAT),
+        Column('level', CHAR(1)),
+        autoload=True, autoload_with=db.engine
 
-    ts_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    mean = db.Column(db.Float(80))
-    std = db.Column(db.Float(80))
-    blarg = db.Column(db.Float(80))
-    level = db.Column(db.String(80))
-
-    def __init__(self, ts_id, mean, std, blarg, level):
-        self.ts_id = ts_id
-        self.mean = mean
-        self.std = std
-        self.blarg = blarg
-        self.level = level
-
+    )
+    def __init__(self,**kw):
+        for k,v in kw.items():
+            setattr(self,k,v)
     def __repr__(self):
-        return '<User %r>' % self.ts_id
-
+        return '<ID %r>' % self.id
     def to_dict(self):
-        return dict(action=self.action, ts_id=self.ts_id)
-
+        return dict(id=self.id, mean=self.mean, level=self.level, blarg=self.blarg,std=self.std)
 def connectDBServer(requestDict):
     s = socket(AF_INET, SOCK_STREAM)
     s.connect(('localhost', 20000))
@@ -88,59 +98,82 @@ def get_all_metadata():
     """
     # Need to access the postgres table and select all
     log.info('Getting all Metadata')
-    print(Metadata.query.all())
-    return jsonify(dict(metadata=Metadata.query.all()))
+    print(MetaTable.query.all())
+    #return jsonify(dict(metadata=5))
+    return jsonify(dict(metadata=MetaTable.query.all()))
 
-# @app.route('/timeseries', methods=['POST'])
-# def create_task():
-#     """
-#     QUERY 2:
-#     Adds a new timeseries into the database given a json which has a key
-#     for an id and a key for the timeseries, and returns the timeseries.
-#     """
-#     # Accesses the database server and adds a new timeseries
-#     # Adds new metadata to the postgres table
-#     # Returns the timeseries from the database server
-#     if not request.json or 'action' not in request.json:
-#         abort(400)
-#     log.info('Creating Task with action=%s', request.json['action'])
-#     prod = Task(action=request.json['action'])
-#     db.session.add(prod)
-#     db.session.commit()
-#     return jsonify({'op': 'OK', 'task': prod}), 201
+@app.route('/timeseries', methods=['POST'])
+def add_timeseries():
+    """
+    QUERY 2:
+    Adds a new timeseries into the database given a json which has a key
+    for an id and a key for the timeseries, and returns the timeseries.
+    """
+    # Accesses the database server and adds a new timeseries
+    # Adds new metadata to the postgres table
+    # Returns the timeseries from the database server
+    if not request.json or 'ts' not in request.json:
+        print("not json!")
+        abort(400)
+    log.info('Adding Timeseries to Database')
+    ts_dict = json.loads(request.json)
+    print(ts_dict)
+    sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
+    sm.reload_index()
+    print("got sm")
+    new_ts = ts(times=ts_dict['ts'][0],values=ts_dict['ts'][1])
+    sm.store(t=new_ts,id=1000,overwrite=True)
+    print("CHECKING",sm.get(1000))
+    return request.json, 201
+    #except:
+    #    abort(400)
+    #return jsonify({'op': 'OK', 'task': prod}), 201
 
-@app.route('/timeseries/<int:ts_id>', methods=['GET'])
-def get_from_id(ts_id):
+@app.route('/timeseries/<int:timeseries_id>', methods=['GET'])
+def get_from_id(timeseries_id):
     """
     QUERY 3:
     Sends back metadata and the timeseries itself in a JSON payload.
     """
     # For an id, get metadata for that id from postgres and timeseries for
     # that id from database server
-
-    requestDict = {'op':'TSfromID','id':ts_id,'courtesy':'please'}
+    #print(MetaTable['metadata'])
+    print("metadata")
+    md_from_id = MetaTable.query.filter_by(id= timeseries_id).all()
+    requestDict = {'op':'TSfromID','id':timeseries_id,'courtesy':'please'}
     response = connectDBServer(requestDict)
     tsResponse = response['ts']
+    response['metadata'] = md_from_id
     log.info('Getting Timeseries from id')
     #return tsResponse
     return jsonify(response)
 
-# @app.route('/timeseries/', methods=['GET'])
-# def get_all_tasks():
-#     """
-#     QUERY 4???
-#     Sends back only metadata.
-#     """
-#     # kind = request.args.get('kind', '')
-#     # if kind:
-#     #     prods=Product.query.filter_by(kind=kind)
-#     #     return jsonify(dict(products=prods.all()))
-#     # else:
-#     #     return jsonify(dict(products=Product.query.all()))
-#     # filters metadata in the postgres server and sends back all metatdata
-#     # that meet the condition
-#     log.info('Getting all Tasks')
-#     return jsonify(dict(tasks=Task.query.all()))
+@app.route('/timeseries/', methods=['GET'])
+def filter_by_metadata():
+    """
+    QUERY 4
+    Filter by metadata field and send back filtered metadata.
+    """
+    id = request.args.get('id', type=str)
+    mean = request.args.get('mean', type=str)
+    blarg = request.args.get('blarg', type=str)
+    level = request.args.get('level', type=str)
+    std = request.args.get('std', type=str)
+    log.info('Getting all Tasks')
+    # filters metadata in the postgres server and sends back all metatdata
+    # that meet the condition
+    for metadata_var in [id,mean,blarg,std]:
+        if metadata_var:
+            # split with -
+            lower = str(metadata_var.split("-")[0])
+            upper = str(metadata_var.split("-")[1])
+            result=MetaTable.query.filter(metadata_var==DecimalInterval(lower,upper))
+            return jsonify(dict(metadata=result.all()))
+    if level:
+        all_options = level.split(",")
+        result=MetaTable.query.filter(MetaTable.level.in_(all_options))
+        return jsonify(dict(metadata=result.all()))
+    return jsonify(dict(metadata=Task.query.all()))
 
 @app.route('/simquery/<int:ts_id>', methods=['GET'])
 def get_simsearch_from_id(ts_id):
@@ -160,26 +193,29 @@ def get_simsearch_from_id(ts_id):
     #tsResponse = response['id']
     log.info('Getting IDs for most similar Timeseries from input id')
     #return tsResponse
-    return jsonify(response)
+    return jsonify(response),201
 
 
-# @app.route('/simquery', methods=['POST'])
-# def create_task():
-#     """
-#     QUERY 6:
-#     Takes a timeseries as an input in a JSON, carries out the query, and
-#     returns the appropriate ids as well.
-#     """
-#     # d2 = {'op':'simsearch_ts','ts':[list(ts_test.times()), list(ts_test.values())],'courtesy':'please'}
-#     # takes a timeseries as input in JSON. carries out query in database server.
-#     # returns the ids
-#     if not request.json or 'action' not in request.json:
-#         abort(400)
-#     log.info('Creating Task with action=%s', request.json['action'])
-#     prod = Task(action=request.json['action'])
-#     db.session.add(prod)
-#     db.session.commit()
-#     return jsonify({'op': 'OK', 'task': prod}), 201
+@app.route('/simquery', methods=['POST'])
+def get_simsearch_from_json():
+    """
+    QUERY 6:
+    Takes a timeseries as an input in a JSON, carries out the query, and
+    returns the appropriate ids as well.
+    """
+    # takes a timeseries as input in JSON. carries out query in database server.
+    # returns the ids
+    if not request.json or 'action' not in request.json:
+        abort(400)
+    log.info('Getting IDs for most similar Timeseries from input id')
+    ts_times = request.json['times']
+    ts_times = request.json['values']
+    n_closest = request.args.get('topn', 5, type=int)
+    requestDict = {'op':'simsearch_ts','ts':[list(ts_times), list(ts_values)],'courtesy':'please'}
+    response = connectDBServer(requestDict)
+    #tsResponse = response['id']
+    #return tsResponse
+    return jsonify(response), 201
 
 # @app.route('/tasks/<int:task_id>', methods=['GET'])
 # def get_task_by_id(task_id):
