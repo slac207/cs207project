@@ -85,7 +85,6 @@
 			// if the user has specified an ID, use that; 
 			//   otherwise assume there's an uploaded file.
 			if (timeSeriesID != '') {
-				simIDs.push(timeSeriesID);
 				var simurl = publicIP + "/simquery/" + timeSeriesID + "?topn=" + numSim;
 				console.log('Constructed simquery.');
 			} else if ( document.getElementById("fileSelect").files.length > 0  ) {
@@ -169,6 +168,10 @@
 					console.log("Destroy the progress bar -- we don't need it anymore.");
 					$("#progressbar").progressbar( "destroy" );
 					//document.getElementById('timeseriesMetadata').innerHTML = metadataTable;
+					
+					console.log("Plot the target curve on top and make it fancy!");
+					//$.plot("#placeholder", data, options).getData()[counter].lines.lineWidth = 5;
+					//$.plot("#placeholder", data, options)
 				}
 				
 			}	
@@ -188,6 +191,8 @@
 				success: function(data) {
 
         		getSimIDs(data)
+        		
+        		simIDs.push(timeSeriesID);
 
         		  // call next ajax function
         			// now we loop over all the IDs and collect their data
