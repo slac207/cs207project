@@ -12,7 +12,6 @@ class DatabaseServer(BaseRequestHandler):
     """
     def _get_data(self):
         pass
-    
     #get it on the socket
     def data_received(self, data):
         self.server.deserializer.append(data)
@@ -39,21 +38,21 @@ class DatabaseServer(BaseRequestHandler):
             #convert back to bytes in order to send it back
             serial_response = serialize(response.to_json())
             self.request.send(serial_response)
-            
+
     def _sim_with_ts(self,tsdbop):
         """Returns the n most similiar timeseries given a new ts"""
         id_list = find_most_similiar(tsdbop['ts'],tsdbop['n_closest'],self.server.data['vantage_points'],self.server.data['storage_manager'])
         result = TSDBOp_SimSearch_ID('simsearch_ts')
         result['id'] = id_list    
         return result
-        
+
     def _sim_with_id(self,tsdbop):
         """Returns the n most similiar timeseries given a id of an existing ts"""
         id_list = find_most_similiar(tsdbop['id'],tsdbop['n_closest'],self.server.data['vantage_points'],self.server.data['storage_manager'])
         result = TSDBOp_SimSearch_ID('simsearch_id')
         result['id'] = id_list
         return result
-        
+
     def _ts_with_id(self,tsdbop):
         """Returns a timeseries from the Storage Manager given the ID"""
         ts = self.server.data['storage_manager'].get(tsdbop['id'])
@@ -61,7 +60,7 @@ class DatabaseServer(BaseRequestHandler):
         result = TSDBOp_TSfromID('TSfromID') ##just changed this
         result['ts'] = ts_list
         return result
-        
+
     def handle(self):
         """Handler for all incoming messages"""
         print('Got connection from', self.client_address)         
@@ -80,4 +79,3 @@ if __name__ == '__main__':
     serv.deserializer = Deserializer()
     print('Ready',z)
     serv.serve_forever()
-    
