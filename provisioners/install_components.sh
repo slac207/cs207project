@@ -44,8 +44,8 @@ sudo apt-get install postgresql postgresql-contrib
 
 # set-up a Postgres table;
 printf "\n*******************************************************"
-echo "\nAt the postgres =# prompt, enter the following commands:\n"
-echo "alter user postgres password 'password'; create user ubuntu createdb createuser password 'cs207password'; create database ubuntu owner ubuntu; \q"
+printf "\nAt the postgres =# prompt, enter the following commands:\n"
+printf "alter user postgres password 'password'; create user ubuntu createdb createuser password 'cs207password'; create database ubuntu owner ubuntu; \q"
 sudo -u postgres psql
 echo "PostgreSQL installed"
 
