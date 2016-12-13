@@ -41,6 +41,12 @@ pip install flask Flask-SQLAlchemy uwsgi numpy
 printf "\n*******************************************************"
 printf "\nInstalling PostgreSQL ...\n"
 sudo apt-get install postgresql postgresql-contrib
+
+# set-up a Postgres table;
+printf "\n*******************************************************"
+echo "at the postgres =# prompt, enter the following commands"
+echo "alter user postgres password 'password'; create user ubuntu createdb createuser password 'cs207password'; create database ubuntu owner ubuntu; \q"
+sudo -u postgres psql
 echo "PostgreSQL installed"
 
 # install and configure nginx
