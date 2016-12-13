@@ -69,9 +69,6 @@ printf "\n*******************************************************"
 printf "\nINSTALLATION AND SERVICE CHECKS ...\n"
 printf "\n*******************************************************"
 
-printf "\nIs nginx running?\n"
-sudo service nginx status
-
 
 printf "\nFINISHED!\n"
 
