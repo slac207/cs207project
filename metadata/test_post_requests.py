@@ -8,7 +8,7 @@ from timeseries.SMTimeSeries import SMTimeSeries as ts
 from json import JSONEncoder
 sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
 sm.reload_index()
-url = 'http://0.0.0.0:5000/timeseries'
+url = 'http://0.0.0.0:5000/simquery'
 new_ts =ts.from_db(sm,100)
 data = {}
 data['ts'] = [list(new_ts.times()), list(new_ts.values())]
