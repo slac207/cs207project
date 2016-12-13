@@ -8,6 +8,7 @@ import json
 import os
 import inspect
 from sqlalchemy.dialects.postgresql import INTEGER, REAL, CHAR
+import psycopg2
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 #sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0])
 from TimeseriesDB.MessageFormatting import *
@@ -31,8 +32,8 @@ app.json_encoder = ProductJSONEncoder
 # Config information for the postgres database
 user = 'ubuntu'
 password = 'cs207password'
-host = '172.31.56.49'
-#host = 'localhost'
+#host = '172.31.56.49'
+host = 'localhost'
 port = '5432'
 db = 'ubuntu'
 url = 'postgresql://{}:{}@{}:{}/{}'
@@ -198,7 +199,8 @@ def get_simsearch_from_json():
     log.info('Getting IDs for most similar Timeseries from input id')
     ts_dict = json.loads(request.json)
     print(ts_dict)
-    requestDict = {'op':'simsearch_ts','ts':ts_dict['ts'],'courtesy':'please'}
+    n_closest = request.args.get('topn', 5, type=int)
+    requestDict = {'op':'simsearch_ts','ts':ts_dict['ts'],'n_closest':n_closest,'courtesy':'please'}
     response = connectDBServer(requestDict)
     #tsResponse = response['id']
     #return tsResponse
