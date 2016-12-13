@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve flaskproj
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/cs207project/metadata
+Environment='PATH=/home/ubuntu/venvs/flaskproj/bin'
+ExecStart=/home/ubuntu/venvs/flaskproj/bin/uwsgi --ini flaskproj.ini
+
+[Install]
+WantedBy=multi-user.target
