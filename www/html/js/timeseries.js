@@ -100,7 +100,7 @@
         	dataUpload.append(key, value);
     		});
     		
-    		var simurl = publicIP + "/simquery/" + "?topn=" + numSim;
+    		var simurl = publicIP + "/simquery" + "?topn=" + numSim;
 
     		$.ajax({
       		  url: simurl,
