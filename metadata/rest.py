@@ -87,7 +87,7 @@ def connectDBServer(requestDict):
 @app.route('/timeseries', methods=['GET'])
 def get_all_metadata():
     """
-    QUERY 1:
+    QUERY 1 and 4:
     Sends back a json with metadata from all the time series
     """
     # Need to access the postgres table and select all
@@ -171,33 +171,6 @@ def get_from_id(timeseries_id):
     log.info('Getting Timeseries from id')
     #return tsResponse
     return jsonify(response)
-
-@app.route('/timeseries')
-def filter_by_metadata():
-    """
-    QUERY 4
-    Filter by metadata field and send back filtered metadata.
-    """
-    id = request.args.get('id', type=str)
-    mean = request.args.get('mean', type=str)
-    blarg = request.args.get('blarg', type=str)
-    level = request.args.get('level', type=str)
-    std = request.args.get('std', type=str)
-    log.info('Getting all Tasks')
-    # filters metadata in the postgres server and sends back all metatdata
-    # that meet the condition
-    for metadata_var in [id,mean,blarg,std]:
-        if metadata_var:
-            # split with -
-            lower = str(metadata_var.split("-")[0])
-            upper = str(metadata_var.split("-")[1])
-            result=MetaTable.query.filter(metadata_var==DecimalInterval(lower,upper))
-            return jsonify(dict(metadata=result.all()))
-    if level:
-        all_options = level.split(",")
-        result=MetaTable.query.filter(MetaTable.level.in_(all_options))
-        return jsonify(dict(metadata=result.all()))
-    return jsonify(dict(metadata=Task.query.all()))
 
 @app.route('/simquery/<int:ts_id>', methods=['GET'])
 def get_simsearch_from_id(ts_id):
