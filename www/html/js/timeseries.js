@@ -115,8 +115,7 @@
            		 // Handle errors here
            		 console.log('ERRORS: ' + textStatus);
        		  }
-   		  });
-   		  
+   		  })
    		  .done(function (result) {
         
         	var newData = result.id;
