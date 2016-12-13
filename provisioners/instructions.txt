@@ -1,0 +1,11 @@
+Create an Ubuntu 16.04 instance on Amazon EC2.
+Connect via ssh (sudo ssh -i "pair.sem" ubuntu@public_ip)
+Run the following commands to provision the system:
+
+git clone https://github.com/slac207/cs207project.git
+cd ~/cs207project/provisioners
+chmod a+x run.sh
+./run.sh
+
+When prompted by postgres=#, paste:
+alter user postgres password 'password'; create user ubuntu createdb createuser password 'cs207password'; create database ubuntu owner ubuntu; \q

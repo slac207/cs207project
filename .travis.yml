@@ -12,6 +12,6 @@ before_install:
     #- pip install TimeseriesDB
     #- pip install Similarity
 script:
-    - py.test
+    - py.test tests
 after_success:
     - coveralls
