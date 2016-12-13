@@ -8,6 +8,7 @@ import json
 import os
 import inspect
 from sqlalchemy.dialects.postgresql import INTEGER, REAL, CHAR
+
 # from sqlalchemy.dialects.postgresql import \
 #     ARRAY, BIGINT, BIT, BOOLEAN, BYTEA, CHAR, CIDR, DATE, \
 #     DOUBLE_PRECISION, ENUM, FLOAT, HSTORE, INET, INTEGER, \
@@ -100,6 +101,36 @@ def get_all_metadata():
     log.info('Getting all Metadata')
     print(MetaTable.query.all())
     #return jsonify(dict(metadata=5))
+    id = request.args.get('id_in', type=str)
+    mean = request.args.get('mean_in', type=str)
+    blarg = request.args.get('blarg_in', type=str)
+    level = request.args.get('level_in', type=str)
+    std = request.args.get('std_in', type=str)
+    log.info('Getting all Tasks')
+    # filters metadata in the postgres server and sends back all metatdata
+    # that meet the condition
+
+    for metadata_var in [id,mean,blarg,std]:
+        if metadata_var:
+            # split with -
+            lower = float(metadata_var.split("-")[0])
+            upper = float(metadata_var.split("-")[1])
+            if mean:
+                table = MetaTable.mean
+            elif blarg:
+                table = MetaTable.mean
+            elif id:
+                table = MetaTable.id
+                lower = int(lower)
+                upper = int(upper)
+            elif std:
+                table = MetaTable.std
+            result=MetaTable.query.filter(and_(table>=lower,table<=upper))
+            return jsonify(dict(metadata=result.all()))
+    if level:
+        all_options = level.split(",")
+        result=MetaTable.query.filter(MetaTable.level.in_(all_options))
+        return jsonify(dict(metadata=result.all()))
     return jsonify(dict(metadata=MetaTable.query.all()))
 
 @app.route('/timeseries', methods=['POST'])
@@ -148,7 +179,7 @@ def get_from_id(timeseries_id):
     #return tsResponse
     return jsonify(response)
 
-@app.route('/timeseries/', methods=['GET'])
+@app.route('/timeseries')
 def filter_by_metadata():
     """
     QUERY 4
