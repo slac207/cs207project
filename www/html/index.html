@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>SLAC207 Final Project: Time Series</title>
+    
+    <!-- import global stylesheet -->
+    <link href="css/global.css" rel="stylesheet" type="text/css">
+    
+    <!-- nice font from Google -->
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+    
+    <!-- import jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js">
+    </script>
+    
+    <!-- import flot -->
+    <script language="javascript" type="text/javascript" src="js/jquery.flot.js">
+    </script>
+    
+    <!-- script to process a time series request by ID -->
+    <script language="javascript" type="text/javascript" src="js/timeseries.js">
+    </script>
+    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+  	<script src="//code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+	
+</head>
+<body>
+
+	<div id="header">
+		<h2><a name="top"></a> Time Series Interface</h2>
+	</div>
+	
+	<div id="content">
+		<p>
+			This UI will allow you to query an underlying database of time series in specific ways. You can either
+			<ol>
+				<li>
+					Specify a time series ID: <br /> <input type="text" name="tsID" id="tsID" maxlength=3 value=100>
+					<br />
+					<span style="font-size:0.7em;">[Specify an integer between 0 and 999.] </span>
+				</li>
+				<li>
+					Upload your own time series: 
+					<form id="file-form" method="POST">
+						<input type="file" id="fileSelect" name="ts_upload"/>
+					</form>
+					
+					<span style="font-size:0.7em;">[Q: What should the time series file look like? A: <a href=#tsStructure>See below</a>.]</span>
+				</li>
+			</ol>
+			
+			...and we will plot the target time series (the one you specified above) + the most similar time series, and give you some metadata about the similar time series.
+			
+			<ul>
+				<li>
+					How many similar time series do you want to see? <input type="text" name="n_closest" id="n_closest" maxlength=3 value=5>
+					<br />
+					<span style="font-size:0.7em;">[Specify an integer between 0 and 998.] </span>
+				</li>
+			</ul>
+			
+			<br />
+			
+			<div style="text-align:right;font-size:0.7em;"><a href="#caveats">[Notes on UI Behavior]</a></div>
+			
+			<div style="text-align:center;margin:1em 0;">
+				<button type="submit" id="tsQuery">Submit Query</button>
+			</div>
+			
+		</p>
+		
+		<!-- where the graph goes -->
+		<div id="progressbar"></div>
+		<div id="dataTest"></div>
+		<div id="placeholder" style="width:750px;height:300px;margin:10px auto;"></div>
+		
+		<div id="timeseriesMetadata">
+			(metadata of five most similar time series)
+		</div>
+		
+		<hr />
+		
+		<div id="timeSeriesStructure">
+			<p>
+				<a name="tsStructure"></a> 
+				<strong>What should the time series file look like?</strong>
+				<br /> 
+				It should be a CSV file where the first "row" contains the times and the second "row" contains the values. See below of an example of what such a file would look like in Microsoft Excel. 
+				<br />
+				<div style="text-align:center;">
+					<img src="./files/dataExample.png" style="width:100%;" />
+				</div>
+				
+			</p>
+			
+			<div style="text-align:right;font-size:0.7em;"><a href="#top">[top]</a></div>
+		</div>
+		
+		<hr />
+		
+		<div id="caveats">
+			<p>
+				<a name="caveats"></a> 
+				<strong>Notes on UI Behavior</strong>
+				<ol style="margin-right:0;">
+					<li>If a time series ID is specified <span style="text-decoration:underline;">AND</span> a file is uploaded, the underlying JavaScript will ignore the uploaded file and return results for the time series ID.</li>
+					<li>In a perfect world there would be error checking against the specified integer and the uploaded file...
+				</ol>
+			</p>
+			
+			<div style="text-align:right;font-size:0.7em;"><a href="#top">[top]</a></div>
+		</div>		
+		
+		
+	</div>
+	
+	<div id="footer">
+		Team 1: SAnoke LWare ABrennan CCochrane [CS207 Fall 2016]
+	</div>
+
+</body>
+</html>
