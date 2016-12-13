@@ -104,7 +104,7 @@
     		
     		console.log(dataUpload);
     		
-        $(JSON.stringify({ ts: dataUpload })).appendTo('#dataTest')
+        //$(JSON.stringify({ ts: dataUpload })).appendTo('#dataTest')
 
     		$.ajax({
       		  url: simurl,
