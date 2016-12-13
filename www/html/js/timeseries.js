@@ -96,6 +96,9 @@
 
     		// Create a formdata object and add the files
     		var dataUpload = new FormData();
+    		
+    		file = document.getElementById("fileSelect").files
+    		
     		$.each(files, function(key, value) {
         	dataUpload.append(key, value);
     		});
