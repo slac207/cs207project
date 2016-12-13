@@ -205,13 +205,13 @@ def get_simsearch_from_json():
     """
     # takes a timeseries as input in JSON. carries out query in database server.
     # returns the ids
-    if not request.json or 'action' not in request.json:
+    if not request.json or 'ts' not in request.json:
+        print("not json!")
         abort(400)
     log.info('Getting IDs for most similar Timeseries from input id')
-    ts_times = request.json['times']
-    ts_times = request.json['values']
-    n_closest = request.args.get('topn', 5, type=int)
-    requestDict = {'op':'simsearch_ts','ts':[list(ts_times), list(ts_values)],'courtesy':'please'}
+    ts_dict = json.loads(request.json)
+    print(ts_dict)
+    requestDict = {'op':'simsearch_ts','ts':ts_dict['ts'],'courtesy':'please'}
     response = connectDBServer(requestDict)
     #tsResponse = response['id']
     #return tsResponse
