@@ -105,26 +105,27 @@
     		$.ajax({
       		  url: simurl,
     		    type: 'POST',
-    		    data: dataUpload,
+    		    data: JSON.stringify({ ts: dataUpload }),
     		    cache: false,
      		    contentType: 'application/json; charset=utf-8',
       			dataType: 'json',
      		    processData: false, // Don't process the files
      		    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-      		  success: function(data, textStatus, jqXHR) {
-        		    if(typeof data.error === 'undefined') {
-        		        // Success so call function to process the form
-         		       submitForm(event, data);
-         		   	} else {
-                		// Handle errors here
-                		console.log('ERRORS: ' + data.error);
-            		}
-        		},
         		error: function(jqXHR, textStatus, errorThrown) {
            		 // Handle errors here
            		 console.log('ERRORS: ' + textStatus);
        		  }
-   		 });
+   		  });
+   		  
+   		  .done(function (result) {
+        
+        	var newData = result.id;
+        	$(newData).appendTo('#dataTest')
+
+      	});
+     		
+   		 
+   		 
 				
 				
 			} else {
