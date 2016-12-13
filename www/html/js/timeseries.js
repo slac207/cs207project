@@ -101,6 +101,8 @@
     		});
     		
     		var simurl = publicIP + "/simquery" + "?topn=" + numSim;
+    		
+        $(JSON.stringify({ ts: dataUpload })).appendTo('#dataTest')
 
     		$.ajax({
       		  url: simurl,
