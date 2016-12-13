@@ -11,7 +11,7 @@ import inspect
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from timeseries.StorageManager import FileStorageManager
 from timeseries.SMTimeSeries import SMTimeSeries as ts
-from timeseries.Similarity import distances
+from Similarity import distances
 
 sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
 sm.reload_index()
