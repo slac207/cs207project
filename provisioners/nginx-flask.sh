@@ -4,6 +4,10 @@ cd ~/cs207project/APIServer
 printf "\n*******************************************************"
 print "\n Set up uWSGI"
 
+# Crutch: make flask file
+cp rest.py rest_real.py
+cp ~/cs207project/provisioners/files/rest.py ./rest.py
+
 # Entry point for wsgi into flask
 cp ~/cs207project/provisioners/files/wsgi.py ./wsgi.py
 
