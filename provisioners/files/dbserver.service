@@ -1,0 +1,12 @@
+[Unit]
+Description=Database Server service
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/cs207project
+Environment='PATH=/home/ubuntu/venvs/flaskproj/bin'
+ExecStart=/home/ubuntu/venvs/flaskproj/bin/python ./TimeseriesDB/DatabaseServer.py
+
+[Install]
+WantedBy=multi-user.target
