@@ -39,8 +39,8 @@ connection = None
 # open a connection to our database
 user = 'ubuntu'
 password = 'cs207password'
-host = 'localhost'
-#host = '172.31.56.49' # try 127.0.0.0
+#host = 'localhost'
+host = '172.31.56.49' # try 127.0.0.0
 port = '5432'
 db = 'ubuntu'
 url = 'postgresql://{}:{}@{}:{}/{}'

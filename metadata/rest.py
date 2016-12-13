@@ -8,13 +8,6 @@ import json
 import os
 import inspect
 from sqlalchemy.dialects.postgresql import INTEGER, REAL, CHAR
-
-# from sqlalchemy.dialects.postgresql import \
-#     ARRAY, BIGINT, BIT, BOOLEAN, BYTEA, CHAR, CIDR, DATE, \
-#     DOUBLE_PRECISION, ENUM, FLOAT, HSTORE, INET, INTEGER, \
-#     INTERVAL, JSON, JSONB, MACADDR, NUMERIC, OID, REAL, SMALLINT, TEXT, \
-#     TIME, TIMESTAMP, UUID, VARCHAR, INT4RANGE, INT8RANGE, NUMRANGE, \
-#     DATERANGE, TSRANGE, TSTZRANGE, TSVECTOR
 #import psycopg2
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 #sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0])
@@ -37,7 +30,7 @@ class ProductJSONEncoder(JSONEncoder):
 app = Flask(__name__)
 app.json_encoder = ProductJSONEncoder
 
-# This can all go into a config file but is here for reference.
+# Config information for our postgres database
 
 user = 'ubuntu'
 password = 'cs207password'
@@ -50,7 +43,7 @@ url = url.format(user, password, host, port, db)
 app.config['SQLALCHEMY_DATABASE_URI'] = url # 'sqlite:////tmp/tasks.db'
 db = SQLAlchemy(app)
 db.Model.metadata.reflect(db.engine)
-#engine1 = create_engine('postgresql://ubuntu:cs207password@localhost:5432/ubuntu')
+
 class MetaTable(db.Model):
     """
     "id" INTEGER PRIMARY KEY NOT NULL ,
@@ -248,52 +241,6 @@ def get_simsearch_from_json():
     #return tsResponse
     return jsonify(response), 201
 
-# @app.route('/tasks/<int:task_id>', methods=['GET'])
-# def get_task_by_id(task_id):
-#     task = Task.query.filter_by(task_id=task_id).first()
-#     if task is None:
-#         log.info('Failed to get Task with task_id=%s', task_id)
-#         abort(404)
-#     log.info('Getting Task with task_id=%s', task_id)
-#     return jsonify({'task': task})
-# @app.route('/tasks/<int:task_id>', methods=['PUT'])
-# def update_task(task_id):
-#     if not request.json or 'action' not in request.json:
-#         log.info('Could not update. Invalid params')
-#         abort(400)
-#
-#     task = Task.query.filter_by(task_id=task_id).first()
-#     if task is None:
-#         log.info('Could not find Task id=%s to update', task_id)
-#         abort(404)
-#
-#     action = request.json['action']
-#     log.info('Updating Task id=%s with action %s', task_id, action)
-#     task.action = action
-#     db.session.commit()
-#     return jsonify({'op': 'OK', 'task': task}), 201
-
-# @app.route('/tasks/<int:task_id>', methods=['DELETE'])
-# def remove_task(task_id):
-#     task = Task.query.filter_by(task_id=task_id).first()
-#     if task is None:
-#         abort(404)
-#
-#     log.info('Deleting Task with id=%s', task_id)
-#     db.session.delete(task)
-#     db.session.commit()
-#     return jsonify({'op': 'OK'})
-
-# @app.route('/tasks', methods=['DELETE'])
-# def remove_all_tasks():
-#     tasks = Task.query.all()
-#     for task in tasks:
-#         db.session.delete(task)
-#
-#     log.info('Deleted all Tasks!')
-#     db.session.commit()
-#     return jsonify({'op': 'OK'})
-
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
@@ -301,5 +248,4 @@ def not_found(error):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    #db.create_all()
     app.run(host="0.0.0.0")
