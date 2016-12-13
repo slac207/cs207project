@@ -8,7 +8,6 @@ import json
 import os
 import inspect
 from sqlalchemy.dialects.postgresql import INTEGER, REAL, CHAR
-#import psycopg2
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 #sys.path.insert(0,os.path.split(os.path.split(os.path.realpath(inspect.stack()[0][1]))[0])[0])
 from TimeseriesDB.MessageFormatting import *
@@ -20,18 +19,16 @@ from timeseries.SMTimeSeries import SMTimeSeries as ts
 log = logging.getLogger(__name__)
 
 class ProductJSONEncoder(JSONEncoder):
-
     def default(self, obj):
         if isinstance(obj.__class__, DeclarativeMeta):
             return obj.to_dict()
         return super(ProductJSONEncoder, self).default(obj)
 
-
+# Create the app and set it's json encoder
 app = Flask(__name__)
 app.json_encoder = ProductJSONEncoder
 
-# Config information for our postgres database
-
+# Config information for the postgres database
 user = 'ubuntu'
 password = 'cs207password'
 host = '172.31.56.49'
@@ -44,13 +41,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = url # 'sqlite:////tmp/tasks.db'
 db = SQLAlchemy(app)
 db.Model.metadata.reflect(db.engine)
 
+
 class MetaTable(db.Model):
     """
-    "id" INTEGER PRIMARY KEY NOT NULL ,
-    "MEAN" DECIMAL,
-    "STD" DECIMAL,
-    "BLARG" DECIMAL,
-    "LEVEL" VARCHAR
+    Reflect the "metadata" table from postgres.
     """
     metadata1=MetaData(db.engine)
     print(metadata1)
@@ -64,13 +58,17 @@ class MetaTable(db.Model):
 
     )
     def __init__(self,**kw):
+        "Set all attributes for each column"
         for k,v in kw.items():
             setattr(self,k,v)
     def __repr__(self):
         return '<ID %r>' % self.id
     def to_dict(self):
+        "Define a dict that includes all metadata fields"
         return dict(id=self.id, mean=self.mean, level=self.level, blarg=self.blarg,std=self.std)
+
 def connectDBServer(requestDict):
+    "Connect to the custom similarity server. Send and receive a request"
     s = socket(AF_INET, SOCK_STREAM)
     s.connect(('localhost', 20000))
     s2 = serialize(json.dumps(requestDict))
@@ -102,7 +100,6 @@ def get_all_metadata():
     log.info('Getting all Tasks')
     # filters metadata in the postgres server and sends back all metatdata
     # that meet the condition
-
     for metadata_var in [id,mean,blarg,std]:
         if metadata_var:
             # split with -
@@ -121,6 +118,7 @@ def get_all_metadata():
             result=MetaTable.query.filter(and_(table>=lower,table<=upper))
             return jsonify(dict(metadata=result.all()))
     if level:
+        # split with ","
         all_options = level.split(",")
         result=MetaTable.query.filter(MetaTable.level.in_(all_options))
         return jsonify(dict(metadata=result.all()))
@@ -133,9 +131,6 @@ def add_timeseries():
     Adds a new timeseries into the database given a json which has a key
     for an id and a key for the timeseries, and returns the timeseries.
     """
-    # Accesses the database server and adds a new timeseries
-    # Adds new metadata to the postgres table
-    # Returns the timeseries from the database server
     if not request.json or 'ts' not in request.json:
         print("not json!")
         abort(400)
@@ -157,12 +152,11 @@ def add_timeseries():
 def get_from_id(timeseries_id):
     """
     QUERY 3:
+    Connects to both the metadata Postgres table and the similarity database.
     Sends back metadata and the timeseries itself in a JSON payload.
     """
     # For an id, get metadata for that id from postgres and timeseries for
     # that id from database server
-    #print(MetaTable['metadata'])
-    print("metadata")
     md_from_id = MetaTable.query.filter_by(id= timeseries_id).all()
     requestDict = {'op':'TSfromID','id':timeseries_id,'courtesy':'please'}
     response = connectDBServer(requestDict)
@@ -176,14 +170,12 @@ def get_from_id(timeseries_id):
 def get_simsearch_from_id(ts_id):
 
     """
-    QUERY 5: Takes in an id querystring and uses it as an id into the database
-    to find the timeseries that are similar, sending back the ids of the top N
+    QUERY 5: Takes in an id querystring and uses it as an id into the
+    similarity database to find the timeseries that are similar.
+    Sends back the ids of the top N which is passed in as an argument
     (default is 5 closest).
     """
     n_closest = request.args.get('topn', 5, type=int)
-
-    # takes an id and connects to database server to find similar time series
-    # send back the ids of the top 5.
     requestDict = {'op':'simsearch_id','id':ts_id,'n_closest':n_closest,'courtesy':'please'}
     print("REQUEST IS", requestDict)
     response = connectDBServer(requestDict)
@@ -197,11 +189,9 @@ def get_simsearch_from_id(ts_id):
 def get_simsearch_from_json():
     """
     QUERY 6:
-    Takes a timeseries as an input in a JSON, carries out the query, and
-    returns the appropriate ids as well.
+    Takes a timeseries as an input in a JSON, carries out the similarity query,
+    and returns the appropriate ids to timeseries.
     """
-    # takes a timeseries as input in JSON. carries out query in database server.
-    # returns the ids
     if not request.json or 'ts' not in request.json:
         print("not json!")
         abort(400)
