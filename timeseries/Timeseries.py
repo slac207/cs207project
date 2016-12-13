@@ -1,9 +1,9 @@
-import lazy
+from timeseries.lazy import *
 import numpy as np
 import numbers
 import reprlib
-from binarysearch import binary_search
-from timeSeriesABC import SizedContainerTimeSeriesInterface
+from timeseries.binarysearch import binary_search
+from timeseries.timeSeriesABC import SizedContainerTimeSeriesInterface
 import math
 import statistics as stat
 

@@ -9,14 +9,11 @@
 # serve to show the default.
 
 import sys
-sys.path.append('../timeseries/')
-
-import os
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..'))
+# sys.path.insert(0, os.path.abspath('.'))
 
 # -- Hack for ReadTheDocs ------------------------------------------------------
 # This hack is necessary since RTD does not issue `sphinx-apidoc` before running
@@ -24,7 +21,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # https://github.com/rtfd/readthedocs.org/issues/1139
 # DON'T FORGET: Check the box "Install your project inside a virtualenv using
 # setup.py install" in the RTD Advanced Settings.
-
+import os
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
     import inspect
@@ -34,7 +31,7 @@ if on_rtd:
         inspect.getfile(inspect.currentframe())))
 
     output_dir = os.path.join(__location__, "../docs/api")
-    module_dir = os.path.join(__location__, "../timeseries")
+    module_dir = os.path.join(__location__, "../cs207rbtree")
     cmd_line_template = "sphinx-apidoc -f -o {outputdir} {moduledir}"
     cmd_line = cmd_line_template.format(outputdir=output_dir, moduledir=module_dir)
     apidoc.main(cmd_line.split(" "))
@@ -64,8 +61,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'timeSeries'
-copyright = u'2016, SLAC207'
+project = u'cs207rbtree'
+copyright = u'2016, Sarah Anoke'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -131,7 +128,7 @@ html_theme = 'alabaster'
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 try:
-    from Timeseries import __version__ as version
+    from cs207rbtree import __version__ as version
 except ImportError:
     pass
 else:
@@ -196,7 +193,7 @@ html_static_path = ['_static']
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'timeseries-doc'
+htmlhelp_basename = 'cs207rbtree-doc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -215,8 +212,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'user_guide.tex', u'timeSeries Documentation',
-   u'SAnoke ABrennan CCochrane LWare', 'manual'),
+  ('index', 'user_guide.tex', u'cs207rbtree Documentation',
+   u'Sarah Anoke', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

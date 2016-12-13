@@ -1,7 +1,7 @@
 import abc, os, pickle, reprlib
 import numpy as np
-from timeSeriesABC import SizedContainerTimeSeriesInterface
-from ArrayTimeSeries import ArrayTimeSeries
+from timeseries.timeSeriesABC import SizedContainerTimeSeriesInterface
+from timeseries.ArrayTimeSeries import ArrayTimeSeries
 
 class StorageManagerInterface():
     """An interface for storing timeseries objects on disk

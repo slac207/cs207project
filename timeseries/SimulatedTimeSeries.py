@@ -1,8 +1,8 @@
 import abc
 import itertools
 import numbers
-from timeSeriesABC import StreamTimeSeriesInterface
-from ArrayTimeSeries import ArrayTimeSeries      
+from timeseries.timeSeriesABC import StreamTimeSeriesInterface
+from timeseries.ArrayTimeSeries import ArrayTimeSeries      
 import math
         
 class SimulatedTimeSeries(StreamTimeSeriesInterface):

@@ -6,17 +6,34 @@
 
 # CS207 Final Project
 
+## Purpose
+This package contains the code to create a Web UI which supports similarity searches of timeseries by id, similarity searches of newly provided timeseries, timeseries metadata queries, timeseries retrieval based on id, and addition of a new timeseries into our database. 
+
+## Installation
+Before running any files, `python setup.py install` must be run from the top level directory, cs207project.
+
 ## Contents
 
 ### `cs207rbtree` (directory) 
 Contains a `pip install`able implementation of a Red Black Tree.
 
-- [ ] describe directory contents.
+- [ ] See README in [cs207rbtree](https://github.com/slac207/cs207project/tree/master/cs207rbtree) for directory contents
 
-### `timeseries` 
+### `timeseries` (directory) 
 Contains our time series implementation.
 
-- [ ] describe directory contents.
+- [ ] See [timeseries README](https://github.com/slac207/cs207project/blob/master/timeseries/README.md) for directory contents, usage, and testing
+
+### `Similarity`(directory) 
+Contains our similarity search implementation
+- [ ] See [Similarity README](https://github.com/slac207/cs207project/blob/master/Similarity/README.md) for directory contents, usage, and testing
+
+### `TimeseriesDB`(directory) 
+Contains our multi-threaded socket server implementation 
+- [ ] See [TimeseriesDB README](https://github.com/slac207/cs207project/blob/master/TimeseriesDB/README.md) for directory contents, usage, and testing
+
+### `tests` (directory) 
+Contains our test suite. Each test file is pointed to in the respective module README linked above.
 
 
 --------
