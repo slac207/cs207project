@@ -42,8 +42,8 @@ class Server_Tests(unittest.TestCase):
 
         
     def test_suite(self):
-        #test_serializer_deserializer(self):
-        #test the serializing
+        
+        ###test the serializing and deserializing 
         msg = {'op':'TSfromID','id':12,'courtesy':'please'}
         serialized = serialize(json.dumps(msg))
         assert isinstance(serialized, bytes) #check that bytes are passed back
@@ -54,9 +54,9 @@ class Server_Tests(unittest.TestCase):
         response = ds.deserialize()
         #check that serializing and then deserializing leaves us with the original message  
         assert response == msg   
-        #PORT += 1
         
-    #def test_queries(self):
+        
+        ###test the different queries 
         s = socket(AF_INET, SOCK_STREAM)        
         s.connect(('localhost', self.port))
         
@@ -111,9 +111,9 @@ class Server_Tests(unittest.TestCase):
         assert 'payload' in response_impolite
             
         s.close()
-        #PORT += 1
         
-    #def test_multiple_queries(self):
+        
+        ###test multiple queries
         def query_1():
             #function to compute simsearch
             s = socket(AF_INET, SOCK_STREAM)
@@ -152,7 +152,6 @@ class Server_Tests(unittest.TestCase):
         self.p2.start() 
         self.p.join()
         self.p2.join()
-        #PORT += 1
           
         
 if __name__=='__main__':
