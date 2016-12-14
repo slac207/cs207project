@@ -29,9 +29,9 @@
 		var publicIP = 'http://54.157.228.231';
 		
 		// building blocks of metadata table
-		var tableTop = "<table>"
-		var tableBottom = "</table>"
-		var tableHeader = "<tr><th>ID</th><th>Mean</th><th>StDev</th><th>Level</th><th>Blarg</th></tr>"
+		var tableTop = "<table id='metadata'>";
+		var tableBottom = "</table>";
+		var tableHeader = "<tr><th>ID</th><th>Mean</th><th>StDev</th><th>Level</th><th>Blarg</th></tr>";
 		var metadataTable = tableTop + tableHeader;
 		
 		// helps with managing the uploaded time series
@@ -242,24 +242,36 @@
 				
 				$.plot("#placeholder", data, options);	
 				
-				// parse and display the metadata
-				document.getElementById('timeseriesMetadata').innerHTML = series.metadata[0];
+								
+				// put together the metadata
+				console.log("metadata", series.metadata.blarg)
+				console.log("metadata", series.metadata[0].mean)
+				
+				var tableRow = "<tr><td>" + series.metadata[0].id + "</td>"
+				tableRow    += "<td>" +series.metadata[0].mean  + "</td>"
+				tableRow    += "<td>" +series.metadata[0].std   + "</td>"
+				tableRow    += "<td>" +series.metadata[0].level + "</td>"
+				tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>"
+				
+				metadataTable += tableRow
+				
 				
 				counter++;
+				
+				
 								
 				if (counter == simIDs.length - 1) {
 					console.log("Destroy the progress bar -- we don't need it anymore.");
 					$("#progressbar").progressbar( "destroy" );
-					//document.getElementById('timeseriesMetadata').innerHTML = metadataTable;
+					
+					
+					metadataTable += tableBottom;
+					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;
 					
 					console.log("Plot the target curve on top and make it fancy!");
 					//$.plot("#placeholder", data, options).getData()[counter].lines.lineWidth = 5;
 					//$.plot("#placeholder", data, options)
 				}
-				
-				// put together the metadata
-				console.log("metadata", series.metadata.blarg)
-				console.log("metadata", series.metadata[0].mean)
 				
 			}	
 			
