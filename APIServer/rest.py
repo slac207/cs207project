@@ -190,6 +190,7 @@ def get_simsearch_from_id():
     similarity database to find the timeseries that are similar.
     Sends back the ids of the top N which is passed in as an argument
     (default is 5 closest).
+    
     """
     ts_id = request.args.get('id', type=int)
     if ts_id>999 or ts_id<1:
@@ -215,12 +216,12 @@ def get_simsearch_from_json():
         abort(400)
     log.info('Getting IDs for most similar Timeseries from input id')
     # ts_dict = json.loads(request.json)
-    ts_dict = request.json
+    ts_dict = json.loads(request.json)
     print(ts_dict)
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_ts','ts':ts_dict['ts'],'n_closest':n_closest,'courtesy':'please'}
     response = connectDBServer(requestDict)
-    return jsonify(response), 200
+    return jsonify(response), 201
 
 @app.errorhandler(404)
 def not_found(error):
