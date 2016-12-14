@@ -181,7 +181,7 @@
 						$.plot("#placeholder", data, options);	
 						
 						console.log("Destroy the progress bar -- we don't need it anymore.");
-					$("#progressbar").progressbar( "destroy" );
+						$("#progressbar").progressbar( "destroy" );
 
 					}			
 				
@@ -226,7 +226,7 @@
 								
 											var dataurl = publicIP + "/timeseries/" + idNum;
 								
-											console.log('Retrieving data associated with TS ID#',idNum ,'.');
+											console.log('Retrieving data associated with TS ID#' + idNum + '.');
 											// solution from http://stackoverflow.com/questions/4201934/
 											//               jquery-ajax-pass-additional-argument-to-success-callback
 											$.ajax({
@@ -295,10 +295,12 @@
 				$.plot("#placeholder", data, options);	
 
 				
-				// if we've reached the target TS ID, we're done putting together the 
-				//   metadata table. 
+				// if (1) we've reached the target TS ID, in the case of a specified TS ID
+				//    (2) we've reached the end of the similar IDs, in the case of 
+				//        an uploaded TS, 
+				// we're done putting together the metadata table. 
 				// highlight the row of the targt TS ID and show the table to the world
-				if( series.metadata[0].id == timeSeriesID ) {	
+				if( series.metadata[0].id == timeSeriesID | counter == simIDs.length - 1 ) {	
 				
 					var tableRow = "<tr style='background-color:yellow;'><td>" + series.metadata[0].id + "</td>";
 					tableRow    += "<td>" +series.metadata[0].mean  + "</td>";
@@ -330,10 +332,10 @@
 				counter++;		
 
 	
-				if (counter == simIDs.length - 1) {
-					console.log("Destroy the progress bar -- we don't need it anymore.");
-					$("#progressbar").progressbar( "destroy" );
-				}
+				//if (counter == simIDs.length - 1) {
+				//	console.log("Destroy the progress bar -- we don't need it anymore.");
+				//	$("#progressbar").progressbar( "destroy" );
+				//}
 				
 			}	
 			
