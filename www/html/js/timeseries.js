@@ -208,6 +208,11 @@
 
         		  // call next ajax function
         			// now we loop over all the IDs and collect their data
+        			
+        			console.log(simIDs.length)
+        			
+        			console.log(simIDs)
+        			
 							for(var i=0; i < simIDs.length; i++) {
 				
 								idNum   = simIDs[i];
