@@ -21,34 +21,22 @@
 
 		// GLOBAL VARIABLES AND FUNCTIONS
 		
-		// check whether the user specified a valid integer
-		function isInt(n){
-    		return Number(n) === n && n % 1 === 0;
-		}
-		
 		// initialize the array that will hold the data for plotting
 		var data = [];
+		var dataTarget = [];
 		
 		// IP address to access our UI
-		var publicIP = 'http://54.175.144.132';
+		var publicIP = 'http://54.157.228.231';
 		
 		// building blocks of metadata table
-		var tableTop = "<table>"
-		var tableBottom = "</table>"
-		var tableHeader = "<tr><th>ID</th><th>Mean</th><th>StDev</th><th>Level</th><th>Blarg</th></tr>"
+		var tableTop = "<table id='metadata'>";
+		var tableBottom = "</table>";
+		var tableHeader = "<tr><th>ID</th><th>Mean</th><th>StDev</th><th>Level</th><th>Blarg</th></tr>";
 		var metadataTable = tableTop + tableHeader;
 		
 		// helps with managing the uploaded time series
 		var files;
 		var uploadButton = document.getElementById('tsQuery');
-		
-		// keep an eye on the file upload field, and save what's put there
-		//$('input[type=file]').on('change', prepareUpload);
-
-		// grab files and set them to our variable
-		//function prepareUpload(event) {
-  	//	files = event.target.files;
-		//}
 		
 		// initialize the timeseries plot (will be empty)
 		console.log('Initializing flot plot (empty plot).');
@@ -67,7 +55,7 @@
 			});
 			
 			// reset everything in preparation for new data
-			console.log('Reseting helper variables in preparation for new data.');
+			console.log('Resetting helper variables in preparation for new data.');
 			document.getElementById('timeseriesMetadata').innerHTML = '';
 			data = [];
 			var simIDs = [];
@@ -85,9 +73,143 @@
 			// if the user has specified an ID, use that; 
 			//   otherwise assume there's an uploaded file.
 			if (timeSeriesID != '') {
-				simIDs.push(timeSeriesID);
-				var simurl = publicIP + "/simquery/" + timeSeriesID + "?topn=" + numSim;
+			
+				var simurl = publicIP + "/simquery?id=" + timeSeriesID + "&topn=" + numSim;
 				console.log('Constructed simquery.');
+				
+				// first get the IDs of the similar time series
+			    console.log('Retrieving the ID numbers of the similar TS (ID number supplied).');
+				$.ajax({
+					url: simurl,
+					type: "GET",
+					dataType: "json",
+					success: function(data) {
+						
+								getSimIDs(data);
+								simIDs.push(timeSeriesID);
+
+								// call next ajax function
+								// now we loop over all the IDs and collect their data
+							
+								console.log(simIDs.length)
+							
+								console.log(simIDs)
+							
+								for(var i=0; i < simIDs.length; i++) {
+				
+									idNum   = simIDs[i];
+								
+									var dataurl = publicIP + "/timeseries/" + idNum;
+								
+									console.log('Retrieving data associated with TS ID#',idNum ,'.');
+									// solution from http://stackoverflow.com/questions/4201934/
+									//               jquery-ajax-pass-additional-argument-to-success-callback
+									$.ajax({
+										url: dataurl,
+										type: "GET",
+										dataType: "json",
+										success: onDataReceived
+									});
+				
+								}		
+					 }
+				});
+				
+			} else if ( document.getElementById("fileSelect").files.length > 0  ) {
+			
+    			console.log( document.getElementById("fileSelect").files[0] );
+    		
+    			var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
+
+    			$.ajax({
+      		  url: simurl,
+    		    type: 'POST',
+    		    data: document.getElementById("fileSelect").files[0],
+    		    cache: false,
+     		    contentType: 'application/json; charset=utf-8',
+      			dataType: 'json',
+     		    processData: false, // Don't process the files
+     		    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+        		error: function(jqXHR, textStatus, errorThrown) {
+           		 // Handle errors here
+           		 console.log('ERRORS: ' + textStatus);
+       		  }
+   		  })
+   		    		.done(function (result) {
+        
+        		simIDs = result.id;
+        		
+        		$.ajax({
+						url: simurl,
+						type: "GET",
+						dataType: "json",
+						success: function(data) {
+						
+									// call next ajax function
+									// now we loop over all the IDs and collect their data
+							
+									console.log(simIDs.length)
+							
+									console.log(simIDs)
+							
+									for(var i=0; i < simIDs.length; i++) {
+				
+										idNum   = simIDs[i];
+								
+										var dataurl = publicIP + "/timeseries/" + idNum;
+								
+										console.log('Retrieving data associated with TS ID#',idNum ,'.');
+										// solution from http://stackoverflow.com/questions/4201934/
+										//               jquery-ajax-pass-additional-argument-to-success-callback
+										$.ajax({
+											url: dataurl,
+											type: "GET",
+											dataType: "json",
+											success: onDataReceived
+										});
+				
+									}		
+						 }
+					});
+        	
+        		// parse the uploaded file
+        		// https://www.html5rocks.com/en/tutorials/file/dndfiles/
+				read = new FileReader();
+				read.readAsText(document.getElementById("fileSelect").files[0]);
+					
+				read.onloadend = function(){
+    				//console.log(read.result);
+    				//console.log(JSON.parse(read.result))
+    				//console.log(JSON.parse(read.result).ts)
+    				var dataTemp = JSON.parse(read.result).ts
+    				dataTarget = dataTemp[0].map(function (e, i) { 
+											return [e, dataTemp[1][i]];});
+									
+    				tsData = {label: "uploaded timeseries", data: dataTarget};
+    				
+    				console.log('Appending uploaded time series to Flot data.');
+					
+					data.push(tsData);
+					
+					console.log(tsData)
+					
+					console.log('Plotting the data of the uploaded TS.')		
+				
+					$.plot("#placeholder", data, options);	
+
+				}
+        	
+				console.log(data)
+						
+						
+        		// get the IDs of the similar time series
+				console.log('Retrieving the ID numbers of the similar TS (uploaded TS).');
+					
+					
+
+      	});
+				
+				
 			} else {
 				
 				alert("You gotta give us something valid to work with...");
@@ -120,15 +242,35 @@
 				
 				$.plot("#placeholder", data, options);	
 				
-				// parse and display the metadata
-				document.getElementById('timeseriesMetadata').innerHTML = series.metadata[0];
+								
+				// put together the metadata
+				console.log("metadata", series.metadata.blarg)
+				console.log("metadata", series.metadata[0].mean)
+				
+				var tableRow = "<tr><td>" + series.metadata[0].id + "</td>"
+				tableRow    += "<td>" +series.metadata[0].mean  + "</td>"
+				tableRow    += "<td>" +series.metadata[0].std   + "</td>"
+				tableRow    += "<td>" +series.metadata[0].level + "</td>"
+				tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>"
+				
+				metadataTable += tableRow
+				
 				
 				counter++;
+				
+				
 								
 				if (counter == simIDs.length - 1) {
 					console.log("Destroy the progress bar -- we don't need it anymore.");
 					$("#progressbar").progressbar( "destroy" );
-					//document.getElementById('timeseriesMetadata').innerHTML = metadataTable;
+					
+					
+					metadataTable += tableBottom;
+					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;
+					
+					console.log("Plot the target curve on top and make it fancy!");
+					//$.plot("#placeholder", data, options).getData()[counter].lines.lineWidth = 5;
+					//$.plot("#placeholder", data, options)
 				}
 				
 			}	
@@ -138,38 +280,6 @@
 					simIDs.push(series.id[i]); 
 				}
 			}
-			
-			// first get the IDs of the similar time series
-			console.log('Retrieving the ID numbers of the similar TS.');
-			$.ajax({
-				url: simurl,
-				type: "GET",
-				dataType: "json",
-				success: function(data) {
-
-        		getSimIDs(data)
-
-        		  // call next ajax function
-        			// now we loop over all the IDs and collect their data
-							for(var i=0; i < simIDs.length; i++) {
-				
-								idNum   = simIDs[i];
-								
-								var dataurl = publicIP + "/timeseries/" + idNum;
-								
-								console.log('Retrieving data associated with TS ID#',idNum ,'.');
-								// solution from http://stackoverflow.com/questions/4201934/
-								//               jquery-ajax-pass-additional-argument-to-success-callback
-								$.ajax({
-									url: dataurl,
-									type: "GET",
-									dataType: "json",
-									success: onDataReceived
-								});
-				
-							}		
-   			 }
-			});
 			
 		});
 

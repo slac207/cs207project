@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Similarity package &mdash; cs207project 0.0.post0.dev372+n1d712dc documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.post0.dev372+n1d712dc',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="cs207project 0.0.post0.dev372+n1d712dc documentation" href="../index.html" />
+    <link rel="up" title="Modules" href="modules.html" />
+    <link rel="next" title="TimeseriesDB package" href="TimeseriesDB.html" />
+    <link rel="prev" title="Modules" href="modules.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="similarity-package">
+<h1>Similarity package<a class="headerlink" href="#similarity-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-Similarity.distances">
+<span id="similarity-distances-module"></span><h2>Similarity.distances module<a class="headerlink" href="#module-Similarity.distances" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Similarity.distances.ccor">
+<code class="descclassname">Similarity.distances.</code><code class="descname">ccor</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/distances.html#ccor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.distances.ccor" title="Permalink to this definition">¶</a></dt>
+<dd><p>given two standardized time series, compute their cross-correlation using FFT</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Similarity.distances.distance">
+<code class="descclassname">Similarity.distances.</code><code class="descname">distance</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em>, <em>mult=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/distances.html#distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.distances.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the distance metric using the kernal coefficient</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Similarity.distances.kernel_corr">
+<code class="descclassname">Similarity.distances.</code><code class="descname">kernel_corr</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em>, <em>mult=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/distances.html#kernel_corr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.distances.kernel_corr" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute a kernelized correlation so that we can get a real distance</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Similarity.distances.max_corr_at_phase">
+<code class="descclassname">Similarity.distances.</code><code class="descname">max_corr_at_phase</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/distances.html#max_corr_at_phase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.distances.max_corr_at_phase" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="Similarity.distances.random_ts">
+<code class="descclassname">Similarity.distances.</code><code class="descname">random_ts</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/distances.html#random_ts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.distances.random_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a TimeSeries with random values
+a: scaling term to generate random values for time series</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Similarity.distances.stand">
+<code class="descclassname">Similarity.distances.</code><code class="descname">stand</code><span class="sig-paren">(</span><em>x</em>, <em>m</em>, <em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/distances.html#stand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.distances.stand" title="Permalink to this definition">¶</a></dt>
+<dd><p>standardize timeseries x by mean m and std deviation s</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Similarity.distances.tsmaker">
+<code class="descclassname">Similarity.distances.</code><code class="descname">tsmaker</code><span class="sig-paren">(</span><em>m</em>, <em>s</em>, <em>j</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/distances.html#tsmaker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.distances.tsmaker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a TimeSeries whose values are approximately normally distributed
+m: location parameter for normal pdf
+s: scale parameter for normal pdf
+j: coefficient for extra randomness added to normally distributed values</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-Similarity.find_most_similar">
+<span id="similarity-find-most-similar-module"></span><h2>Similarity.find_most_similar module<a class="headerlink" href="#module-Similarity.find_most_similar" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Similarity.find_most_similar.find_most_similiar">
+<code class="descclassname">Similarity.find_most_similar.</code><code class="descname">find_most_similiar</code><span class="sig-paren">(</span><em>filename</em>, <em>n</em>, <em>vantage_pts</em>, <em>sm</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/find_most_similar.html#find_most_similiar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.find_most_similar.find_most_similiar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds n most similiar time series to the time series of interest (filename)
+by using the supplied vantage points</p>
+<p>filename: timeseries of interest
+n: number of similiar timeseries to return (n must be between 1 and 20)
+vantage_pts: a list of the vantage point numbers</p>
+<p>Returns: list of n most similiar filenames</p>
+<p>Notes: Correct behavior is not gaurenteed when n &gt; the number of vantage points</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Similarity.find_most_similar.find_similarity_of_points_in_radius">
+<code class="descclassname">Similarity.find_most_similar.</code><code class="descname">find_similarity_of_points_in_radius</code><span class="sig-paren">(</span><em>closest_vantage_pt</em>, <em>ts1</em>, <em>radius</em>, <em>sm</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/find_most_similar.html#find_similarity_of_points_in_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.find_most_similar.find_similarity_of_points_in_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a vantage point and a radius, find the points that fall within the
+circle around the vantage point. Then calculates the distance from all of these
+points to the timeseries of interest.</p>
+<p>closest_vantage_pt: number of the vantage point being considered
+ts1: timeseries of interest
+radius: radius of circle to consider</p>
+<p>Returns: list of tuples (distance, timeseries id) in sorted order</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Similarity.find_most_similar.sanity_check">
+<code class="descclassname">Similarity.find_most_similar.</code><code class="descname">sanity_check</code><span class="sig-paren">(</span><em>filename</em>, <em>n</em>, <em>sm</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/find_most_similar.html#sanity_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.find_most_similar.sanity_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that manually finds the n most similiar timeseries to the given
+timeseries. Serves as a check of the vantage point method</p>
+<p>Returns: list of n most similiar filenames</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-Similarity.generate_time_series">
+<span id="similarity-generate-time-series-module"></span><h2>Similarity.generate_time_series module<a class="headerlink" href="#module-Similarity.generate_time_series" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Similarity.generate_time_series.generate_time_series">
+<code class="descclassname">Similarity.generate_time_series.</code><code class="descname">generate_time_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/generate_time_series.html#generate_time_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.generate_time_series.generate_time_series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-Similarity.pick_vantage_points">
+<span id="similarity-pick-vantage-points-module"></span><h2>Similarity.pick_vantage_points module<a class="headerlink" href="#module-Similarity.pick_vantage_points" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Similarity.pick_vantage_points.pick_vantage_points">
+<code class="descclassname">Similarity.pick_vantage_points.</code><code class="descname">pick_vantage_points</code><span class="sig-paren">(</span><em>arg</em>, <em>sm</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/pick_vantage_points.html#pick_vantage_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.pick_vantage_points.pick_vantage_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code which picks 20 vantage points and produces a database for each one.
+The database stores (key,value) pairs where:
+key = distance from timeseries to vantage point (kernel coefficient)
+value = id of timeseries (0-999)</p>
+<p>returns: list of vantage points (integers from 0-999)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-Similarity">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-Similarity" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Similarity.generate_time_series">
+<code class="descclassname">Similarity.</code><code class="descname">generate_time_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/generate_time_series.html#generate_time_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.generate_time_series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="Similarity.pick_vantage_points">
+<code class="descclassname">Similarity.</code><code class="descname">pick_vantage_points</code><span class="sig-paren">(</span><em>arg</em>, <em>sm</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Similarity/pick_vantage_points.html#pick_vantage_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Similarity.pick_vantage_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code which picks 20 vantage points and produces a database for each one.
+The database stores (key,value) pairs where:
+key = distance from timeseries to vantage point (kernel coefficient)
+value = id of timeseries (0-999)</p>
+<p>returns: list of vantage points (integers from 0-999)</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Similarity package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-Similarity.distances">Similarity.distances module</a></li>
+<li><a class="reference internal" href="#module-Similarity.find_most_similar">Similarity.find_most_similar module</a></li>
+<li><a class="reference internal" href="#module-Similarity.generate_time_series">Similarity.generate_time_series module</a></li>
+<li><a class="reference internal" href="#module-Similarity.pick_vantage_points">Similarity.pick_vantage_points module</a></li>
+<li><a class="reference internal" href="#module-Similarity">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">Modules</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">Modules</a></li>
+      <li>Next: <a href="TimeseriesDB.html" title="next chapter">TimeseriesDB package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/Similarity.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Sarah Anoke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/api/Similarity.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

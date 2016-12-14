@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>timeseries.binarysearch &mdash; cs207project 0.0.post0.dev372+n1d712dc documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.post0.dev372+n1d712dc',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cs207project 0.0.post0.dev372+n1d712dc documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for timeseries.binarysearch</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="binary_search"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.binarysearch.binary_search">[docs]</a><span></span><span class="k">def</span> <span class="nf">binary_search</span><span class="p">(</span><span class="n">da_array</span><span class="p">,</span> <span class="n">needle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An algorithm that operates in O(lg(n)) to search for an element</span>
+<span class="sd">    in an array sorted in ascending order.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    da_array : list</span>
+<span class="sd">        a list of &quot;comparable&quot; items sorted in non-descending order</span>
+<span class="sd">    needle: an item to find in the array; it may or may not</span>
+<span class="sd">        be in the array</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    index: int</span>
+<span class="sd">        an integer representing the index of `needle` if found, and -1</span>
+<span class="sd">        otherwise</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    PRE: `da_array` is a list that is sorted in non-decreasing order (thus items in</span>
+<span class="sd">        `da_array` must be comparable: implement &lt; and ==)</span>
+<span class="sd">    POST:</span>
+<span class="sd">        - `da_array` is not changed by this function (immutable)</span>
+<span class="sd">        - returns `index`=-1 if `needle` is not in `da_array`</span>
+<span class="sd">        - returns an int `index ` in [0:len(da_array)] if</span>
+<span class="sd">          `index` is in `da_array`</span>
+<span class="sd">    INVARIANTS:</span>
+<span class="sd">        - If `needle` in `da_array`, needle in `da_array[min_index:max_index]`</span>
+<span class="sd">          is a loop invariant in the while loop below.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; binary_search([1,2,3,4,5], 2) #if needle in the array, return its index</span>
+<span class="sd">    (1, &#39;FOUND&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; binary_search([1,2,3,4,5], 1.5) #if needle not in array, return surrounding indices</span>
+<span class="sd">    (0, 1)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">min_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">max_index</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">da_array</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="s2">&quot;needle in da_array =&gt; needle in da_array[min_index:max_index]&quot;</span>
+        <span class="k">if</span> <span class="n">min_index</span> <span class="o">&gt;</span> <span class="n">max_index</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">max_index</span><span class="p">,</span><span class="n">min_index</span><span class="p">)</span>
+
+        <span class="n">midpoint</span> <span class="o">=</span> <span class="n">min_index</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_index</span> <span class="o">-</span> <span class="n">min_index</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="n">da_array</span><span class="p">[</span><span class="n">midpoint</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">needle</span><span class="p">:</span><span class="c1">#lower part</span>
+            <span class="n">max_index</span> <span class="o">=</span> <span class="n">midpoint</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">da_array</span><span class="p">[</span><span class="n">midpoint</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">needle</span><span class="p">:</span>
+            <span class="n">min_index</span> <span class="o">=</span> <span class="n">midpoint</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">midpoint</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="s1">&#39;FOUND&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Sarah Anoke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

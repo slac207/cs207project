@@ -15,6 +15,7 @@ from TimeseriesDB.MessageFormatting import *
 from socket import socket, AF_INET, SOCK_STREAM
 from timeseries.StorageManager import FileStorageManager
 from timeseries.SMTimeSeries import SMTimeSeries as ts
+import time
 
 
 log = logging.getLogger(__name__)
@@ -91,7 +92,6 @@ def get_all_metadata():
     """
     # Need to access the postgres table and select all
     log.info('Getting all Metadata')
-    print(MetaTable.query.all())
     #return jsonify(dict(metadata=5))
     id = request.args.get('id_in', type=str)
     mean = request.args.get('mean_in', type=str)
@@ -104,8 +104,15 @@ def get_all_metadata():
     for metadata_var in [id,mean,blarg,std]:
         if metadata_var:
             # split with -
-            lower = float(metadata_var.split("-")[0])
-            upper = float(metadata_var.split("-")[1])
+            input_split = metadata_var.split(",")
+            lower = float(input_split[0])
+            if len(input_split)>1:
+                upper = float(metadata_var.split(",")[1])
+            else:
+                input_split = metadata_var.split(",")
+                lower = float(input_split[0])
+                if len(input_split)>1:
+                    upper = float(metadata_var.split(",")[1])
             if mean:
                 table = MetaTable.mean
             elif blarg:
@@ -132,21 +139,17 @@ def add_timeseries():
     Adds a new timeseries into the database given a json which has a key
     for an id and a key for the timeseries, and returns the timeseries.
     """
-    if not request.json or 'ts' not in request.json:
-        print("not json!")
+    if not request.json or 'ts' not in request.json or 'id' not in request.json:
         abort(400)
     log.info('Adding Timeseries to Database')
-    ts_dict = json.loads(request.json)
+    #ts_dict = json.loads(request.json)
+    ts_dict = request.json
     print(ts_dict)
     sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
     sm.reload_index()
-    print("got sm")
     new_ts = ts(times=ts_dict['ts'][0],values=ts_dict['ts'][1])
-    sm.store(t=new_ts,id=1000,overwrite=True)
-    print("CHECKING",sm.get(1000))
+    sm.store(t=new_ts,id=ts_dict['id'],overwrite=False)
     return request.json, 201
-    #except:
-    #    abort(400)
     #return jsonify({'op': 'OK', 'task': prod}), 201
 
 @app.route('/timeseries/<int:timeseries_id>', methods=['GET'])
@@ -158,7 +161,18 @@ def get_from_id(timeseries_id):
     """
     # For an id, get metadata for that id from postgres and timeseries for
     # that id from database server
-    md_from_id = MetaTable.query.filter_by(id= timeseries_id).all()
+    try:
+        md_from_id = MetaTable.query.filter(id==timeseries_id).all()
+    except:
+        time.sleep(1)
+        try:
+            time.sleep(1)
+            md_from_id = MetaTable.query.filter(id==timeseries_id).all()
+        except:
+            try:
+                time.sleep(1)
+                md_from_id = MetaTable.query.filter(id==timeseries_id).all()
+            except: abort(400)
     requestDict = {'op':'TSfromID','id':timeseries_id,'courtesy':'please'}
     response = connectDBServer(requestDict)
     tsResponse = response['ts']
@@ -167,8 +181,8 @@ def get_from_id(timeseries_id):
     #return tsResponse
     return jsonify(response)
 
-@app.route('/simquery/<int:ts_id>', methods=['GET'])
-def get_simsearch_from_id(ts_id):
+@app.route('/simquery', methods=['GET'])
+def get_simsearch_from_id():
 
     """
     QUERY 5: Takes in an id querystring and uses it as an id into the
@@ -176,6 +190,7 @@ def get_simsearch_from_id(ts_id):
     Sends back the ids of the top N which is passed in as an argument
     (default is 5 closest).
     """
+    ts_id = request.args.get('id', type=int)
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_id','id':ts_id,'n_closest':n_closest,'courtesy':'please'}
     print("REQUEST IS", requestDict)
@@ -197,7 +212,8 @@ def get_simsearch_from_json():
         print("not json!")
         abort(400)
     log.info('Getting IDs for most similar Timeseries from input id')
-    ts_dict = json.loads(request.json)
+    # ts_dict = json.loads(request.json)
+    ts_dict = request.json
     print(ts_dict)
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_ts','ts':ts_dict['ts'],'n_closest':n_closest,'courtesy':'please'}
