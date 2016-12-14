@@ -85,7 +85,7 @@
 			// if the user has specified an ID, use that; 
 			//   otherwise assume there's an uploaded file.
 			if (timeSeriesID != '') {
-				var simurl = publicIP + "/simquery/" + timeSeriesID + "?topn=" + numSim;
+				var simurl = publicIP + "/simquery" + timeSeriesID + "?topn=" + numSim;
 				console.log('Constructed simquery.');
 			} else if ( document.getElementById("fileSelect").files.length > 0  ) {
 			
@@ -122,6 +122,7 @@
    		  .done(function (result) {
         
         	var newData = result.id;
+        	
         	console.log(newData)
 
       	});
