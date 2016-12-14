@@ -190,7 +190,7 @@
 					console.log("Locally received data uploaded by user.");			
 					console.log( document.getElementById("fileSelect").files[0] );
 			
-					var simurl = publicIP + "/simquery?" + "topn=" + numSim;
+					var simurl = publicIP + "/simquery" //+ "topn=" + numSim;
 
 					console.log("Sending user-loaded data off to be processed:" + simurl);
 					$.ajax({
