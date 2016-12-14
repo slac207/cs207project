@@ -153,7 +153,7 @@ def get_from_id(timeseries_id):
     """
     # For an id, get metadata for that id from postgres and timeseries for
     # that id from database server
-    md_from_id = MetaTable.query.filter_by(id= timeseries_id).all()
+    md_from_id = MetaTable.query.filter_by(id=timeseries_id).all()
     requestDict = {'op':'TSfromID','id':timeseries_id,'courtesy':'please'}
     response = connectDBServer(requestDict)
     tsResponse = response['ts']
@@ -193,7 +193,8 @@ def get_simsearch_from_json():
         print("not json!")
         abort(400)
     log.info('Getting IDs for most similar Timeseries from input id')
-    ts_dict = json.loads(request.json)
+    # ts_dict = json.loads(request.json)
+    ts_dict = request.json
     print(ts_dict)
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_ts','ts':ts_dict['ts'],'n_closest':n_closest,'courtesy':'please'}
