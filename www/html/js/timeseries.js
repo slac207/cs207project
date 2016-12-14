@@ -205,9 +205,11 @@
 					
 					console.log('Plotting the data of the uploaded TS.')
 					
-					var dataTarget = read.result.ts[0].map(function (e, i) { 
-						return [e, read.result.ts[1][i]]; 
-					});
+					console.log(JSON.parse(read.result))
+					
+					//var dataTarget = read.result.ts[0].map(function (e, i) { 
+					//	return [e, read.result.ts[1][i]]; 
+					//});
 					
 					tsData = {label: "uploaded timeseries", data: dataTarget};
 				
