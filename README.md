@@ -9,8 +9,27 @@
 ## Purpose
 This package contains the code to create a Web UI which supports similarity searches of timeseries by id, similarity searches of newly provided timeseries, timeseries metadata queries, timeseries retrieval based on id, and addition of a new timeseries into our database.
 
+See [this website](http://54.157.228.231) for a demo of our working project (on a pre-existing instance)
+
+## Instructions for Running our Project in an EC2 Instance
+1. Create an Ubuntu 16.04 instance on Amazon EC2.
+2. Make sure the security group allows HTTP access on port 80.
+3. Connect via ssh:
+```
+$ chmod 0400 pair.sem 
+$ sudo ssh -i "pair.sem" ubuntu@public_ip
+```
+4. Run the following commands to provision the system:
+```git clone https://github.com/slac207/cs207project.git`
+cd ~/cs207project/provisioners`
+chmod a+x run.sh
+./run.sh
+``` 
+5. When prompted by postgres=#, paste:
+`alter user postgres password 'password'; create user ubuntu createdb createuser password 'cs207password'; create database ubuntu owner ubuntu; \q`
+
 ## Installation
-Before running any files, `python setup.py install` must be run from the top level directory, cs207project.
+Before running any files, `pip install -e .` must be run from the top level directory, cs207project. 
 
 ## Contents
 

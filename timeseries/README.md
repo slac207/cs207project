@@ -4,7 +4,7 @@
 Creates an interface for the Timeseries class and creates all the classes that inherit from this interface
 
 ## Installation
-Before running any files, `python setup.py install` must be run from the top level directory, cs207project. 
+Before running any files, `pip install -e .` must be run from the top level directory, cs207project. 
 
 ## Contents
 * timeSeriesABC.py: implements the base Timeseries class, TimeSeriesInterface, and the two classes that directly inherit from it
