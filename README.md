@@ -30,7 +30,9 @@ chmod a+x run.sh
 `alter user postgres password 'password'; create user ubuntu createdb createuser password 'cs207password'; create database ubuntu owner ubuntu; \q`
 
 ## Installation
-Before running any files, `pip install -e .` must be run from the top level directory, cs207project. 
+To install our package, run pip install -e . from the top level directory, cs207project. Along with the dependencies, this installs all 4 sub-packages: cs207rbtree, timeseries, Similarity, and TimeseriesDB.
+
+These sub-packages are usable independently of this project, although they do depend on each other to some degree. However, we do not currently support installing only a subset of the sub-packages; instead, it is best to install all sub-packages using the above command.
 
 ## Contents
 
