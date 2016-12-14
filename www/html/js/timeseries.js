@@ -123,7 +123,7 @@
         
         	var newData = result.id;
         	
-        	console.log(newData)
+        	console.log(result)
 
       	});
      		
