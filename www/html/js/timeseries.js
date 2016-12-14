@@ -88,7 +88,7 @@
 					simIDs.push(timeSeriesID);
 					
 					// now we loop over all the IDs and collect their data
-					console.log("Collecting data of specified time series.")
+					console.log("Collecting data of specified time series.");
 					
 					var dataurl = publicIP + "/timeseries/" + idNum;
 								
@@ -121,7 +121,7 @@
 									simIDs.push(timeSeriesID);
 
 									// now we loop over all the IDs and collect their data
-									console.log("Looping over the retrieved ID numbers and collecting their data.")
+									console.log("Looping over the retrieved ID numbers and collecting their data.");
 							
 									for(var i=0; i < simIDs.length; i++) {
 				
@@ -160,7 +160,7 @@
 						//console.log(read.result);
 						//console.log(JSON.parse(read.result))
 						//console.log(JSON.parse(read.result).ts)
-						var dataTemp = JSON.parse(read.result).ts
+						var dataTemp = JSON.parse(read.result).ts;
 						dataTarget = dataTemp[0].map(function (e, i) { 
 												return [e, dataTemp[1][i]];});
 									
@@ -181,12 +181,12 @@
 				
 				} else {
 			
-					console.log("Locally received data uploaded by user.")			
+					console.log("Locally received data uploaded by user.");			
 					console.log( document.getElementById("fileSelect").files[0] );
 			
 					var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
 
-					console.log("Sending user-loaded data off to be processed.")
+					console.log("Sending user-loaded data off to be processed.");
 					$.ajax({
 						url: simurl,
 						type: 'POST',
@@ -212,7 +212,7 @@
 								success: function(data) {
 
 										// loop over all the IDs and collect their data
-										console.log("Looping over the retrieved ID numbers and collecting their data.")
+										console.log("Looping over the retrieved ID numbers and collecting their data.");
 							
 										for(var i=0; i < simIDs.length; i++) {
 				
@@ -243,7 +243,7 @@
 						//console.log(read.result);
 						//console.log(JSON.parse(read.result))
 						//console.log(JSON.parse(read.result).ts)
-						var dataTemp = JSON.parse(read.result).ts
+						var dataTemp = JSON.parse(read.result).ts;
 						dataTarget = dataTemp[0].map(function (e, i) { 
 												return [e, dataTemp[1][i]];});
 									
@@ -253,9 +253,9 @@
 					
 						data.push(tsData);
 					
-						console.log(tsData)
+						console.log(tsData);
 					
-						console.log('Plotting the data of the uploaded TS.')		
+						console.log('Plotting the data of the uploaded TS.');		
 				
 						$.plot("#placeholder", data, options);	
 
@@ -289,16 +289,16 @@
 				$.plot("#placeholder", data, options);	
 								
 				// put together the metadata
-				console.log("metadata", series.metadata.blarg)
-				console.log("metadata", series.metadata[0].mean)
+				console.log("metadata", series.metadata.blarg);
+				console.log("metadata", series.metadata[0].mean);
 				
-				var tableRow = "<tr><td>" + series.metadata[0].id + "</td>"
-				tableRow    += "<td>" +series.metadata[0].mean  + "</td>"
-				tableRow    += "<td>" +series.metadata[0].std   + "</td>"
-				tableRow    += "<td>" +series.metadata[0].level + "</td>"
-				tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>"
+				var tableRow = "<tr><td>" + series.metadata[0].id + "</td>";
+				tableRow    += "<td>" +series.metadata[0].mean  + "</td>";
+				tableRow    += "<td>" +series.metadata[0].std   + "</td>";
+				tableRow    += "<td>" +series.metadata[0].level + "</td>";
+				tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
 				
-				metadataTable += tableRow
+				metadataTable += tableRow;
 				
 				// keeps track of where we are in the array of TS IDs to plot
 				counter++;
@@ -308,7 +308,7 @@
 					console.log("Destroy the progress bar -- we don't need it anymore.");
 					$("#progressbar").progressbar( "destroy" );
 					
-					console.log("Put together + display the metadata table.")
+					console.log("Put together + display the metadata table.");
 					metadataTable += tableBottom;
 					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;
 				}
