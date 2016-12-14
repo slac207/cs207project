@@ -31,7 +31,7 @@ pip install -e .
 printf "\n*******************************************************"
 printf "\nInstalling numpy, scipy, pandas, portalocker ...\n"
 pip install numpy scipy pandas portalocker 
-#psycopg2
+pip install psycopg2
 
 # install flask and SQLAlchemy
 printf "\n*******************************************************"
