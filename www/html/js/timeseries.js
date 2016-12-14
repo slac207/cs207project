@@ -28,7 +28,7 @@
 		
 		// initialize the array that will hold the data for plotting
 		var data = [];
-		var dataTarget;
+		var dataTarget = [];
 		
 		// IP address to access our UI
 		var publicIP = 'http://54.157.228.231';
