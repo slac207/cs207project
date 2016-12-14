@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Similarity.find_most_similar &mdash; cs207project 0.0.post0.dev372+n1d712dc documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.post0.dev372+n1d712dc',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cs207project 0.0.post0.dev372+n1d712dc documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Similarity.find_most_similar</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">from</span> <span class="nn">cs207rbtree</span> <span class="kn">import</span> <span class="n">RedBlackTree</span> <span class="k">as</span> <span class="n">Database</span>
+<span class="kn">from</span> <span class="nn">timeseries.SMTimeSeries</span> <span class="kn">import</span> <span class="n">SMTimeSeries</span> <span class="k">as</span> <span class="n">ts</span>
+<span class="kn">from</span> <span class="nn">Similarity.pick_vantage_points</span> <span class="kn">import</span> <span class="n">pick_vantage_points</span>
+<span class="kn">from</span> <span class="nn">Similarity</span> <span class="kn">import</span> <span class="n">distances</span>
+<span class="kn">from</span> <span class="nn">timeseries.timeSeriesABC</span> <span class="kn">import</span> <span class="n">SizedContainerTimeSeriesInterface</span> 
+ 
+<span class="k">global</span> <span class="n">PATH</span>
+<span class="n">PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/&#39;</span>
+
+<div class="viewcode-block" id="sanity_check"><a class="viewcode-back" href="../../api/Similarity.html#Similarity.find_most_similar.sanity_check">[docs]</a><span class="k">def</span> <span class="nf">sanity_check</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">sm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that manually finds the n most similiar timeseries to the given</span>
+<span class="sd">    timeseries. Serves as a check of the vantage point method</span>
+<span class="sd">    </span>
+<span class="sd">    Returns: list of n most similiar filenames </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ans</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">SizedContainerTimeSeriesInterface</span><span class="p">):</span>
+        <span class="n">ts1</span> <span class="o">=</span> <span class="n">filename</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#load the given file</span>
+            <span class="n">ts1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_db</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span> <span class="c1">#if the id is invalid</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span>    
+        
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">ts2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_db</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>  
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">stand</span><span class="p">(</span><span class="n">ts1</span><span class="p">,</span><span class="n">ts1</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">ts1</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span> <span class="n">distances</span><span class="o">.</span><span class="n">stand</span><span class="p">(</span><span class="n">ts2</span><span class="p">,</span><span class="n">ts2</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">ts2</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span> <span class="n">mult</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">dist</span><span class="p">,</span><span class="n">i</span><span class="p">])</span>
+        
+    <span class="n">d</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        
+    <span class="k">return</span> <span class="n">ans</span></div>
+
+
+<div class="viewcode-block" id="find_similarity_of_points_in_radius"><a class="viewcode-back" href="../../api/Similarity.html#Similarity.find_most_similar.find_similarity_of_points_in_radius">[docs]</a><span class="k">def</span> <span class="nf">find_similarity_of_points_in_radius</span><span class="p">(</span><span class="n">closest_vantage_pt</span><span class="p">,</span> <span class="n">ts1</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">sm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a vantage point and a radius, find the points that fall within the</span>
+<span class="sd">    circle around the vantage point. Then calculates the distance from all of these</span>
+<span class="sd">    points to the timeseries of interest.</span>
+<span class="sd">    </span>
+<span class="sd">    closest_vantage_pt: number of the vantage point being considered</span>
+<span class="sd">    ts1: timeseries of interest</span>
+<span class="sd">    radius: radius of circle to consider</span>
+<span class="sd">    </span>
+<span class="sd">    Returns: list of tuples (distance, timeseries id) in sorted order</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#open database for that vantage point</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;VantagePointDatabases/&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">closest_vantage_pt</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.dbdb&quot;</span><span class="p">)</span>
+    
+    <span class="c1">#find all light curves within 2d of the vantage point</span>
+    <span class="n">light_curves_in_radius</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_nodes_less_than</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
+    
+    <span class="n">light_curves_in_radius</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">closest_vantage_pt</span><span class="p">))</span> <span class="c1"># add in the vantage pt</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>    
+    
+    <span class="c1">#find similiarity between these light curves and given light curve</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">light_curves_in_radius</span><span class="p">:</span>
+        <span class="n">ts2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_db</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">stand</span><span class="p">(</span><span class="n">ts1</span><span class="p">,</span><span class="n">ts1</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">ts1</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span> <span class="n">distances</span><span class="o">.</span><span class="n">stand</span><span class="p">(</span><span class="n">ts2</span><span class="p">,</span><span class="n">ts2</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">ts2</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span> <span class="n">mult</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">distance</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">dist</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">)])</span> 
+    <span class="k">return</span> <span class="n">distance</span></div>
+
+    
+<div class="viewcode-block" id="find_most_similiar"><a class="viewcode-back" href="../../api/Similarity.html#Similarity.find_most_similar.find_most_similiar">[docs]</a><span class="k">def</span> <span class="nf">find_most_similiar</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">n</span><span class="p">,</span> <span class="n">vantage_pts</span><span class="p">,</span> <span class="n">sm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds n most similiar time series to the time series of interest (filename)</span>
+<span class="sd">    by using the supplied vantage points</span>
+<span class="sd">    </span>
+<span class="sd">    filename: timeseries of interest</span>
+<span class="sd">    n: number of similiar timeseries to return (n must be between 1 and 20)</span>
+<span class="sd">    vantage_pts: a list of the vantage point numbers </span>
+<span class="sd">    </span>
+<span class="sd">    Returns: list of n most similiar filenames</span>
+<span class="sd">    </span>
+<span class="sd">    Notes: Correct behavior is not gaurenteed when n &gt; the number of vantage points </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">file_names</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">SizedContainerTimeSeriesInterface</span><span class="p">):</span>
+        <span class="n">ts1</span> <span class="o">=</span> <span class="n">filename</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#load the given file</span>
+            <span class="n">ts1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_db</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span> <span class="c1">#if the id is invalid</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span>
+       
+    <span class="c1">#find the most similiar vantage point = d by calculating the distance from</span>
+    <span class="c1">#the given TS to each vantage point </span>
+    <span class="n">vantage_pts_dist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vantage_pts</span><span class="p">:</span>
+        <span class="n">ts2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_db</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">stand</span><span class="p">(</span><span class="n">ts1</span><span class="p">,</span><span class="n">ts1</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">ts1</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span> <span class="n">distances</span><span class="o">.</span><span class="n">stand</span><span class="p">(</span><span class="n">ts2</span><span class="p">,</span><span class="n">ts2</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">ts2</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span> <span class="n">mult</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">vantage_pts_dist</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">dist</span><span class="p">,</span><span class="n">i</span><span class="p">])</span>
+    
+    <span class="n">vantage_pts_dist</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="n">all_pts_to_check</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">closest_vantage_pt</span> <span class="o">=</span> <span class="n">vantage_pts_dist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">vantage_pts_dist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pts_in_radius</span> <span class="o">=</span> <span class="n">find_similarity_of_points_in_radius</span><span class="p">(</span><span class="n">closest_vantage_pt</span><span class="p">,</span> <span class="n">ts1</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">sm</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">pts_in_radius</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_pts_to_check</span><span class="p">:</span>
+                <span class="n">all_pts_to_check</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                
+    <span class="n">all_pts_to_check</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> <span class="c1">#ignore given timeseries </span>
+        <span class="n">file_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">all_pts_to_check</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>  
+        
+    <span class="k">return</span> <span class="n">file_names</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Sarah Anoke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

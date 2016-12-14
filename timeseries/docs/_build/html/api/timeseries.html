@@ -1,0 +1,682 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>timeseries package &mdash; timeseries 0.0.post0.dev372+n1d712dc documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.post0.dev372+n1d712dc',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="timeseries 0.0.post0.dev372+n1d712dc documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="timeseries-package">
+<h1>timeseries package<a class="headerlink" href="#timeseries-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-timeseries.ArrayTimeSeries">
+<span id="timeseries-arraytimeseries-module"></span><h2>timeseries.ArrayTimeSeries module<a class="headerlink" href="#module-timeseries.ArrayTimeSeries" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries">
+<em class="property">class </em><code class="descclassname">timeseries.ArrayTimeSeries.</code><code class="descname">ArrayTimeSeries</code><span class="sig-paren">(</span><em>times</em>, <em>values</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface" title="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface"><code class="xref py py-class docutils literal"><span class="pre">timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface</span></code></a></p>
+<p>Class which stores a ordered set of numerical data using numpy arrays.
+Inherits from SizedContainerTimeSeriesInterface.</p>
+<p>_times: sequence that represents time data
+_values: sequence that represents value data</p>
+<p>PRE: times must be a monotonically increasing sequence</p>
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.interpolate">
+<code class="descname">interpolate</code><span class="sig-paren">(</span><em>times_to_interpolate</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces new ArrayTimeSeries with linearly interpolated values using
+piecewise-linear functions with stationary boundary conditions.</p>
+<p>self: ArrayTimeSeries instance
+times_to_interpolate: sorted sequence of times to be interpolated</p>
+<p>ArrayTimeSeries instance with interpolated values</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ats</span> <span class="o">=</span> <span class="n">ArrayTimeSeries</span><span class="p">(</span><span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ats</span><span class="o">.</span><span class="n">interpolate</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">ArrayTimeSeries(Length: 3, Times: array([ 0.5,  1.5,  3. ]), Values: array([ 30.,  25.,  30.]))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.times">
+<code class="descname">times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of ArrayTimeSeries times, i.e. self._times</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.ArrayTimeSeries.ArrayTimeSeries.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.ArrayTimeSeries.ArrayTimeSeries.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of ArrayTimeSeries values, i.e. self._values</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.SMTimeSeries">
+<span id="timeseries-smtimeseries-module"></span><h2>timeseries.SMTimeSeries module<a class="headerlink" href="#module-timeseries.SMTimeSeries" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries">
+<em class="property">class </em><code class="descclassname">timeseries.SMTimeSeries.</code><code class="descname">SMTimeSeries</code><span class="sig-paren">(</span><em>times=None</em>, <em>values=None</em>, <em>id=None</em>, <em>SM=None</em>, <em>get_from_SM=False</em>, <em>nosave=False</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface" title="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface"><code class="xref py py-class docutils literal"><span class="pre">timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface</span></code></a></p>
+<p>SMTimeSeries is an implementation of the SizedContainerTimeSeriesInterface.
+It uses a FileStorageManager to store the timeseries.</p>
+<p>A SMTimeSeries instance can be made in one of three ways:
+1. giving times and values, optionally with an id and a storage manager:</p>
+<blockquote>
+<div>SMTimeSeries(times,values,id=id,SM=SM)</div></blockquote>
+<ol class="arabic" start="2">
+<li><dl class="first docutils">
+<dt>from an existing storage manager:</dt>
+<dd><p class="first last">SMTimeSeries.from_db(SM,id)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>from a timeseries implementing the SizedContainerTimeSeriesInterface:</dt>
+<dd><p class="first last">SMTimeSeries.from_ts(ts,id=id,SM=SM)</p>
+</dd>
+</dl>
+</li>
+</ol>
+<dl class="attribute">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.SM">
+<code class="descname">SM</code><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.SM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the storage manager used by the SMTimeSeries instance.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.from_db">
+<em class="property">classmethod </em><code class="descname">from_db</code><span class="sig-paren">(</span><em>SM</em>, <em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.from_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a SMTimeSeries instance with timeseries from a storage manager at the given id,</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.from_ops">
+<em class="property">classmethod </em><code class="descname">from_ops</code><span class="sig-paren">(</span><em>ts</em>, <em>SM=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.from_ops" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a SMTimeSeries instance from operations among SMTimeSeries instances; do not save it.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.from_ts">
+<em class="property">classmethod </em><code class="descname">from_ts</code><span class="sig-paren">(</span><em>ts</em>, <em>SM=None</em>, <em>id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.from_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a SMTimeSeries instance from a given timeseries that implements the SizedContainerTimeSeriesInterface.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.id">
+<code class="descname">id</code><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the id of the SMTimeSeries instance within its storage manager.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.interpolate">
+<code class="descname">interpolate</code><span class="sig-paren">(</span><em>times_to_interpolate</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces new TimeSeries with linearly interpolated values using
+piecewise-linear functions with stationary boundary conditions</p>
+<p>self: TimeSeries instance
+times_to_interpolate: sorted sequence of times to be interpolated</p>
+<p>TimeSeries instance with interpolated times and values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mean of the values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the standard deviation of the values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.times">
+<code class="descname">times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of the TimeSeries times</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SMTimeSeries.SMTimeSeries.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SMTimeSeries.SMTimeSeries.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of the TimeSeries values</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.SimulatedTimeSeries">
+<span id="timeseries-simulatedtimeseries-module"></span><h2>timeseries.SimulatedTimeSeries module<a class="headerlink" href="#module-timeseries.SimulatedTimeSeries" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="timeseries.SimulatedTimeSeries.InputError">
+<em class="property">exception </em><code class="descclassname">timeseries.SimulatedTimeSeries.</code><code class="descname">InputError</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.InputError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>Exception raised for errors in the input.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>message &#8211; explanation of the error</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries">
+<em class="property">class </em><code class="descclassname">timeseries.SimulatedTimeSeries.</code><code class="descname">SimulatedTimeSeries</code><span class="sig-paren">(</span><em>gen</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#timeseries.timeSeriesABC.StreamTimeSeriesInterface" title="timeseries.timeSeriesABC.StreamTimeSeriesInterface"><code class="xref py py-class docutils literal"><span class="pre">timeseries.timeSeriesABC.StreamTimeSeriesInterface</span></code></a></p>
+<p>Class for timeseries objects that have streaming
+input data arriving via an iterator.</p>
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function returning (time,value) tuples</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itertimes">
+<code class="descname">itertimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itertimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function returning the times only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itervalues">
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.itervalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function returning the values only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>chunk=20</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mean of the next chunk values of the generator.
+Returns a float.  Does not include previous values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_mean">
+<code class="descname">online_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a SimulatedTimeSeries of the running mean.
+Note that this is computed only over the samples that 
+are called from this method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_std">
+<code class="descname">online_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.online_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a SimulatedTimeSeries of the running std.
+Note that this is computed only over the samples that 
+are called from this method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>chunk=1</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return (time,value) as an ArrayTimeSeries object
+with number of items equal to &#8216;chunk&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.SimulatedTimeSeries.SimulatedTimeSeries.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>chunk=20</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.SimulatedTimeSeries.SimulatedTimeSeries.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the standard deviation of the next chunk values of the generator.
+Returns a float.  Does not include previous values.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.StorageManager">
+<span id="timeseries-storagemanager-module"></span><h2>timeseries.StorageManager module<a class="headerlink" href="#module-timeseries.StorageManager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.StorageManager.FileStorageManager">
+<em class="property">class </em><code class="descclassname">timeseries.StorageManager.</code><code class="descname">FileStorageManager</code><span class="sig-paren">(</span><em>directory='./FSM_filestorage'</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.StorageManager.FileStorageManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#timeseries.StorageManager.StorageManagerInterface" title="timeseries.StorageManager.StorageManagerInterface"><code class="xref py py-class docutils literal"><span class="pre">timeseries.StorageManager.StorageManagerInterface</span></code></a></p>
+<p>Implementation of the StorageManagerInterface that stores
+the timeseries on disk as numpy&#8217;s .npy format.</p>
+<dl class="method">
+<dt id="timeseries.StorageManager.FileStorageManager.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>id: int</em><span class="sig-paren">)</span> &rarr; timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface<a class="headerlink" href="#timeseries.StorageManager.FileStorageManager.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a stored timeseries at the provided unique id.
+Return a representation of the timeseries as an object
+that adheres to the SizedContainerTimeSeriesInterface.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="timeseries.StorageManager.FileStorageManager.id">
+<code class="descname">id</code><a class="headerlink" href="#timeseries.StorageManager.FileStorageManager.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>ID of the most recently stored or accessed record</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.StorageManager.FileStorageManager.reload_index">
+<code class="descname">reload_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.StorageManager.FileStorageManager.reload_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.StorageManager.FileStorageManager.size">
+<code class="descname">size</code><span class="sig-paren">(</span><em>id: int</em><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#timeseries.StorageManager.FileStorageManager.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the size of a stored timeseries
+at the provided unique id.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.StorageManager.FileStorageManager.store">
+<code class="descname">store</code><span class="sig-paren">(</span><em>id: int</em>, <em>t: timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface</em>, <em>overwrite=False</em><span class="sig-paren">)</span> &rarr; timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface<a class="headerlink" href="#timeseries.StorageManager.FileStorageManager.store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a given timeseries, with unique id provided.
+The timeseries uses the SizedContainerTimeSeriesInterface.
+Return the given timeseries as an object
+that adheres to the SizedContainerTimeSeriesInterface.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="timeseries.StorageManager.StorageManagerInterface">
+<em class="property">class </em><code class="descclassname">timeseries.StorageManager.</code><code class="descname">StorageManagerInterface</code><a class="headerlink" href="#timeseries.StorageManager.StorageManagerInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>An interface for storing timeseries objects on disk
+and retrieving them from disk.</p>
+<dl class="method">
+<dt id="timeseries.StorageManager.StorageManagerInterface.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>id: int</em><span class="sig-paren">)</span> &rarr; timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface<a class="headerlink" href="#timeseries.StorageManager.StorageManagerInterface.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a stored timeseries at the provided unique id.
+Return a representation of the timeseries as an object
+that adheres to the SizedContainerTimeSeriesInterface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.StorageManager.StorageManagerInterface.size">
+<code class="descname">size</code><span class="sig-paren">(</span><em>id: int</em><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#timeseries.StorageManager.StorageManagerInterface.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the size of a stored timeseries
+at the provided unique id.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.StorageManager.StorageManagerInterface.store">
+<code class="descname">store</code><span class="sig-paren">(</span><em>id: int</em>, <em>t: timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface</em><span class="sig-paren">)</span> &rarr; timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface<a class="headerlink" href="#timeseries.StorageManager.StorageManagerInterface.store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a given timeseries, with unique id provided.
+The timeseries uses the SizedContainerTimeSeriesInterface.
+Return the given timeseries as an object
+that adheres to the SizedContainerTimeSeriesInterface.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.Timeseries">
+<span id="timeseries-timeseries-module"></span><h2>timeseries.Timeseries module<a class="headerlink" href="#module-timeseries.Timeseries" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.Timeseries.TimeSeries">
+<em class="property">class </em><code class="descclassname">timeseries.Timeseries.</code><code class="descname">TimeSeries</code><span class="sig-paren">(</span><em>values</em>, <em>times=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.Timeseries.TimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface" title="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface"><code class="xref py py-class docutils literal"><span class="pre">timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface</span></code></a></p>
+<p>Class which stores a ordered set of numerical data using lists.
+Inherits from SizedContainerTimeSeriesInterface.</p>
+<p>_times: sequence that represents time data
+_values: sequence that represents value data</p>
+<p>PRE: times must be a monotonically increasing sequence</p>
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.interpolate">
+<code class="descname">interpolate</code><span class="sig-paren">(</span><em>times_to_interpolate</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces new TimeSeries with linearly interpolated values using
+piecewise-linear functions with stationary boundary conditions</p>
+<p>self: TimeSeries instance
+times_to_interpolate: sorted sequence of times to be interpolated</p>
+<p>TimeSeries instance with interpolated times</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">(</span><span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">interpolate</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">TimeSeries(Length: 3, Times: [0.5, 1.5, 3], Values: [30.0, 25.0, 30])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.times">
+<code class="descname">times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of the TimeSeries times</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.Timeseries.TimeSeries.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.Timeseries.TimeSeries.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a numpy array of the TimeSeries values</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.binarysearch">
+<span id="timeseries-binarysearch-module"></span><h2>timeseries.binarysearch module<a class="headerlink" href="#module-timeseries.binarysearch" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="timeseries.binarysearch.binary_search">
+<code class="descclassname">timeseries.binarysearch.</code><code class="descname">binary_search</code><span class="sig-paren">(</span><em>da_array</em>, <em>needle</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.binarysearch.binary_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>An algorithm that operates in O(lg(n)) to search for an element
+in an array sorted in ascending order.</p>
+<dl class="docutils">
+<dt>da_array</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list</span><dd>a list of &#8220;comparable&#8221; items sorted in non-descending order</dd>
+<dt>needle: an item to find in the array; it may or may not</dt>
+<dd>be in the array</dd>
+</dl>
+<dl class="docutils">
+<dt>index: int</dt>
+<dd>an integer representing the index of <cite>needle</cite> if found, and -1
+otherwise</dd>
+</dl>
+<dl class="docutils">
+<dt>PRE: <cite>da_array</cite> is a list that is sorted in non-decreasing order (thus items in</dt>
+<dd><cite>da_array</cite> must be comparable: implement &lt; and ==)</dd>
+<dt>POST:</dt>
+<dd><ul class="first last simple">
+<li><cite>da_array</cite> is not changed by this function (immutable)</li>
+<li>returns <cite>index`=-1 if `needle</cite> is not in <cite>da_array</cite></li>
+<li>returns an int <cite>index ` in [0:len(da_array)] if
+`index</cite> is in <cite>da_array</cite></li>
+</ul>
+</dd>
+<dt>INVARIANTS:</dt>
+<dd><ul class="first last simple">
+<li>If <cite>needle</cite> in <cite>da_array</cite>, needle in <cite>da_array[min_index:max_index]</cite>
+is a loop invariant in the while loop below.</li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">#if needle in the array, return its index</span>
+<span class="go">(1, &#39;FOUND&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="mf">1.5</span><span class="p">)</span> <span class="c1">#if needle not in array, return surrounding indices</span>
+<span class="go">(0, 1)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.lazy">
+<span id="timeseries-lazy-module"></span><h2>timeseries.lazy module<a class="headerlink" href="#module-timeseries.lazy" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.lazy.LazyOperation">
+<em class="property">class </em><code class="descclassname">timeseries.lazy.</code><code class="descname">LazyOperation</code><span class="sig-paren">(</span><em>function</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.lazy.LazyOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Isolate the function call from the function execution.
+out = LazyOperation(function,*args,**kwargs) defines the operation.
+out.eval() evaluates the operation.
+out.eval() = function(<a href="#id1"><span class="problematic" id="id2">*</span></a>args,**kwargs).</p>
+<dl class="method">
+<dt id="timeseries.lazy.LazyOperation.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.lazy.LazyOperation.eval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="timeseries.lazy.lazy">
+<code class="descclassname">timeseries.lazy.</code><code class="descname">lazy</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.lazy.lazy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a function return a LazyOperation instance</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeseries.lazy.lazy_add">
+<code class="descclassname">timeseries.lazy.</code><code class="descname">lazy_add</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.lazy.lazy_add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="timeseries.lazy.lazy_mul">
+<code class="descclassname">timeseries.lazy.</code><code class="descname">lazy_mul</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.lazy.lazy_mul" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-timeseries.timeSeriesABC">
+<span id="timeseries-timeseriesabc-module"></span><h2>timeseries.timeSeriesABC module<a class="headerlink" href="#module-timeseries.timeSeriesABC" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface">
+<em class="property">class </em><code class="descclassname">timeseries.timeSeriesABC.</code><code class="descname">SizedContainerTimeSeriesInterface</code><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#timeseries.timeSeriesABC.TimeSeriesInterface" title="timeseries.timeSeriesABC.TimeSeriesInterface"><code class="xref py py-class docutils literal"><span class="pre">timeseries.timeSeriesABC.TimeSeriesInterface</span></code></a></p>
+<p>Interface for sized-container based TimeSeries.
+Inherits from TimeSeriesInterface.
+Times for TimeSeries stored in _times
+Values for TimeSeries stored in _values</p>
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.interpolate">
+<code class="descname">interpolate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require notion of value interpolation for times not present originally
+for sized-container based TimeSeries.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.items">
+<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of (time, value) pairs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.itertimes">
+<code class="descname">itertimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.itertimes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.itervalues">
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.itervalues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.times">
+<code class="descname">times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require ability to return stored values for sized-container based TimeSeries.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require ability to return stored values for sized-container based TimeSeries.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="timeseries.timeSeriesABC.StreamTimeSeriesInterface">
+<em class="property">class </em><code class="descclassname">timeseries.timeSeriesABC.</code><code class="descname">StreamTimeSeriesInterface</code><a class="headerlink" href="#timeseries.timeSeriesABC.StreamTimeSeriesInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#timeseries.timeSeriesABC.TimeSeriesInterface" title="timeseries.timeSeriesABC.TimeSeriesInterface"><code class="xref py py-class docutils literal"><span class="pre">timeseries.timeSeriesABC.TimeSeriesInterface</span></code></a></p>
+<p>Abstract Base Class for timeseries data
+that arrive streaming.</p>
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.StreamTimeSeriesInterface.online_mean">
+<code class="descname">online_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.StreamTimeSeriesInterface.online_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a SimulatedTimeSeries of the running mean.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.StreamTimeSeriesInterface.online_std">
+<code class="descname">online_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.StreamTimeSeriesInterface.online_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a SimulatedTimeSeries of the running standard deviation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.StreamTimeSeriesInterface.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>chunk=1</em><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#timeseries.timeSeriesABC.StreamTimeSeriesInterface.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output a list of (time,value) tuples of length chunk</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface">
+<em class="property">class </em><code class="descclassname">timeseries.timeSeriesABC.</code><code class="descname">TimeSeriesInterface</code><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">abc.ABC</span></code></p>
+<p>Interface for TimeSeries class which inherits from ABC</p>
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.identity">
+<code class="descname">identity</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.identity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over (time, value) pairs.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.itertimes">
+<code class="descname">itertimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.itertimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over times.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.itervalues">
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.itervalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over values.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.lazy">
+<code class="descname">lazy</code><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.lazy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lazy identity property.
+self.lazy returns a LazyOperation instance of self.identity(), so that
+self.lazy.eval() is self.</p>
+<p>self.identity() : a LazyOperation instance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require ability to calculate the mean of values within a 
+TimeSeriesInterface instance.
+Optional <cite>chunk</cite> argument to be used for subclass instances
+with no storage.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="timeseries.timeSeriesABC.TimeSeriesInterface.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>chunk=None</em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries.timeSeriesABC.TimeSeriesInterface.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require ability to calculate the standard deviation of values within a 
+TimeSeriesInterface instance.
+Optional <cite>chunk</cite> argument to be used for subclass instances
+with no storage.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-timeseries">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-timeseries" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">timeseries package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-timeseries.ArrayTimeSeries">timeseries.ArrayTimeSeries module</a></li>
+<li><a class="reference internal" href="#module-timeseries.SMTimeSeries">timeseries.SMTimeSeries module</a></li>
+<li><a class="reference internal" href="#module-timeseries.SimulatedTimeSeries">timeseries.SimulatedTimeSeries module</a></li>
+<li><a class="reference internal" href="#module-timeseries.StorageManager">timeseries.StorageManager module</a></li>
+<li><a class="reference internal" href="#module-timeseries.Timeseries">timeseries.Timeseries module</a></li>
+<li><a class="reference internal" href="#module-timeseries.binarysearch">timeseries.binarysearch module</a></li>
+<li><a class="reference internal" href="#module-timeseries.lazy">timeseries.lazy module</a></li>
+<li><a class="reference internal" href="#module-timeseries.timeSeriesABC">timeseries.timeSeriesABC module</a></li>
+<li><a class="reference internal" href="#module-timeseries">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/timeseries.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Courtney, Andrew, Laura, Sarah.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/api/timeseries.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
