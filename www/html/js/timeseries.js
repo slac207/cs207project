@@ -198,11 +198,11 @@
 						
 						} else {
 
-        			getSimIDs(data)
+        			getSimIDs(data);
+        			simIDs.push(timeSeriesID);
         			
         		}
         		
-        		simIDs.push(timeSeriesID);
 
         		  // call next ajax function
         			// now we loop over all the IDs and collect their data
