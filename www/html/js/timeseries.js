@@ -211,12 +211,6 @@
 		
 							simIDs = result.id;
 				
-							$.ajax({
-								url: simurl,
-								type: 'POST',
-								dataType: "json",
-								success: function(data) {
-
 										// loop over all the IDs and collect their data
 										console.log("Looping over the retrieved ID numbers and collecting their data.");
 							
@@ -236,8 +230,7 @@
 												success: onDataReceived
 											});
 				
-										}		
-							 }
+										}	
 						});
 			
 					// parse the uploaded file
