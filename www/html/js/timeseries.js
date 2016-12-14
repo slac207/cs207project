@@ -11,9 +11,9 @@
 			points: {
 				show: false
 			},
-			//legend: {
-			//	show: true
-			//},
+			legend: {
+				show: true
+			},
 			grid: {
         hoverable: true
       }

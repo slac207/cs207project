@@ -50,19 +50,19 @@ input {
 	font-size: 18px;
 }
 
-table {
+table#metadata {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
 }
 
-td, th {
+table#metadata td, table#metadata th {
     border: 1px solid #000;
     text-align: center;
     padding: 8px;
 }
 
-tr:nth-child(even) {
+table#metadata tr:nth-child(even) {
     background-color: #eee;
 }
 
