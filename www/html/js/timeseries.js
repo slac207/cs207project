@@ -11,9 +11,9 @@
 			points: {
 				show: false
 			},
-			legend: {
-				show: true
-			},
+			//legend: {
+			//	show: true
+			//},
 			grid: {
         hoverable: true
       }
@@ -193,8 +193,9 @@
 				type: "GET",
 				dataType: "json",
 				success: function(data) {
-
-        		getSimIDs(data)
+						
+						
+        			getSimIDs(data)
         		
         		simIDs.push(timeSeriesID);
 
