@@ -272,6 +272,8 @@
 			} else {
 				// user hasn't specified anything!
 				alert("You gotta give us something valid to work with...");
+				
+				$("#progressbar").progressbar( "destroy" );
 			}
 			
 			function onDataReceived(series) {
