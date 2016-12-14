@@ -138,43 +138,8 @@
    		    		.done(function (result) {
         
         		simIDs = result.id;
-        	
-        		// parse the uploaded file
-        		// https://www.html5rocks.com/en/tutorials/file/dndfiles/
-				read = new FileReader();
-				read.readAsText(document.getElementById("fileSelect").files[0]);
-					
-				read.onloadend = function(){
-    				//console.log(read.result);
-    				//console.log(JSON.parse(read.result))
-    				//console.log(JSON.parse(read.result).ts)
-    				var dataTemp = JSON.parse(read.result).ts
-    				dataTarget = dataTemp[0].map(function (e, i) { 
-											return [e, dataTemp[1][i]];});
-									
-    				tsData = {label: "uploaded timeseries", data: dataTarget};
-    				
-    				console.log('Appending uploaded time series to Flot data.');
-					
-					data.push(tsData);
-					
-					console.log(tsData)
-					
-					console.log('Plotting the data of the uploaded TS.')		
-				
-					$.plot("#placeholder", data, options);	
-
-					
-						
-				}
-        	
-        	
-					console.log(data)
-						
-						
-        	// first get the IDs of the similar time series
-					console.log('Retrieving the ID numbers of the similar TS (uploaded TS).');
-					$.ajax({
+        		
+        		$.ajax({
 						url: simurl,
 						type: "GET",
 						dataType: "json",
@@ -206,6 +171,39 @@
 									}		
 						 }
 					});
+        	
+        		// parse the uploaded file
+        		// https://www.html5rocks.com/en/tutorials/file/dndfiles/
+				read = new FileReader();
+				read.readAsText(document.getElementById("fileSelect").files[0]);
+					
+				read.onloadend = function(){
+    				//console.log(read.result);
+    				//console.log(JSON.parse(read.result))
+    				//console.log(JSON.parse(read.result).ts)
+    				var dataTemp = JSON.parse(read.result).ts
+    				dataTarget = dataTemp[0].map(function (e, i) { 
+											return [e, dataTemp[1][i]];});
+									
+    				tsData = {label: "uploaded timeseries", data: dataTarget};
+    				
+    				console.log('Appending uploaded time series to Flot data.');
+					
+					data.push(tsData);
+					
+					console.log(tsData)
+					
+					console.log('Plotting the data of the uploaded TS.')		
+				
+					$.plot("#placeholder", data, options);	
+
+				}
+        	
+				console.log(data)
+						
+						
+        		// get the IDs of the similar time series
+				console.log('Retrieving the ID numbers of the similar TS (uploaded TS).');
 					
 					
 
