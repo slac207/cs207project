@@ -15,6 +15,7 @@ from TimeseriesDB.MessageFormatting import *
 from socket import socket, AF_INET, SOCK_STREAM
 from timeseries.StorageManager import FileStorageManager
 from timeseries.SMTimeSeries import SMTimeSeries as ts
+import time
 
 
 log = logging.getLogger(__name__)
@@ -91,7 +92,6 @@ def get_all_metadata():
     """
     # Need to access the postgres table and select all
     log.info('Getting all Metadata')
-    print(MetaTable.query.all())
     #return jsonify(dict(metadata=5))
     id = request.args.get('id_in', type=str)
     mean = request.args.get('mean_in', type=str)
@@ -135,7 +135,8 @@ def add_timeseries():
     if not request.json or 'ts' not in request.json or 'id' not in request.json:
         abort(400)
     log.info('Adding Timeseries to Database')
-    ts_dict = json.loads(request.json)
+    #ts_dict = json.loads(request.json)
+    ts_dict = request.json
     print(ts_dict)
     sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
     sm.reload_index()
@@ -153,7 +154,14 @@ def get_from_id(timeseries_id):
     """
     # For an id, get metadata for that id from postgres and timeseries for
     # that id from database server
-    md_from_id = MetaTable.query.filter_by(id=timeseries_id).all()
+    try:
+        md_from_id = MetaTable.query.filter_by(id=timeseries_id).all()
+    except:
+        time.sleep(1)
+        try:
+            time.sleep(1)
+            md_from_id = MetaTable.query.filter_by(id=timeseries_id).all()
+        except: abort(400)
     requestDict = {'op':'TSfromID','id':timeseries_id,'courtesy':'please'}
     response = connectDBServer(requestDict)
     tsResponse = response['ts']
