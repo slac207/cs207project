@@ -150,7 +150,7 @@ def add_timeseries():
     ts_dict = json.loads(request.json)
     #ts_dict = request.json
     #print(ts_dict)
-    sm = FileStorageManager(directory='./FSM_filestorage')
+    sm = FileStorageManager(directory='./TimeSeriesDB/FSM_filestorage')
     #sm.reload_index()
     print(ts_dict['id'])
     new_ts = ts(times=ts_dict['ts'][0],values=ts_dict['ts'][1])
