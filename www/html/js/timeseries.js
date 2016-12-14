@@ -83,7 +83,10 @@
 				// if the user hasn't provided a number of similar TS, or the
 				//   number is zero, we won't bother sending off a simquery
 				if (numSim == '' | numSim == 0) {
-
+					
+					// add on the ID number of the target TS
+					simIDs.push(timeSeriesID);
+					
 					// now we loop over all the IDs and collect their data
 					console.log("Collecting data of specified time series.");
 					
@@ -290,19 +293,7 @@
 				data.push(tsData);
 				
 				$.plot("#placeholder", data, options);	
-								
-				// put together the metadata
-				
-				var tableRow = "<tr><td>" + series.metadata[0].id + "</td>";
-				tableRow    += "<td>" +series.metadata[0].mean  + "</td>";
-				tableRow    += "<td>" +series.metadata[0].std   + "</td>";
-				tableRow    += "<td>" +series.metadata[0].level + "</td>";
-				tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
-				
-				metadataTable += tableRow;
-				
-				// keeps track of where we are in the array of TS IDs to plot
-				counter++;		
+
 				
 				// if we've reached the target TS ID, we're done putting together the 
 				//   metadata table. 
@@ -322,8 +313,23 @@
 					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;	
 					console.log("Destroy the progress bar -- we don't need it anymore.");
 					$("#progressbar").progressbar( "destroy" );	
+				} else {
+				
+					// put together the metadata
+					var tableRow = "<tr><td>" + series.metadata[0].id + "</td>";
+					tableRow    += "<td>" +series.metadata[0].mean  + "</td>";
+					tableRow    += "<td>" +series.metadata[0].std   + "</td>";
+					tableRow    += "<td>" +series.metadata[0].level + "</td>";
+					tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
+				
+					metadataTable += tableRow;
+				
 				}
-							
+				
+				// keeps track of where we are in the array of TS IDs to plot
+				counter++;		
+
+	
 				if (counter == simIDs.length - 1) {
 					console.log("Destroy the progress bar -- we don't need it anymore.");
 					$("#progressbar").progressbar( "destroy" );
