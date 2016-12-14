@@ -315,8 +315,8 @@
 					console.log("Put together + display the metadata table.");
 					metadataTable += tableBottom;
 					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;	
-					console.log("Destroy the progress bar -- we don't need it anymore.");
-					$("#progressbar").progressbar( "destroy" );	
+					//console.log("Destroy the progress bar -- we don't need it anymore.");
+					//$("#progressbar").progressbar( "destroy" );	
 					
 				} else if ( counter == simIDs.length - 1 ) {
 				
