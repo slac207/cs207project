@@ -34,7 +34,7 @@
 		// building blocks of metadata table
 		var tableTop = "<table id='metadata'>";
 		var tableBottom = "</table>";
-		var tableHeader = "<tr><th>ID</th><th>Mean</th><th>StDev</th><th>Level</th><th>Blarg</th></tr>";
+		var tableHeader = "<tr style='background-color:black;color:white;'><th>ID</th><th>Mean</th><th>StDev</th><th>Level</th><th>Blarg</th></tr>";
 		var metadataTable = tableTop + tableHeader;
 		
 		// helps with managing the uploaded time series
@@ -287,20 +287,19 @@
 					return [e, series.ts[1][i]]; 
 				});
 				
-				tsData = {label: "timeseries " + simIDs[counter], data: dataTarget};
-				
-				console.log('Appending TS ID#' + simIDs[counter] +' to Flot data.');
-				data.push(tsData);
-				
-				$.plot("#placeholder", data, options);	
-
-				
 				// if (1) we've reached the target TS ID, in the case of a specified TS ID
 				//    (2) we've reached the end of the similar IDs, in the case of 
 				//        an uploaded TS, 
 				// we're done putting together the metadata table. 
 				// highlight the row of the targt TS ID and show the table to the world
 				if( series.metadata[0].id == timeSeriesID ) {	
+				
+					tsData = {label: "timeseries " + simIDs[counter], data: dataTarget, lines: {lineWidth:6}};
+				
+					console.log('Appending TS ID#' + simIDs[counter] +' to Flot data.');
+					data.push(tsData);
+				
+					$.plot("#placeholder", data, options);	
 				
 					var tableRow = "<tr style='background-color:yellow;'><td>" + series.metadata[0].id + "</td>";
 					tableRow    += "<td>" +series.metadata[0].mean  + "</td>";
@@ -317,6 +316,13 @@
 					$("#progressbar").progressbar( "destroy" );	
 					
 				} else if ( counter == simIDs.length - 1 ) {
+				
+					tsData = {label: "timeseries " + simIDs[counter], data: dataTarget};
+				
+					console.log('Appending TS ID#' + simIDs[counter] +' to Flot data.');
+					data.push(tsData);
+				
+					$.plot("#placeholder", data, options);	
 				
 					var tableRow = "<tr><td>" + series.metadata[0].id + "</td>";
 					tableRow    += "<td>" +series.metadata[0].mean  + "</td>";
