@@ -12,9 +12,9 @@ from scipy.stats import norm
 
 class Rest_API_tests(unittest.TestCase):
     def setUp(self):
-        #r = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4')
-        #self.ip_url = "http://"+r.text #'http://54.173.105.55'
-        self.ip_url = "http://localhost:5000"
+        r = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4')
+        self.ip_url = "http://"+r.text #'http://54.173.105.55'
+        #self.ip_url = "http://localhost:5000"
 
     def test_query2(self):
         """
