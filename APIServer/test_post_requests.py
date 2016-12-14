@@ -3,9 +3,11 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import json, requests
 from timeseries.StorageManager import FileStorageManager
-from timeseries.SMTimeSeries import SMTimeSeries as ts
 from json import JSONEncoder
 import unittest
+from timeseries.ArrayTimeSeries import ArrayTimeSeries as ts
+import numpy as np
+from scipy.stats import norm
 
 
 class Rest_API_tests(unittest.TestCase):
@@ -45,13 +47,12 @@ class Rest_API_tests(unittest.TestCase):
         Takes a timeseries as an input in a JSON, carries out the similarity query,
         and returns the appropriate ids to timeseries.
         """
-        #sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
-        #sm.reload_index()
-        #print(sm._index)
-        #new_ts =ts.from_db(sm,100)
-        data = {}
-        data['ts'] = [list([1,2,3,4,5]), list(10,20,30,40,50)]
         #payload = json.dumps(data, ensure_ascii=False)
+        t = np.arange(0.0, 1.0, 0.01)
+        v = norm.pdf(t, 100, 100) + 1000*np.random.randn(100)
+        ts_test = ts(t, v)
+        data = {}
+        data['ts'] = [list(ts_test.times()), list(ts_test.values())]
         url = self.ip_url+'/simquery'
         r = requests.post(url, json=data)
         print("Status",r.status_code,url)
