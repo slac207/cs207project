@@ -65,6 +65,9 @@ Contains our test suite. Each test file is pointed to in the respective module R
 ## Testing 
 Run `python setup.py` tests from the main directory and all our main test files should run. Where appropriate, in the underlying READMEs we give further instruction for running additional tests.
 
+## Command Line Note
+Note that we understood the directions differently and thought that we were taking out the command line program and replacing with the server implementation. You can see our command line program from Milestone 2 at [this previous commit](https://github.com/slac207/cs207project/commit/f0bd843357f0e626ec1b9451f3224b924d7e2214)
+
 ## Known Bugs
 
 ### Web UI
