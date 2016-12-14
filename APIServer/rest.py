@@ -215,12 +215,12 @@ def get_simsearch_from_json():
         abort(400)
     log.info('Getting IDs for most similar Timeseries from input id')
     # ts_dict = json.loads(request.json)
-    ts_dict = request.json
+    ts_dict = json.loads(request.json)
     print(ts_dict)
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_ts','ts':ts_dict['ts'],'n_closest':n_closest,'courtesy':'please'}
     response = connectDBServer(requestDict)
-    return jsonify(response), 201
+    return jsonify(response), 200
 
 @app.errorhandler(404)
 def not_found(error):
