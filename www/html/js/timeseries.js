@@ -297,8 +297,6 @@
 				$.plot("#placeholder", data, options);	
 								
 				// put together the metadata
-				console.log("metadata", series.metadata.blarg);
-				console.log("metadata", series.metadata[0].mean);
 				
 				var tableRow = "<tr><td>" + series.metadata[0].id + "</td>";
 				tableRow    += "<td>" +series.metadata[0].mean  + "</td>";
@@ -307,6 +305,9 @@
 				tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
 				
 				metadataTable += tableRow;
+				
+				console.log(tableRow)
+				console.log(metadataTable)
 				
 				// keeps track of where we are in the array of TS IDs to plot
 				counter++;			
