@@ -12,7 +12,7 @@ Before running any files, the Amazon EC2 instance must be completely set up with
   - /timeseries GET sends back a json with metadata from all the time series
   - /timeseries POST adds a new timeseries into the database given a json which has a key for an id and a key for the timeseries, and returns the timeseries
   - /timeseries/id sends back metadata and the timeseries itself for a given ID in a JSON payload
-  - /timeseries?mean_in=1.5-1.53 type queries send back only metadata. For continuous variables only range queries are supported with string mean_in=1.5-1.53 whereas for discrete variables(level here) queries such as level_in=A,B,C or level=A are supported. Only one query at a time is supported.
+  - /timeseries?mean_in=1.5,1.53 type queries send back only metadata. For continuous variables only range queries are supported with string mean_in=1.5,1.53 whereas for discrete variables(level here) queries such as level_in=A,B,C or level=A are supported. Only one query at a time is supported. NOTE: This is slightly different than the spec, and allows us to easily support negative values, e.g. mean_in=-100,-5
   - /simquery GET takes an id=the_id querystring and use that as an id into the database to find the timeseries that are similar, sending back the ids of the top N.
   - /simquery POST takes a timeseries as an input in a JSON, carries out a similarity query, and returns the appropriate ids as well.
 
