@@ -143,6 +143,7 @@
 									}		
 						 }
 					});
+				}
 				
 			} else if ( document.getElementById("fileSelect").files.length > 0  ) {
 			
