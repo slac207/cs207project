@@ -67,10 +67,9 @@ tr:nth-child(even) {
 }
 
 pre {
-  font-family:     "Courier New"
-                    Courier
-                    monospace;
-  color: green;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  color: #c7254e;
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
 #header {
