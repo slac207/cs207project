@@ -44,6 +44,7 @@
 
 		// ACTIONS TO COMPLETE WHEN THE `SUBMIT` BUTTON IS CLICKED
 		$("button#tsQuery").click(function () {
+		
 			console.log('Submit button has been clicked.');
 			
 			// show the progress bar so the user knows that stuff 
@@ -62,6 +63,8 @@
 			var idNum = {};
 			var counter = 0;
 			metadataTable = tableTop + tableHeader;
+			
+			$.plot("#placeholder", data, options);
 
 			// retrieve the time series specified by the user, and the number of 
 			//   most similar time series
