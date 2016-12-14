@@ -87,8 +87,110 @@
 			if (timeSeriesID != '') {
 				var simurl = publicIP + "/simquery?id=" + timeSeriesID + "&topn=" + numSim;
 				console.log('Constructed simquery.');
-			} else if ( document.getElementById("fileSelect").files.length > 0  ) {
+				
+				
+							// first get the IDs of the similar time series
+			  console.log('Retrieving the ID numbers of the similar TS (ID number supplied).');
+				$.ajax({
+					url: simurl,
+					type: "GET",
+					dataType: "json",
+					success: function(data) {
 						
+								getSimIDs(data);
+								simIDs.push(timeSeriesID);
+
+								// call next ajax function
+								// now we loop over all the IDs and collect their data
+							
+								console.log(simIDs.length)
+							
+								console.log(simIDs)
+							
+								for(var i=0; i < simIDs.length; i++) {
+				
+									idNum   = simIDs[i];
+								
+									var dataurl = publicIP + "/timeseries/" + idNum;
+								
+									console.log('Retrieving data associated with TS ID#',idNum ,'.');
+									// solution from http://stackoverflow.com/questions/4201934/
+									//               jquery-ajax-pass-additional-argument-to-success-callback
+									$.ajax({
+										url: dataurl,
+										type: "GET",
+										dataType: "json",
+										success: onDataReceived
+									});
+				
+								}		
+					 }
+				});
+				
+			} else if ( document.getElementById("fileSelect").files.length > 0  ) {
+			
+    		console.log( document.getElementById("fileSelect").files[0] );
+    		
+    		var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
+
+    		$.ajax({
+      		  url: simurl,
+    		    type: 'POST',
+    		    data: document.getElementById("fileSelect").files[0],
+    		    cache: false,
+     		    contentType: 'application/json; charset=utf-8',
+      			dataType: 'json',
+     		    processData: false, // Don't process the files
+     		    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+        		error: function(jqXHR, textStatus, errorThrown) {
+           		 // Handle errors here
+           		 console.log('ERRORS: ' + textStatus);
+       		  }
+   		  })
+   		  .done(function (result) {
+        
+        	simIDs = result.id;
+        	
+        	
+        	
+        	
+        	// first get the IDs of the similar time series
+					console.log('Retrieving the ID numbers of the similar TS (uploaded TS).');
+					$.ajax({
+						url: simurl,
+						type: "GET",
+						dataType: "json",
+						success: function(data) {
+						
+									// call next ajax function
+									// now we loop over all the IDs and collect their data
+							
+									console.log(simIDs.length)
+							
+									console.log(simIDs)
+							
+									for(var i=0; i < simIDs.length; i++) {
+				
+										idNum   = simIDs[i];
+								
+										var dataurl = publicIP + "/timeseries/" + idNum;
+								
+										console.log('Retrieving data associated with TS ID#',idNum ,'.');
+										// solution from http://stackoverflow.com/questions/4201934/
+										//               jquery-ajax-pass-additional-argument-to-success-callback
+										$.ajax({
+											url: dataurl,
+											type: "GET",
+											dataType: "json",
+											success: onDataReceived
+										});
+				
+									}		
+						 }
+					});
+
+      	});
+				
 				
 			} else {
 				
@@ -144,79 +246,6 @@
 					simIDs.push(series.id[i]); 
 				}
 			}
-			
-			// first get the IDs of the similar time series
-			console.log('Retrieving the ID numbers of the similar TS.');
-			$.ajax({
-				url: simurl,
-				type: "GET",
-				dataType: "json",
-				success: function(data) {
-						
-						if (document.getElementById("fileSelect").files.length > 0) {
-						
-							  console.log( document.getElementById("fileSelect").files[0] );
-    		
-								var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
-
-								$.ajax({
-										url: simurl,
-										type: 'POST',
-										data: document.getElementById("fileSelect").files[0],
-										cache: false,
-										contentType: 'application/json; charset=utf-8',
-										dataType: 'json',
-										processData: false, // Don't process the files
-										contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-										error: function(jqXHR, textStatus, errorThrown) {
-											 // Handle errors here
-											 console.log('ERRORS: ' + textStatus);
-										}
-								})
-								.done(function (result) {
-			
-									simIDs = result.id;
-									console.log(simIDs)
-									console.log(result.id)
-
-								});
-			
-								console.log(simIDs)
-						
-						} else {
-
-        			getSimIDs(data);
-        			simIDs.push(timeSeriesID);
-        			
-        		}
-        		
-
-        		  // call next ajax function
-        			// now we loop over all the IDs and collect their data
-        			
-        			console.log(simIDs.length)
-        			
-        			console.log(simIDs)
-        			
-							for(var i=0; i < simIDs.length; i++) {
-				
-								idNum   = simIDs[i];
-								
-								var dataurl = publicIP + "/timeseries/" + idNum;
-								
-								console.log('Retrieving data associated with TS ID#',idNum ,'.');
-								// solution from http://stackoverflow.com/questions/4201934/
-								//               jquery-ajax-pass-additional-argument-to-success-callback
-								$.ajax({
-									url: dataurl,
-									type: "GET",
-									dataType: "json",
-									success: onDataReceived
-								});
-				
-							}		
-   			 }
-			});
 			
 		});
 
