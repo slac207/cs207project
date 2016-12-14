@@ -90,9 +90,9 @@
 					// now we loop over all the IDs and collect their data
 					console.log("Collecting data of specified time series.");
 					
-					var dataurl = publicIP + "/timeseries/" + idNum;
+					var dataurl = publicIP + "/timeseries/" + timeSeriesID;
 								
-					console.log('Retrieving data associated with TS ID#'+ idNum + '.');
+					console.log('Retrieving data associated with TS ID#'+ timeSeriesID + '.');
 				
 					$.ajax({
 						url: dataurl,
