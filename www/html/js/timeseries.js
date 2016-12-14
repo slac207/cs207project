@@ -30,7 +30,7 @@
 		var data = [];
 		
 		// IP address to access our UI
-		var publicIP = 'http://54.175.144.132';
+		var publicIP = 'http://54.157.228.231';
 		
 		// building blocks of metadata table
 		var tableTop = "<table>"
