@@ -226,6 +226,7 @@
 				
 					console.log('Appending uploaded time series to Flot data.');
 					data.push(tsData);
+					console.log(tsData)
 				
 					$.plot("#placeholder", data, options);	
 
