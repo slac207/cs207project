@@ -4,7 +4,7 @@
 This module contains the methods for finding the n most similar timeseries compared to a given timeseries. It uses a Storage Manager (timeseries/StorageManager.py) in order to store the timeseries. We use a Red Black tree (cs207rbtree/RedBlackTree.py) to maintain the Vantage Point databases used to expedite the similarity searches. Each of our randomly chosen 20 timeseries (called Vantage Points) has their own database containing their distance to every other timeseries. 
 
 ## Installation
-Before running any files, `python setup.py install` must be run from the top level directory, cs207project. 
+Before running any files, `pip install -e .` must be run from the top level directory, cs207project. 
 
 ## Contents
 * distances.py

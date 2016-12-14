@@ -9,7 +9,7 @@ This module contains the methods for creating a multi-threaded socket server to 
 We use a ThreadingTCPServer, and use the [similarity module](https://github.com/slac207/cs207project/tree/master/Similarity) in order to return the similarity results.
 
 ## Installation
-Before running any files, `python setup.py install` must be run from the top level directory, cs207project. 
+Before running any files, `pip install -e .` must be run from the top level directory, cs207project. 
 
 ## Contents
 * DatabaseServer.py: contains our socket server implementation 

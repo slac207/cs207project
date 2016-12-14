@@ -16,7 +16,7 @@ When a new node is added to the tree, it is colored red. This triggers an invari
 Our code is an amalgamation of the [immutable binary search tree implementation](https://github.com/iacs-cs207/cs207-2016/blob/master/labs/lab10.ipynb) from Lab 10 of CS207 @ Harvard SEAS and the Functional [Red-Black Tree implementation](http://scottlobdell.me/2016/02/purely-functional-red-black-trees-python/) by Scott Lobdell. 
 
 ## Installation
-Before running any files, `python setup.py install` must be run from the top level directory, cs207project. 
+Before running any files, `pip install -e .` must be run from the top level directory, cs207project. 
 
 ## Contents
 The directory `RedBlackTree` contains the module files.
