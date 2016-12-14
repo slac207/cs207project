@@ -211,11 +211,11 @@
 		
 							simIDs = result.id;
 				
-							$.ajax({
-								url: simurl,
-								type: "GET",
-								dataType: "json",
-								success: function(data) {
+							//$.ajax({
+							//	url: simurl,
+							//	type: "GET",
+							//	dataType: "json",
+							//	success: function(data) {
 
 										// loop over all the IDs and collect their data
 										console.log("Looping over the retrieved ID numbers and collecting their data.");
@@ -237,8 +237,8 @@
 											});
 				
 										}		
-							 }
-						});
+							 //}
+						//});
 			
 					// parse the uploaded file
 					// https://www.html5rocks.com/en/tutorials/file/dndfiles/
