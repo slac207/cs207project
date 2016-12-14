@@ -213,7 +213,7 @@
 				
 							$.ajax({
 								url: simurl,
-								type: "GET",
+								type: 'POST',
 								dataType: "json",
 								success: function(data) {
 
