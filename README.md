@@ -17,20 +17,20 @@ Before running any files, `python setup.py install` must be run from the top lev
 ### `cs207rbtree` (directory) 
 Contains a `pip install`able implementation of a Red Black Tree.
 
-- [ ] See README in [cs207rbtree](https://github.com/slac207/cs207project/tree/master/cs207rbtree) for directory contents
+- See README in [cs207rbtree](https://github.com/slac207/cs207project/tree/master/cs207rbtree) for directory contents
 
 ### `timeseries` (directory) 
 Contains our time series implementation.
 
-- [ ] See [timeseries README](https://github.com/slac207/cs207project/blob/master/timeseries/README.md) for directory contents, usage, and testing
+- See [timeseries README](https://github.com/slac207/cs207project/blob/master/timeseries/README.md) for directory contents, usage, and testing
 
 ### `Similarity`(directory) 
 Contains our similarity search implementation
-- [ ] See [Similarity README](https://github.com/slac207/cs207project/blob/master/Similarity/README.md) for directory contents, usage, and testing
+- See [Similarity README](https://github.com/slac207/cs207project/blob/master/Similarity/README.md) for directory contents, usage, and testing
 
 ### `TimeseriesDB`(directory) 
 Contains our multi-threaded socket server implementation 
-- [ ] See [TimeseriesDB README](https://github.com/slac207/cs207project/blob/master/TimeseriesDB/README.md) for directory contents, usage, and testing
+- See [TimeseriesDB README](https://github.com/slac207/cs207project/blob/master/TimeseriesDB/README.md) for directory contents, usage, and testing
 
 ### `tests` (directory) 
 Contains our test suite. Each test file is pointed to in the respective module README linked above.
@@ -40,6 +40,8 @@ Contains our test suite. Each test file is pointed to in the respective module R
  *(below is documentation internal to the group)*
 
 # Project Workflow
+
+![Workflow](https://github.com/slac207/cs207project/raw/master/www/html/files/workflow.png)
 
 ## Code Review
 
