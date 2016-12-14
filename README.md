@@ -10,7 +10,9 @@
 This package contains the code to create a Web UI which supports similarity searches of timeseries by id, similarity searches of newly provided timeseries, timeseries metadata queries, timeseries retrieval based on id, and addition of a new timeseries into our database.
 
 ## Installation
-Before running any files, `python setup.py install` must be run from the top level directory, cs207project.
+To install our package, run `pip install -e .` from the top level directory, cs207project.  Along with the dependencies, this installs all 4 sub-packages: cs207rbtree, timeseries, Similarity, and TimeseriesDB.  
+
+These sub-packages are usable independently of this project, although they do depend on each other to some degree.  However, we do not currently support installing only a subset of the sub-packages; instead, it is best to install all sub-packages using the above command.
 
 ## Contents
 
