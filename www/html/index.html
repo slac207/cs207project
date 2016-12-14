@@ -87,7 +87,7 @@
 				<a name="tsStructure"></a> 
 				<strong>What should the time series file look like?</strong>
 				<br /> 
-				Your time series should have 100 data points, contained in a JSON file. A truncated example is below. You can download a full example <a href="https://raw.githubusercontent.com/slac207/cs207project/master/www/html/files/example.json" target="_blank">here</a>.
+				Your time series should have 100 data points, contained in a JSON file. A truncated example of 5 data points is below. You can download a full example <a href="https://raw.githubusercontent.com/slac207/cs207project/master/www/html/files/example.json" target="_blank">here</a>.
 				<pre>
 {
   "ts": [
@@ -122,7 +122,8 @@
 				<strong>Notes on UI Behavior</strong>
 				<ol style="margin-right:0;">
 					<li>If a time series ID is specified <span style="text-decoration:underline;">AND</span> a file is uploaded, the underlying JavaScript will ignore the uploaded file and return results for the time series ID.</li>
-					<li>Preconditions -- make sure form is completed correctly and file is in the correct format.
+					<li><strong>[precondition]</strong> User provides valid integer values.</li>
+					<li><strong>[precondition]</strong> Uploaded file is in the correct JSON format (see example <a href="#tsStructure">above</a>).</li>					
 				</ol>
 			</p>
 			
