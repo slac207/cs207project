@@ -259,7 +259,7 @@
 				
 				// put together the metadata
 				console.log("metadata", series.metadata.blarg)
-				console.log("metadata", series.metadata[0].blarg)
+				console.log("metadata", series.metadata[0].mean)
 				
 			}	
 			
