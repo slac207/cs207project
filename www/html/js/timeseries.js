@@ -192,7 +192,7 @@
 			
 					var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
 
-					console.log("Sending user-loaded data off to be processed.");
+					console.log("Sending user-loaded data off to be processed:" + simurl);
 					$.ajax({
 						url: simurl,
 						type: 'POST',
@@ -310,7 +310,7 @@
 					tableRow    += "<td>" +series.metadata[0].level + "</td>";
 					tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
 				
-					console.log("Adding ID #" + series.metadata[0].id + "to metadata table.")
+					console.log("Adding ID #" + series.metadata[0].id + " to metadata table.")
 					metadataTable += tableRow;
 								
 					console.log("Put together + display the metadata table.");
@@ -327,7 +327,7 @@
 					tableRow    += "<td>" +series.metadata[0].level + "</td>";
 					tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
 				
-					console.log("Adding ID #" + series.metadata[0].id + "to metadata table.")
+					console.log("Adding ID #" + series.metadata[0].id + " to metadata table.")
 					metadataTable += tableRow;
 								
 					console.log("Put together + display the metadata table.");
@@ -345,7 +345,7 @@
 					tableRow    += "<td>" +series.metadata[0].level + "</td>";
 					tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
 				
-					console.log("Adding ID #" + series.metadata[0].id + "to metadata table.")
+					console.log("Adding ID #" + series.metadata[0].id + " to metadata table.")
 					metadataTable += tableRow;
 				
 				}
