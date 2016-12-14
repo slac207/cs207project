@@ -153,6 +153,9 @@
 				
 					console.log("Locally received data uploaded by user.");			
 					console.log( document.getElementById("fileSelect").files[0] );
+										
+					// internal ID number of the uploaded TS (value not used)
+					simIDs = 1000;
 			
 					// parse the uploaded file
 					// https://www.html5rocks.com/en/tutorials/file/dndfiles/
@@ -165,7 +168,7 @@
 						//console.log(JSON.parse(read.result).ts)
 						var dataTemp = JSON.parse(read.result).ts;
 						dataTarget = dataTemp[0].map(function (e, i) { 
-												return [e, dataTemp[1][i]];});
+												return [e, dataTemp[1][i]];});												
 									
 						tsData = {label: "uploaded timeseries", data: dataTarget, lines: {lineWidth:6}};
 					
