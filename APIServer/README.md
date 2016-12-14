@@ -19,7 +19,8 @@ Before running any files, the Amazon EC2 instance must be completely set up with
 
 
 ## Testing
-There are two testing files for the code in this module and they are both contained in the directory. These files can be run from the top directory (cs207project) using `python APIServer/postgres_test_metadata.py` and `python APIServer/test_post_requests.py`.
+There are three testing files for the code in this module and they are both contained in the directory. These files can be run from the top directory (cs207project) using `python APIServer/postgres_test_metadata.py` and `python APIServer/test_post_requests.py` and `python APIServer/test_get_requests.py`.
 
 1. postgres_test_metadata.py: tests the ability to connect to the postgres database and create a table of metadata for each time series.
-2. test_post_requests.py: tests for the correct behavior in the 6 REST queries.
+2. test_post_requests.py: tests for the correct behavior in the 4 GET queries.
+3. test_get_requests.py: tests for the correct behavior in the 2 POST queries.
