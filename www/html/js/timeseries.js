@@ -121,13 +121,11 @@
    		  })
    		  .done(function (result) {
         
-        	var newData = result.id;
-        	
-        	console.log(result)
+        	simIDs.push(result.id);
 
       	});
      		
-   		 
+   		  console.log(simIDs)
    		 
 				
 				
