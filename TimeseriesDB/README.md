@@ -17,8 +17,8 @@ Before running any files, `pip install -e .` must be run from the top level dire
 * generate_SMTimeseries.py: contains the code to generate random ArrayTimeSeries and store them using the FileStorageManager
 
 ## Usage
-1. Run DatabaseServer.py file from a terminal
-2. Decide on operation, op, you want to run:
+* Run DatabaseServer.py file from a terminal
+* Decide on operation, op, you want to run:
 ```
 from MessageFormatting import *
 from socket import socket, AF_INET, SOCK_STREAM
@@ -26,17 +26,17 @@ op_1 = {'op':'TSfromID','id':12,'courtesy':'please'} #get timeseries from id
 op_2 = {'op':'simsearch_id','id':12,'n_closest':2,'courtesy':'please'} #get similiar timeseries from id 
 op_3 = {'op':'simsearch_ts','ts':new_ts,'courtesy':'please} #get similiar timeseries from new (provided) timeseries
 ```
-2. Convert the operation into bytes
+* Convert the operation into bytes
 ```
 input = serialize(json.dumps(op))
 ```
-3. Connect socket 
+* Connect socket 
 ```
 s = socket(AF_INET, SOCK_STREAM)
 s.connect(('localhost', 20000)) #the latter is the port we use in our DatabaseServer
 s.send(input)
 ```
-4. Recieve and deserialize output
+* Recieve and deserialize output
 ```
 msg = s.recv(8192)
 ds = Deserializer()
