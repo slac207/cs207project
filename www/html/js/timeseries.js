@@ -149,13 +149,13 @@
 				// DECIDE WHETHER WE NEED A SIMQUERY
 				// if the user hasn't provided a number of similar TS, or the
 				//   number is zero, we won't bother sending off a simquery
-				if (numSim === '' | numSim === 0) {
+				if (numSim == '' | numSim == 0) {
 				
 					console.log("Locally received data uploaded by user.");			
 					console.log( document.getElementById("fileSelect").files[0] );
 										
 					// internal ID number of the uploaded TS (value not used)
-					simIDs = 1000;
+					simIDs.push(1000);
 			
 					// parse the uploaded file
 					// https://www.html5rocks.com/en/tutorials/file/dndfiles/
