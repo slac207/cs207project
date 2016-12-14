@@ -151,7 +151,21 @@
         
         	simIDs = result.id;
         	
-        	
+        	// parse the uploaded file
+        	// https://www.html5rocks.com/en/tutorials/file/dndfiles/
+        	//var dataTarget = series.ts[0].map(function (e, i) { 
+					//	return [e, series.ts[1][i]]; 
+					//});
+
+					read = new FileReader();
+					read.readAsText(document.getElementById("fileSelect").files[0]);
+					
+					
+					
+					read.onloadend = function(){
+    				console.log(read.result);
+    				console.log(JSON.parse("[" + read.result + "]"))
+					}
         	
         	
         	// first get the IDs of the similar time series
@@ -188,6 +202,18 @@
 									}		
 						 }
 					});
+					
+					
+					console.log('Plotting the data of the uploaded TS.')
+					
+					dataTarget = //parsed uploaded fime
+					
+					tsData = {label: "uploaded timeseries", data: dataTarget};
+				
+					console.log('Appending uploaded time series to Flot data.');
+					data.push(tsData);
+				
+					$.plot("#placeholder", data, options);	
 
       	});
 				
