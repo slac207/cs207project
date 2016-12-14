@@ -65,6 +65,12 @@ Contains our test suite. Each test file is pointed to in the respective module R
 ## Testing 
 Run `python setup.py` tests from the main directory and all our main test files should run. Where appropriate, in the underlying READMEs we give further instruction for running additional tests.
 
+## Known Bugs
+
+### Web UI
+- Intermittently, the metadata table will drop 1-2 rows and append them unparsed to the end of the table. However, timeseries are always plotted. [We think this might be related to the asynchronous nature of the AJAX calls.]
+- The web UI displays unusual behavior on Windows machines, despite the browser. 
+
 --------
  *(below is documentation internal to the group)*
 
