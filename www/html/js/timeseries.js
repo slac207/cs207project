@@ -258,7 +258,8 @@
 				}
 				
 				// put together the metadata
-				console.log("metadata", series.metadata)
+				console.log("metadata", series.metadata[0])
+				console.log("metadata", series.metadata[0][0])
 				
 			}	
 			
