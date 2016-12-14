@@ -172,10 +172,12 @@
 								return [e, JSON.parse(read.result).ts[1][i]]; 
 						});
 						
-						console.log(dataTarget)
 					}
         	
         	
+						console.log(dataTarget)
+						
+						
         	// first get the IDs of the similar time series
 					console.log('Retrieving the ID numbers of the similar TS (uploaded TS).');
 					$.ajax({
