@@ -100,6 +100,9 @@
 						dataType: "json",
 						success: onDataReceived
 					});
+					
+					console.log("Destroy the progress bar -- we don't need it anymore.");
+					$("#progressbar").progressbar( "destroy" );
 				
 				} else {
 			
