@@ -148,6 +148,21 @@ class TSDBOp_TSfromID(TSDBOp):
             raise TypeError('Impolite TSDB Operation: please include the courtesy "please" (key="courtesy",value="please"')
         return cls(json_dict['id'])
 
+class TSDBOp_storeTS(TSDBOp):
+    """Class for storing a timeseries with its ID"""  
+    def __init__(self, idee, ts):
+        super().__init__('storeTS')
+        self['id'] = idee
+        self['ts'] = ts
+
+    @classmethod
+    def from_json(cls, json_dict):
+        """Converts a JSON object into a TSDBOp_TSfromID object"""
+        if ('courtesy' not in json_dict) or (json_dict['courtesy'].lower()!='please'):
+            print('Impolite TSDB Operation: please include the courtesy "please" (key="courtesy",value="please"')
+            raise TypeError('Impolite TSDB Operation: please include the courtesy "please" (key="courtesy",value="please"')
+        return cls(json_dict['id'],ts.ArrayTimeSeries(*(json_dict['ts'])))
+        
 class TSDBOp_Return(TSDBOp):
 
     def __init__(self, status, op, payload=None):
@@ -163,6 +178,7 @@ class TSDBOp_Return(TSDBOp):
 typemap = {
   'simsearch_ts': TSDBOp_SimSearch_TS,
   'simsearch_id': TSDBOp_SimSearch_ID,
-  'TSfromID': TSDBOp_TSfromID
+  'TSfromID': TSDBOp_TSfromID,
+  'storeTS': TSDBOp_storeTS
 }
 

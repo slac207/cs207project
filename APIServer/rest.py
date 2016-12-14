@@ -148,17 +148,12 @@ def add_timeseries():
         abort(400)
     log.info('Adding Timeseries to Database')
     ts_dict = json.loads(request.json)
-    #ts_dict = request.json
-    #print(ts_dict)
-    sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
-    #sm.reload_index()
     print(ts_dict['id'])
-    new_ts = ts(times=ts_dict['ts'][0],values=ts_dict['ts'][1])
-    print(new_ts)
-    sm.store(t=new_ts,id=ts_dict['id'],overwrite=True)
-    sm.reload_index()
+    msg = [list(ts_dict['ts'][0]), list(ts_dict['ts'][1])]
+    requestDict = {'op':'storeTS','id':ts_dict['id'],'ts':msg,'courtesy':'please'}
+    response = connectDBServer(requestDict)
     return request.json, 201
-    #return jsonify({'op': 'OK', 'task': prod}), 201
+    #return jsonify(response),201
 
 @app.route('/timeseries/<int:timeseries_id>', methods=['GET'])
 def get_from_id(timeseries_id):
@@ -192,7 +187,7 @@ def get_simsearch_from_id():
     (default is 5 closest).
     """
     ts_id = request.args.get('id', type=int)
-    if ts_id>999 or ts_id<1:
+    if ts_id>999 or ts_id<0:
         abort(400)
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_id','id':int(ts_id),'n_closest':n_closest,'courtesy':'please'}
