@@ -9,7 +9,7 @@
 ## Purpose
 This package contains the code to create a Web UI which supports similarity searches of timeseries by id, similarity searches of newly provided timeseries, timeseries metadata queries, timeseries retrieval based on id. The underlying REST API includes functionality for additional queries.
 
-See [this website](http://54.157.228.231) for a demo of our working project (on a pre-existing instance)
+See [this website](http://54.147.79.65/) for a demo of our working project (on a pre-existing instance)
 
 ## Instructions for Running our Project in an EC2 Instance
 1. Create an Ubuntu 16.04 instance on Amazon EC2.
@@ -64,6 +64,8 @@ Contains our test suite. Each test file is pointed to in the respective module R
 
 ## Testing 
 Run `python setup.py` tests from the main directory and all our main test files should run. Where appropriate, in the underlying READMEs we give further instruction for running additional tests.
+
+We performed a smoke test in our demo instance, uploading a file containing the same data as timeseries 33 into the similarity search and making sure that our UI returned 33 as the most similar timeseries. We included the smoke_test_33.json file in the main directory in case others want to try this smoke test as well (in the demo instance, as timeseries as regenerated for each instance!). 
 
 ## Command Line Note
 Note that we understood the directions differently and thought that we were taking out the command line program and replacing with the server implementation. You can see our command line program from Milestone 2 at [this previous commit](https://github.com/slac207/cs207project/commit/f0bd843357f0e626ec1b9451f3224b924d7e2214). Note that this does not include a link through the socket server, instead it talks directly to the BinarySearchTree.
