@@ -83,10 +83,7 @@
 				// if the user hasn't provided a number of similar TS, or the
 				//   number is zero, we won't bother sending off a simquery
 				if (numSim == '' | numSim == 0) {
-					
-					// add on the ID number of the target TS
-					simIDs.push(timeSeriesID);
-					
+
 					// now we loop over all the IDs and collect their data
 					console.log("Collecting data of specified time series.");
 					
@@ -100,9 +97,7 @@
 						dataType: "json",
 						success: onDataReceived
 					});
-					
-					console.log("Destroy the progress bar -- we don't need it anymore.");
-					$("#progressbar").progressbar( "destroy" );
+
 				
 				} else {
 			
@@ -321,13 +316,13 @@
 					tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
 				
 					metadataTable += tableRow;
-				
-					// keeps track of where we are in the array of TS IDs to plot
-					counter++;		
-				
+								
 					console.log("Put together + display the metadata table.");
 					metadataTable += tableBottom;
-					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;	}
+					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;	
+					console.log("Destroy the progress bar -- we don't need it anymore.");
+					$("#progressbar").progressbar( "destroy" );	
+				}
 							
 				if (counter == simIDs.length - 1) {
 					console.log("Destroy the progress bar -- we don't need it anymore.");
