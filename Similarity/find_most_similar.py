@@ -36,8 +36,14 @@ def sanity_check(filename,n,sm):
         d.append([dist,i])
         
     d.sort(key=lambda x: x[0])
-    for i in range(1,n+1):
-        ans.append(d[i][1])
+    try:
+        int(filename)
+        for i in range(1,n+1):
+            ans.append(d[i][1])
+    except:
+        for i in range(n):
+            ans.append(d[i][1])        
+        
         
     return ans
 
@@ -119,8 +125,14 @@ def find_most_similiar(filename,n, vantage_pts, sm):
                 
     all_pts_to_check.sort(key=lambda x: x[0])
     
-    for i in range(1,n+1): #ignore given timeseries 
-        file_names.append(all_pts_to_check[i][1])  
+    try:
+        int(filename)
+        for i in range(1,n+1): #ignore given timeseries 
+            file_names.append(all_pts_to_check[i][1])  
+    except:
+        for i in range(n): 
+            file_names.append(all_pts_to_check[i][1])         
+        
         
     return file_names
 

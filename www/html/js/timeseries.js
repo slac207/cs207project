@@ -190,7 +190,7 @@
 					console.log("Locally received data uploaded by user.");			
 					console.log( document.getElementById("fileSelect").files[0] );
 			
-					var simurl = publicIP + "/simquery?" + "id=" + "&topn=" + numSim;
+					var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
 
 					console.log("Sending user-loaded data off to be processed:" + simurl);
 					$.ajax({
@@ -211,11 +211,11 @@
 		
 							simIDs = result.id;
 				
-							$.ajax({
-								url: simurl,
-								type: "GET",
-								dataType: "json",
-								success: function(data) {
+							//$.ajax({
+							//	url: simurl,
+							//	type: "GET",
+							//	dataType: "json",
+							//	success: function(data) {
 
 										// loop over all the IDs and collect their data
 										console.log("Looping over the retrieved ID numbers and collecting their data.");
@@ -237,8 +237,8 @@
 											});
 				
 										}		
-							 }
-						});
+							 //}
+						//});
 			
 					// parse the uploaded file
 					// https://www.html5rocks.com/en/tutorials/file/dndfiles/
