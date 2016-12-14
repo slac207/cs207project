@@ -16,7 +16,7 @@ chmod a+x *.sh
 ~/cs207project/provisioners/nginx-flask.sh
 
 # Burn-in the postgres database
-python ~/cs207project/provisioners/files/burn_in.py
+python3 ~/cs207project/provisioners/files/burn_in.py
 
 # Confirm that installation worked
 ~/cs207project/provisioners/status.sh
