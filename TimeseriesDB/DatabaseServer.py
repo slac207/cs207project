@@ -32,6 +32,8 @@ class DatabaseServer(BaseRequestHandler):
                     response = self._sim_with_id(tsdbop)
                 elif isinstance(tsdbop, TSDBOp_TSfromID):
                     response = self._ts_with_id(tsdbop)
+                elif isinstance(tsdbop, TSDBOp_storeTS):
+                    response = self._store_ts(tsdbop)
                 else:
                     response = TSDBOp_Return(TSDBStatus.UNKNOWN_ERROR, tsdbop['op'])
             
@@ -59,6 +61,15 @@ class DatabaseServer(BaseRequestHandler):
         ts_list = [list(ts.times()),list(ts.values())]
         result = TSDBOp_TSfromID('TSfromID') ##just changed this
         result['ts'] = ts_list
+        return result
+
+    def _store_ts(self,tsdbop):
+        """Store a timeseries at the given ID"""
+        sm = self.server.data['storage_manager']
+        sm.store(tsdbop['id'],tsdbop['ts'],overwrite=True)
+        result = TSDBOp_SimSearch_ID('simsearch_id')
+        result['id'] = tsdbop['id']
+        print(result)
         return result
 
     def handle(self):
