@@ -21,11 +21,6 @@
 
 		// GLOBAL VARIABLES AND FUNCTIONS
 		
-		// check whether the user specified a valid integer
-		function isInt(n){
-    		return Number(n) === n && n % 1 === 0;
-		}
-		
 		// initialize the array that will hold the data for plotting
 		var data = [];
 		var dataTarget = [];
@@ -42,14 +37,6 @@
 		// helps with managing the uploaded time series
 		var files;
 		var uploadButton = document.getElementById('tsQuery');
-		
-		// keep an eye on the file upload field, and save what's put there
-		//$('input[type=file]').on('change', prepareUpload);
-
-		// grab files and set them to our variable
-		//function prepareUpload(event) {
-  	//	files = event.target.files;
-		//}
 		
 		// initialize the timeseries plot (will be empty)
 		console.log('Initializing flot plot (empty plot).');
@@ -86,12 +73,12 @@
 			// if the user has specified an ID, use that; 
 			//   otherwise assume there's an uploaded file.
 			if (timeSeriesID != '') {
+			
 				var simurl = publicIP + "/simquery?id=" + timeSeriesID + "&topn=" + numSim;
 				console.log('Constructed simquery.');
 				
-				
-							// first get the IDs of the similar time series
-			  console.log('Retrieving the ID numbers of the similar TS (ID number supplied).');
+				// first get the IDs of the similar time series
+			    console.log('Retrieving the ID numbers of the similar TS (ID number supplied).');
 				$.ajax({
 					url: simurl,
 					type: "GET",
@@ -130,11 +117,11 @@
 				
 			} else if ( document.getElementById("fileSelect").files.length > 0  ) {
 			
-    		console.log( document.getElementById("fileSelect").files[0] );
+    			console.log( document.getElementById("fileSelect").files[0] );
     		
-    		var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
+    			var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
 
-    		$.ajax({
+    			$.ajax({
       		  url: simurl,
     		    type: 'POST',
     		    data: document.getElementById("fileSelect").files[0],
@@ -148,34 +135,41 @@
            		 console.log('ERRORS: ' + textStatus);
        		  }
    		  })
-   		  .done(function (result) {
+   		    		.done(function (result) {
         
-        	simIDs = result.id;
+        		simIDs = result.id;
         	
-        	// parse the uploaded file
-        	// https://www.html5rocks.com/en/tutorials/file/dndfiles/
-        	//var dataTarget = series.ts[0].map(function (e, i) { 
-					//	return [e, series.ts[1][i]]; 
-					//});
-
-					read = new FileReader();
-					read.readAsText(document.getElementById("fileSelect").files[0]);
+        		// parse the uploaded file
+        		// https://www.html5rocks.com/en/tutorials/file/dndfiles/
+				read = new FileReader();
+				read.readAsText(document.getElementById("fileSelect").files[0]);
 					
-					
-					
-					
-					read.onloadend = function(){
+				read.onloadend = function(){
     				//console.log(read.result);
     				//console.log(JSON.parse(read.result))
     				//console.log(JSON.parse(read.result).ts)
-    				dataTarget.push( JSON.parse(read.result).ts[0].map(function (e, i) { 
-											return [e, JSON.parse(read.result).ts[1][i]]; 
-									}) )
+    				var dataTemp = JSON.parse(read.result).ts
+    				dataTarget = dataTemp[0].map(function (e, i) { 
+											return [e, dataTemp[1][i]];});
+									
+    				tsData = {label: "uploaded timeseries", data: dataTarget};
+    				
+    				console.log('Appending uploaded time series to Flot data.');
+					
+					data.push(tsData);
+					
+					console.log(tsData)
+					
+					console.log('Plotting the data of the uploaded TS.')		
+				
+					$.plot("#placeholder", data, options);	
+
+					
 						
-					}
+				}
         	
         	
-						console.log(dataTarget)
+					console.log(data)
 						
 						
         	// first get the IDs of the similar time series
@@ -214,21 +208,6 @@
 					});
 					
 					
-					console.log('Plotting the data of the uploaded TS.')
-					
-
-					
-					//var dataTarget = read.result.ts[0].map(function (e, i) { 
-					//	return [e, read.result.ts[1][i]]; 
-					//});
-					
-					tsData = {label: "uploaded timeseries", data: dataTarget};
-				
-					console.log('Appending uploaded time series to Flot data.');
-					data.push(tsData);
-					console.log(tsData)
-				
-					$.plot("#placeholder", data, options);	
 
       	});
 				
