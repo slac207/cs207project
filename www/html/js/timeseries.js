@@ -15,9 +15,9 @@
 				show: true
 			},
 			grid: {
-        hoverable: true
-      }
-		};
+        		hoverable: true
+      		}
+	};
 
 		// GLOBAL VARIABLES AND FUNCTIONS
 		
@@ -36,7 +36,6 @@
 		
 		// helps with managing the uploaded time series
 		var files;
-		var uploadButton = document.getElementById('tsQuery');
 		
 		// initialize the timeseries plot (will be empty)
 		console.log('Initializing flot plot (empty plot).');
@@ -188,7 +187,7 @@
     				dataTarget = dataTemp[0].map(function (e, i) { 
 											return [e, dataTemp[1][i]];});
 									
-    				tsData = {label: "uploaded timeseries", data: dataTarget};
+    				tsData = {label: "uploaded timeseries", data: dataTarget, lines: {lineWidth:4}};
     				
     				console.log('Appending uploaded time series to Flot data.');
 					
