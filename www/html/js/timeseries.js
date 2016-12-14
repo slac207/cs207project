@@ -26,7 +26,8 @@
 		var dataTarget = [];
 		
 		// IP address to access our UI
-		var publicIP = 'http://54.157.228.231';
+		// (empty for relative URLs)
+		var publicIP = '';
 		
 		// building blocks of metadata table
 		var tableTop = "<table id='metadata'>";
