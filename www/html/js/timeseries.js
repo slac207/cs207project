@@ -55,7 +55,7 @@
 			});
 			
 			// reset everything in preparation for new data
-			console.log('Reseting helper variables in preparation for new data.');
+			console.log('Resetting helper variables in preparation for new data.');
 			document.getElementById('timeseriesMetadata').innerHTML = '';
 			data = [];
 			var simIDs = [];
@@ -256,6 +256,9 @@
 					//$.plot("#placeholder", data, options).getData()[counter].lines.lineWidth = 5;
 					//$.plot("#placeholder", data, options)
 				}
+				
+				// put together the metadata
+				console.log("metadata", series.metadata)
 				
 			}	
 			
