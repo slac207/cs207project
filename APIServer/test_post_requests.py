@@ -23,7 +23,7 @@ class Rest_API_tests(unittest.TestCase):
         #print(os.getcwd())
         sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
         sm.reload_index()
-        #print(sm._index)
+        print(sm._index)
         new_ts =ts.from_db(sm,1)
         data = {}
         data['ts'] = [list(new_ts.times()), list(new_ts.values())]
@@ -47,6 +47,7 @@ class Rest_API_tests(unittest.TestCase):
         """
         sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
         sm.reload_index()
+        print(sm._index)
         new_ts =ts.from_db(sm,100)
         data = {}
         data['ts'] = [list(new_ts.times()), list(new_ts.values())]
