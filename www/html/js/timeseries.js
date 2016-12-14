@@ -88,48 +88,7 @@
 				var simurl = publicIP + "/simquery?id=" + timeSeriesID + "&topn=" + numSim;
 				console.log('Constructed simquery.');
 			} else if ( document.getElementById("fileSelect").files.length > 0  ) {
-			
-				// https://abandon.ie/notebook/simple-file-uploads-using-jquery-ajax
-				
-				//event.stopPropagation(); // Stop stuff happening
-    		//event.preventDefault();  // Totally stop stuff happening
-
-    		// Create a formdata object and add the files
-    		var dataUpload = new FormData();
-    		
-    		// dataUpload.append( "ts",  );
-    		
-    		console.log( document.getElementById("fileSelect").files[0] );
-    		
-    		var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
-    		
-        //$(JSON.stringify({ ts: dataUpload })).appendTo('#dataTest')
-
-    		$.ajax({
-      		  url: simurl,
-    		    type: 'POST',
-    		    data: document.getElementById("fileSelect").files[0],
-    		    cache: false,
-     		    contentType: 'application/json; charset=utf-8',
-      			dataType: 'json',
-     		    processData: false, // Don't process the files
-     		    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-        		error: function(jqXHR, textStatus, errorThrown) {
-           		 // Handle errors here
-           		 console.log('ERRORS: ' + textStatus);
-       		  }
-   		  })
-   		  .done(function (result) {
-        
-        	simIDs = result.id;
-        	console.log(simIDs)
-        	console.log(result.id)
-
-      	});
-     		
-   		  console.log(simIDs)
-   		 
-				
+						
 				
 			} else {
 				
@@ -196,7 +155,33 @@
 						
 						if (document.getElementById("fileSelect").files.length > 0) {
 						
-							// do nothing
+							  console.log( document.getElementById("fileSelect").files[0] );
+    		
+								var simurl = publicIP + "/simquery?id=" + "&topn=" + numSim;
+
+								$.ajax({
+										url: simurl,
+										type: 'POST',
+										data: document.getElementById("fileSelect").files[0],
+										cache: false,
+										contentType: 'application/json; charset=utf-8',
+										dataType: 'json',
+										processData: false, // Don't process the files
+										contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+										error: function(jqXHR, textStatus, errorThrown) {
+											 // Handle errors here
+											 console.log('ERRORS: ' + textStatus);
+										}
+								})
+								.done(function (result) {
+			
+									simIDs = result.id;
+									console.log(simIDs)
+									console.log(result.id)
+
+								});
+			
+								console.log(simIDs)
 						
 						} else {
 
