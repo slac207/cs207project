@@ -28,6 +28,7 @@
 		
 		// initialize the array that will hold the data for plotting
 		var data = [];
+		var dataTarget;
 		
 		// IP address to access our UI
 		var publicIP = 'http://54.157.228.231';
@@ -74,7 +75,6 @@
 			var idNum = {};
 			var counter = 0;
 			metadataTable = tableTop + tableHeader;
-			var dataTarget;
 
 			// retrieve the time series specified by the user, and the number of 
 			//   most similar time series
@@ -168,9 +168,9 @@
     				//console.log(read.result);
     				//console.log(JSON.parse(read.result))
     				//console.log(JSON.parse(read.result).ts)
-    				dataTarget = JSON.parse(read.result).ts[0].map(function (e, i) { 
-								return [e, JSON.parse(read.result).ts[1][i]]; 
-						});
+    				dataTarget.push( JSON.parse(read.result).ts[0].map(function (e, i) { 
+											return [e, JSON.parse(read.result).ts[1][i]]; 
+									}); )
 						
 					}
         	
