@@ -153,9 +153,6 @@
 				
 					console.log("Locally received data uploaded by user.");			
 					console.log( document.getElementById("fileSelect").files[0] );
-										
-					// internal ID number of the uploaded TS (value not used)
-					simIDs.push(1000);
 			
 					// parse the uploaded file
 					// https://www.html5rocks.com/en/tutorials/file/dndfiles/
@@ -181,6 +178,9 @@
 						console.log('Plotting the data of the uploaded TS.');		
 				
 						$.plot("#placeholder", data, options);	
+						
+						console.log("Destroy the progress bar -- we don't need it anymore.");
+					$("#progressbar").progressbar( "destroy" );
 
 					}			
 				
