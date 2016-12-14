@@ -21,8 +21,8 @@ $ sudo ssh -i "pair.sem" ubuntu@public_ip
 ```
 4. Run the following commands to provision the system:
 ```
-git clone https://github.com/slac207/cs207project.git`
-cd ~/cs207project/provisioners`
+git clone https://github.com/slac207/cs207project.git
+cd ~/cs207project/provisioners
 chmod a+x run.sh
 ./run.sh
 ``` 
