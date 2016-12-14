@@ -220,7 +220,7 @@ def get_simsearch_from_json():
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_ts','ts':ts_dict['ts'],'n_closest':n_closest,'courtesy':'please'}
     response = connectDBServer(requestDict)
-    return jsonify(response), 200
+    return jsonify(response), 201
 
 @app.errorhandler(404)
 def not_found(error):
