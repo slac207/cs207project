@@ -147,14 +147,15 @@ def add_timeseries():
     if not request.json or 'ts' not in request.json or 'id' not in request.json:
         abort(400)
     log.info('Adding Timeseries to Database')
-    #ts_dict = json.loads(request.json)
-    ts_dict = request.json
+    ts_dict = json.loads(request.json)
+    #ts_dict = request.json
     #print(ts_dict)
-    sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
+    sm = FileStorageManager(directory='./FSM_filestorage')
     #sm.reload_index()
     print(ts_dict['id'])
     new_ts = ts(times=ts_dict['ts'][0],values=ts_dict['ts'][1])
     sm.store(t=new_ts,id=ts_dict['id'],overwrite=False)
+    sm.reload_index()
     return request.json, 201
     #return jsonify({'op': 'OK', 'task': prod}), 201
 
@@ -227,3 +228,4 @@ def not_found(error):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     app.run(host="0.0.0.0")
+    #app.run(port=5001)
