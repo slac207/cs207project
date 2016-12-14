@@ -1,0 +1,732 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cs207rbtree package &mdash; cs207project 0.0.post0.dev372+n1d712dc documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.post0.dev372+n1d712dc',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="cs207project 0.0.post0.dev372+n1d712dc documentation" href="../index.html" />
+    <link rel="up" title="Modules" href="modules.html" />
+    <link rel="next" title="timeseries package" href="timeseries.html" />
+    <link rel="prev" title="TimeseriesDB package" href="TimeseriesDB.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cs207rbtree-package">
+<h1>cs207rbtree package<a class="headerlink" href="#cs207rbtree-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cs207rbtree.RedBlackTree">
+<span id="cs207rbtree-redblacktree-module"></span><h2>cs207rbtree.RedBlackTree module<a class="headerlink" href="#module-cs207rbtree.RedBlackTree" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cs207rbtree.RedBlackTree.Color">
+<em class="property">class </em><code class="descclassname">cs207rbtree.RedBlackTree.</code><code class="descname">Color</code><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#Color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.Color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Class that defines the coloring of our red-black tree, and
+the corresponding underlying values.</p>
+<dl class="attribute">
+<dt id="cs207rbtree.RedBlackTree.Color.BLACK">
+<code class="descname">BLACK</code><em class="property"> = 1</em><a class="headerlink" href="#cs207rbtree.RedBlackTree.Color.BLACK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cs207rbtree.RedBlackTree.Color.RED">
+<code class="descname">RED</code><em class="property"> = 0</em><a class="headerlink" href="#cs207rbtree.RedBlackTree.Color.RED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cs207rbtree.RedBlackTree.DBDB">
+<em class="property">class </em><code class="descclassname">cs207rbtree.RedBlackTree.</code><code class="descname">DBDB</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#DBDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.DBDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Database class to manage Storage and RedBlackTree operations.</p>
+<p>_storage: Storage object to manage file writes/reads
+_tree: RedBlackTree object to manage a Red Black Tree</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;/tmp/test.dbdb&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">O_RDWR</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">O_CREAT</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span>  <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="s1">&#39;r+b&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DBDB</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;rahul&quot;</span><span class="p">,</span> <span class="s2">&quot;aged&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;kobe&quot;</span><span class="p">,</span> <span class="s2">&quot;stillyoung&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rahul&quot;</span><span class="p">)</span>
+<span class="go">&#39;aged&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.DBDB.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#DBDB.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.DBDB.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the storage object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.DBDB.commit">
+<code class="descname">commit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#DBDB.commit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.DBDB.commit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Confirm storage is closed and commit.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.DBDB.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#DBDB.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.DBDB.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Confirm storage is open and delete node with key.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.DBDB.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#DBDB.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.DBDB.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Confirm storage is open and get a value for a key.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.DBDB.get_nodes_less_than">
+<code class="descname">get_nodes_less_than</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#DBDB.get_nodes_less_than"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.DBDB.get_nodes_less_than" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.DBDB.in_order_traversal">
+<code class="descname">in_order_traversal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#DBDB.in_order_traversal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.DBDB.in_order_traversal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.DBDB.rootKey">
+<code class="descname">rootKey</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#DBDB.rootKey"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.DBDB.rootKey" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.DBDB.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#DBDB.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.DBDB.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Confirm storage is open and set a value for a key.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNode">
+<em class="property">class </em><code class="descclassname">cs207rbtree.RedBlackTree.</code><code class="descname">RedBlackNode</code><span class="sig-paren">(</span><em>left_ref</em>, <em>key</em>, <em>value_ref</em>, <em>right_ref</em>, <em>color=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="docutils">
+<dt>A RedBlackNode object contains the data of a single node in a</dt>
+<dd>binary tree, and stores references to the data and its two
+child nodes.</dd>
+</dl>
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNode.blacken">
+<code class="descname">blacken</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNode.blacken"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNode.blacken" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNode.from_node">
+<em class="property">classmethod </em><code class="descname">from_node</code><span class="sig-paren">(</span><em>node</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNode.from_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNode.from_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones a node, but with updates as specified by addtional arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>tree node to be cloned</em>) &#8211; </li>
+<li><strong>**kwargs</strong> (<em>tree node attributes to be updated</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">An updated RedBlackNode object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNode.is_black">
+<code class="descname">is_black</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNode.is_black"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNode.is_black" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check is node is colored red</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNode.is_red">
+<code class="descname">is_red</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNode.is_red"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNode.is_red" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check is node is colored black</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNode.store_refs">
+<code class="descname">store_refs</code><span class="sig-paren">(</span><em>storage</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNode.store_refs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNode.store_refs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for RedBlackNode object to save its contents to disk.
+Recursively stores the entire tree to disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>storage</strong> (<em>a Storage object</em>) &#8211; (our Python representation of our data on disk)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNodeRef">
+<em class="property">class </em><code class="descclassname">cs207rbtree.RedBlackTree.</code><code class="descname">RedBlackNodeRef</code><span class="sig-paren">(</span><em>referent=None</em>, <em>address=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNodeRef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNodeRef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cs207rbtree.RedBlackTree.ValueRef" title="cs207rbtree.RedBlackTree.ValueRef"><code class="xref py py-class docutils literal"><span class="pre">cs207rbtree.RedBlackTree.ValueRef</span></code></a></p>
+<dl class="docutils">
+<dt>A RedBlackNodeRef object is a reference to a red-black</dt>
+<dd>binary tree node on disk.</dd>
+</dl>
+<p>Inherits from ValueRef.</p>
+<dl class="staticmethod">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNodeRef.bytes_to_referent">
+<em class="property">static </em><code class="descname">bytes_to_referent</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNodeRef.bytes_to_referent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNodeRef.bytes_to_referent" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Deserializes the tree node (i.e., unpickles the tree node)</dt>
+<dd>typically after disk retrieval.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<em>value to be reconstituted</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A reconstituted RedBlackNode object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNodeRef.prepare_to_store">
+<code class="descname">prepare_to_store</code><span class="sig-paren">(</span><em>storage</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNodeRef.prepare_to_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNodeRef.prepare_to_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Have a node store its refs.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="cs207rbtree.RedBlackTree.RedBlackNodeRef.referent_to_bytes">
+<em class="property">static </em><code class="descname">referent_to_bytes</code><span class="sig-paren">(</span><em>referent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackNodeRef.referent_to_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackNodeRef.referent_to_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Serializes the tree node (i.e., pickles the tree node)</dt>
+<dd>in preparation for disk storage.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>referent</strong> (<em>node to be encoded</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A serialized tree node (e.g., a serialized BinaryNode object).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree">
+<em class="property">class </em><code class="descclassname">cs207rbtree.RedBlackTree.</code><code class="descname">RedBlackTree</code><span class="sig-paren">(</span><em>storage</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Red Black Binary Tree class.
+Inherits from BinaryTree class, so is immutable as well</p>
+<blockquote>
+<div>(i.e., constructs new tree on changes).</div></blockquote>
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree.balance">
+<code class="descname">balance</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree.balance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree.balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new node to the tree, then balance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<em>RedBlackNode object</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">The node that was passed to the function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree.commit">
+<code class="descname">commit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree.commit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree.commit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the value associated with the specified key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>indexes the value that we want to retrieve</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">The value associated with <cite>key</cite>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree.get_nodes_less_than">
+<code class="descname">get_nodes_less_than</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree.get_nodes_less_than"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree.get_nodes_less_than" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find all nodes that have a key value &lt;= &#8216;key&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree.recolor">
+<code class="descname">recolor</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree.recolor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree.recolor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <cite>node</cite> color to red and the color of its children to black.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<em>RedBlackNode object</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">The new recolored node.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree.rotate_left">
+<code class="descname">rotate_left</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree.rotate_left"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree.rotate_left" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Rotates the specified node &#8220;to the left&#8221;, in order to ensure compliance</dt>
+<dd>with red-black tree invariants (see module README), in particular
+&#8220;No red node has a red parent.&#8221; This method is used when <cite>node</cite> has
+a red parent.</dd>
+<dt>A &#8220;left rotation&#8221; is when we switch the positions of <cite>node</cite> and</dt>
+<dd>its right child (call it RC) &#8211; so <cite>node</cite> becomes the left child of RC.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<em>RedBlackNode object (or None if our key/value has</em>) &#8211; not been packaged as such)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A RedBlackNodeRef object that points to the new node.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree.rotate_right">
+<code class="descname">rotate_right</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree.rotate_right"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree.rotate_right" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Rotates the specified node &#8220;to the right&#8221;, in order to ensure compliance</dt>
+<dd>with red-black tree invariants (see module README), in particular
+&#8220;No red node has a red parent.&#8221; This method is used when <cite>node</cite> has
+a red parent.</dd>
+<dt>A &#8220;right rotation&#8221; is when we switch the positions of <cite>node</cite> and</dt>
+<dd>its left child (call it LC) &#8211; so <cite>node</cite> becomes the right child of LC.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<em>RedBlackNode object</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A RedBlackNodeRef object that points to the new node.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a new value in the tree, causing a new tree to be created
+(b/c of immutability).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>indexes the value that we want to store</em>) &#8211; </li>
+<li><strong>value</strong> (the data we want to store, under <cite>key</cite>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.RedBlackTree.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>node</em>, <em>key</em>, <em>value_ref</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#RedBlackTree.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.RedBlackTree.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively update and balance along the way</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cs207rbtree.RedBlackTree.Storage">
+<em class="property">class </em><code class="descclassname">cs207rbtree.RedBlackTree.</code><code class="descname">Storage</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#Storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Storage class to interact with the file on disk.
+Manages writing to file, locking/unlocking for editing, and closing the file.&#8221;</p>
+<dl class="attribute">
+<dt id="cs207rbtree.RedBlackTree.Storage.INTEGER_FORMAT">
+<code class="descname">INTEGER_FORMAT</code><em class="property"> = '!Q'</em><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.INTEGER_FORMAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cs207rbtree.RedBlackTree.Storage.INTEGER_LENGTH">
+<code class="descname">INTEGER_LENGTH</code><em class="property"> = 8</em><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.INTEGER_LENGTH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cs207rbtree.RedBlackTree.Storage.SUPERBLOCK_SIZE">
+<code class="descname">SUPERBLOCK_SIZE</code><em class="property"> = 4096</em><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.SUPERBLOCK_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.Storage.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#Storage.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unlock and close the file.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cs207rbtree.RedBlackTree.Storage.closed">
+<code class="descname">closed</code><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.closed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if database is closed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.Storage.commit_root_address">
+<code class="descname">commit_root_address</code><span class="sig-paren">(</span><em>root_address</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#Storage.commit_root_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.commit_root_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atomically commit changes by writing the new root address to beginning
+of the next superblock and unlocking the file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.Storage.get_root_address">
+<code class="descname">get_root_address</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#Storage.get_root_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.get_root_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the root address, as measured from the beginning of the file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.Storage.lock">
+<code class="descname">lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#Storage.lock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>If not locked, lock the file for writing and return True.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.Storage.read">
+<code class="descname">read</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#Storage.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read data from given address in file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.Storage.unlock">
+<code class="descname">unlock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#Storage.unlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.unlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>If locked, flush and unlock the file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.Storage.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#Storage.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.Storage.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write data to disk, returning the address at which you wrote it.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cs207rbtree.RedBlackTree.ValueRef">
+<em class="property">class </em><code class="descclassname">cs207rbtree.RedBlackTree.</code><code class="descname">ValueRef</code><span class="sig-paren">(</span><em>referent=None</em>, <em>address=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#ValueRef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.ValueRef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>A ValueRef object is a reference to a string value on disk.</p>
+<dl class="attribute">
+<dt id="cs207rbtree.RedBlackTree.ValueRef.address">
+<code class="descname">address</code><a class="headerlink" href="#cs207rbtree.RedBlackTree.ValueRef.address" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="cs207rbtree.RedBlackTree.ValueRef.bytes_to_referent">
+<em class="property">static </em><code class="descname">bytes_to_referent</code><span class="sig-paren">(</span><em>bytes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#ValueRef.bytes_to_referent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.ValueRef.bytes_to_referent" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Converts <cite>bytes</cite> to a string, typically after reading <cite>bytes</cite></dt>
+<dd>from disk.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>referent</strong> (<em>value (a string) to be encoded</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">encoded in UTF-8.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A bytes representation of the Unicode string,</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.ValueRef.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>storage</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#ValueRef.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.ValueRef.get" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Reads whatever bytes are at the <cite>_address</cite> attribute,</dt>
+<dd>converts to a string,
+saves this string as <cite>_referent</cite>, and and returns it.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>storage</strong> (<em>a Storage object</em>) &#8211; (our Python representation of our data on disk)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">The string located at the <cite>_address</cite> attribute in <cite>storage</cite>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.ValueRef.prepare_to_store">
+<code class="descname">prepare_to_store</code><span class="sig-paren">(</span><em>storage</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#ValueRef.prepare_to_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.ValueRef.prepare_to_store" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="cs207rbtree.RedBlackTree.ValueRef.referent_to_bytes">
+<em class="property">static </em><code class="descname">referent_to_bytes</code><span class="sig-paren">(</span><em>referent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#ValueRef.referent_to_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.ValueRef.referent_to_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts <cite>referent</cite> to bytes, in preparation for disk storage.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>referent</strong> (<em>value (a string) to be encoded</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">encoded in UTF-8.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A bytes representation of the Unicode string,</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cs207rbtree.RedBlackTree.ValueRef.store">
+<code class="descname">store</code><span class="sig-paren">(</span><em>storage</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#ValueRef.store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.ValueRef.store" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Converts whatever value is contained in the <cite>_referent</cite></dt>
+<dd>attribute to bytes, saves it to disk within <cite>storage</cite>,
+and records the storage address.`, and and returns it.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>storage</strong> (<em>a Storage object</em>) &#8211; (our Python representation of our data on disk)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This method is called by BinaryNode.store_refs()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="cs207rbtree.RedBlackTree.connect">
+<code class="descclassname">cs207rbtree.RedBlackTree.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>dbname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/RedBlackTree.html#connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.RedBlackTree.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-cs207rbtree.setup">
+<span id="cs207rbtree-setup-module"></span><h2>cs207rbtree.setup module<a class="headerlink" href="#module-cs207rbtree.setup" title="Permalink to this headline">¶</a></h2>
+<p>Setup file for timeseries.</p>
+<p>This file was generated with PyScaffold 2.5.6, a tool that easily
+puts up a scaffold for your new Python project. Learn more under:
+<a class="reference external" href="http://pyscaffold.readthedocs.org/">http://pyscaffold.readthedocs.org/</a></p>
+<dl class="function">
+<dt id="cs207rbtree.setup.setup_package">
+<code class="descclassname">cs207rbtree.setup.</code><code class="descname">setup_package</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/setup.html#setup_package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.setup.setup_package" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-cs207rbtree.skeleton">
+<span id="cs207rbtree-skeleton-module"></span><h2>cs207rbtree.skeleton module<a class="headerlink" href="#module-cs207rbtree.skeleton" title="Permalink to this headline">¶</a></h2>
+<p>This is a skeleton file that can serve as a starting point for a Python
+console script. To run this script uncomment the following line in the
+entry_points section in setup.cfg:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>console_scripts =</dt>
+<dd>cs207rbtree = cs207rbtree.skeleton:run</dd>
+</dl>
+</div></blockquote>
+<p>Then run <cite>python setup.py install</cite> which will install the command <cite>cs207rbtree</cite>
+inside your current environment.
+Besides console scripts, the header (i.e. until _logger...) of this file can
+also be used as template for Python modules.</p>
+<p>Note: This skeleton file can be safely removed if not needed!</p>
+<dl class="function">
+<dt id="cs207rbtree.skeleton.fib">
+<code class="descclassname">cs207rbtree.skeleton.</code><code class="descname">fib</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/skeleton.html#fib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.skeleton.fib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fibonacci example function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; integer</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">n-th Fibonacci number</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cs207rbtree.skeleton.main">
+<code class="descclassname">cs207rbtree.skeleton.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/skeleton.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.skeleton.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cs207rbtree.skeleton.parse_args">
+<code class="descclassname">cs207rbtree.skeleton.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/skeleton.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.skeleton.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse command line parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> &#8211; command line parameters as list of strings</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">command line parameters as <a class="reference external" href="http://docs.python.org/3.5/library/argparse.html#argparse.Namespace" title="(in Python v3.5)"><code class="xref py py-obj docutils literal"><span class="pre">argparse.Namespace</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cs207rbtree.skeleton.run">
+<code class="descclassname">cs207rbtree.skeleton.</code><code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cs207rbtree/skeleton.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cs207rbtree.skeleton.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-cs207rbtree">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cs207rbtree" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cs207rbtree package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cs207rbtree.RedBlackTree">cs207rbtree.RedBlackTree module</a></li>
+<li><a class="reference internal" href="#module-cs207rbtree.setup">cs207rbtree.setup module</a></li>
+<li><a class="reference internal" href="#module-cs207rbtree.skeleton">cs207rbtree.skeleton module</a></li>
+<li><a class="reference internal" href="#module-cs207rbtree">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">Modules</a><ul>
+      <li>Previous: <a href="TimeseriesDB.html" title="previous chapter">TimeseriesDB package</a></li>
+      <li>Next: <a href="timeseries.html" title="next chapter">timeseries package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/cs207rbtree.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Sarah Anoke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/api/cs207rbtree.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

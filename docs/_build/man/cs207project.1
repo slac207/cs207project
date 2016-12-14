@@ -1,0 +1,1552 @@
+.\" Man page generated from reStructuredText.
+.
+.TH "CS207PROJECT" "1" "Dec 13, 2016" "0.0.post0.dev372+n1d712dc" "cs207project"
+.SH NAME
+cs207project \- cs207project 0.0.post0.dev372+n1d712dc
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.sp
+This is the documentation of \fBcs207rbtree\fP\&.
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
+This is the main page of your project\(aqs \fI\%Sphinx\fP
+documentation. It is formatted in \fI\%reStructuredText\fP\&. Add additional pages by creating
+rst\-files in \fBdocs\fP and adding them to the \fI\%toctree\fP below. Use then
+\fI\%references\fP in order to link
+them from this page, e.g. authors and \fI\%Changes in Sphinx\fP\&.
+It is also possible to refer to the documentation of other Python packages
+with the \fI\%Python domain syntax\fP\&. By default you
+can reference the documentation of \fI\%Sphinx\fP,
+\fI\%Python\fP, \fI\%matplotlib\fP, \fI\%NumPy\fP, \fI\%Scikit\-Learn\fP, \fI\%Pandas\fP, \fI\%SciPy\fP\&. You can add more by
+extending the \fBintersphinx_mapping\fP in your Sphinx\(aqs \fBconf.py\fP\&.
+.UNINDENT
+.UNINDENT
+.SH CONTENTS
+.SS License
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+The MIT License (MIT)
+
+Copyright (c) 2016 Sarah Anoke
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Developers
+.INDENT 0.0
+.IP \(bu 2
+Sarah Anoke
+.IP \(bu 2
+Andrew Brennan
+.IP \(bu 2
+Courtney Cochrane
+.IP \(bu 2
+Laura Ware
+.UNINDENT
+.SS Modules
+.SS Similarity package
+.SS Submodules
+.SS Similarity.distances module
+.INDENT 0.0
+.TP
+.B Similarity.distances.ccor(ts1, ts2)
+given two standardized time series, compute their cross\-correlation using FFT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Similarity.distances.distance(ts1, ts2, mult=1)
+Calculates the distance metric using the kernal coefficient
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Similarity.distances.kernel_corr(ts1, ts2, mult=1)
+compute a kernelized correlation so that we can get a real distance
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Similarity.distances.max_corr_at_phase(ts1, ts2)
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Similarity.distances.random_ts(a)
+Creates a TimeSeries with random values
+a: scaling term to generate random values for time series
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Similarity.distances.stand(x, m, s)
+standardize timeseries x by mean m and std deviation s
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Similarity.distances.tsmaker(m, s, j)
+Makes a TimeSeries whose values are approximately normally distributed
+m: location parameter for normal pdf
+s: scale parameter for normal pdf
+j: coefficient for extra randomness added to normally distributed values
+.UNINDENT
+.SS Similarity.find_most_similar module
+.INDENT 0.0
+.TP
+.B Similarity.find_most_similar.find_most_similiar(filename, n, vantage_pts, sm)
+Finds n most similiar time series to the time series of interest (filename)
+by using the supplied vantage points
+.sp
+filename: timeseries of interest
+n: number of similiar timeseries to return (n must be between 1 and 20)
+vantage_pts: a list of the vantage point numbers
+.sp
+Returns: list of n most similiar filenames
+.sp
+Notes: Correct behavior is not gaurenteed when n > the number of vantage points
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Similarity.find_most_similar.find_similarity_of_points_in_radius(closest_vantage_pt, ts1, radius, sm)
+Given a vantage point and a radius, find the points that fall within the
+circle around the vantage point. Then calculates the distance from all of these
+points to the timeseries of interest.
+.sp
+closest_vantage_pt: number of the vantage point being considered
+ts1: timeseries of interest
+radius: radius of circle to consider
+.sp
+Returns: list of tuples (distance, timeseries id) in sorted order
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Similarity.find_most_similar.sanity_check(filename, n, sm)
+Function that manually finds the n most similiar timeseries to the given
+timeseries. Serves as a check of the vantage point method
+.sp
+Returns: list of n most similiar filenames
+.UNINDENT
+.SS Similarity.generate_time_series module
+.INDENT 0.0
+.TP
+.B Similarity.generate_time_series.generate_time_series()
+.UNINDENT
+.SS Similarity.pick_vantage_points module
+.INDENT 0.0
+.TP
+.B Similarity.pick_vantage_points.pick_vantage_points(arg, sm)
+Code which picks 20 vantage points and produces a database for each one.
+The database stores (key,value) pairs where:
+key = distance from timeseries to vantage point (kernel coefficient)
+value = id of timeseries (0\-999)
+.sp
+returns: list of vantage points (integers from 0\-999)
+.UNINDENT
+.SS Module contents
+.INDENT 0.0
+.TP
+.B Similarity.generate_time_series()
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Similarity.pick_vantage_points(arg, sm)
+Code which picks 20 vantage points and produces a database for each one.
+The database stores (key,value) pairs where:
+key = distance from timeseries to vantage point (kernel coefficient)
+value = id of timeseries (0\-999)
+.sp
+returns: list of vantage points (integers from 0\-999)
+.UNINDENT
+.SS TimeseriesDB package
+.SS Submodules
+.SS TimeseriesDB.DatabaseServer module
+.INDENT 0.0
+.TP
+.B class TimeseriesDB.DatabaseServer.DatabaseServer(request, client_address, server)
+Bases: \fI\%socketserver.BaseRequestHandler\fP
+.sp
+Server that receives data and performs 3 operations based on the request:
+1. Finds the n most similiar timeseries to an existing timeseries
+2. Finds the n most similiar timeseries to a new timeseries
+3. Returns the timeseries from its ID
+.INDENT 7.0
+.TP
+.B data_received(data)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B handle()
+Handler for all incoming messages
+.UNINDENT
+.UNINDENT
+.SS TimeseriesDB.MessageFormatting module
+.INDENT 0.0
+.TP
+.B class TimeseriesDB.MessageFormatting.Deserializer
+Bases: \fI\%object\fP
+.sp
+A buffering and bytes\-to\-json engine.
+Data can be received in arbitrary chunks of bytes, and we need a way to
+reconstruct variable\-length JSON objects from that interface. This class
+buffers up bytes until it can detect that it has a full JSON object (via
+a length field pulled off the wire). To use this, shove bytes in with the
+append() function and call ready() to check if we\(aqve reconstructed a JSON
+object. If True, then call deserialize to return it. That object will be
+removed from this buffer after it is returned.
+.INDENT 7.0
+.TP
+.B append(data)
+Appends data to the buf
+.UNINDENT
+.INDENT 7.0
+.TP
+.B deserialize()
+Turns bytes into json object
+.UNINDENT
+.INDENT 7.0
+.TP
+.B ready()
+If we read in the full message, can proceed
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class TimeseriesDB.MessageFormatting.TSDBOp(op)
+Bases: \fI\%dict\fP
+.sp
+Base Class for the different TSDB operations that inherits from a dictionary
+and requires a dictionary \(aqop\(aq key with a valid operation in typemap
+.INDENT 7.0
+.TP
+.B classmethod from_json(json_dict)
+Converts a JSON object into a TSDBOp object
+.UNINDENT
+.INDENT 7.0
+.TP
+.B to_json(obj=None)
+Converts a TSDBOp objects into a JSON object
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class TimeseriesDB.MessageFormatting.TSDBOp_Return(status, op, payload=None)
+Bases: \fI\%TimeseriesDB.MessageFormatting.TSDBOp\fP
+.INDENT 7.0
+.TP
+.B classmethod from_json(json_dict)
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_ID(idee, **kwargs)
+Bases: \fI\%TimeseriesDB.MessageFormatting.TSDBOp\fP
+.sp
+Class for performing similarity searches with an existing timeseries
+.INDENT 7.0
+.TP
+.B classmethod from_json(json_dict)
+Converts a JSON object into a TSDBOp_Simsearch_ID object
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_TS(ts, **kwargs)
+Bases: \fI\%TimeseriesDB.MessageFormatting.TSDBOp\fP
+.sp
+Class for performing similarity searches with a new timeseries
+.INDENT 7.0
+.TP
+.B classmethod from_json(json_dict)
+Converts a JSON object into a TSDBOp_SimSearch_TS object
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class TimeseriesDB.MessageFormatting.TSDBOp_TSfromID(idee)
+Bases: \fI\%TimeseriesDB.MessageFormatting.TSDBOp\fP
+.sp
+Class for fetching timeseries based on ID
+.INDENT 7.0
+.TP
+.B classmethod from_json(json_dict)
+Converts a JSON object into a TSDBOp_TSfromID object
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B TimeseriesDB.MessageFormatting.serialize(json_obj)
+Turn a JSON object into bytes suitable for writing out to the network.
+Includes a fixed\-width length field to simplify reconstruction on the other
+end of the wire.
+.UNINDENT
+.SS TimeseriesDB.generate_SMTimeseries module
+.INDENT 0.0
+.TP
+.B TimeseriesDB.generate_SMTimeseries.generate_time_series()
+.UNINDENT
+.SS TimeseriesDB.setup module
+.sp
+Setup file for TimeseriesDB.
+.sp
+This file was generated with PyScaffold 2.5.6, a tool that easily
+puts up a scaffold for your new Python project. Learn more under:
+\fI\%http://pyscaffold.readthedocs.org/\fP
+.INDENT 0.0
+.TP
+.B TimeseriesDB.setup.setup_package()
+.UNINDENT
+.SS TimeseriesDB.simsearch_init module
+.INDENT 0.0
+.TP
+.B TimeseriesDB.simsearch_init.initialize_simsearch_parameters()
+.UNINDENT
+.SS TimeseriesDB.tsdb_error module
+.INDENT 0.0
+.TP
+.B exception TimeseriesDB.tsdb_error.TSDBConnectionError
+Bases: \fI\%Exception\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B exception TimeseriesDB.tsdb_error.TSDBError
+Bases: \fI\%Exception\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B exception TimeseriesDB.tsdb_error.TSDBOperationError
+Bases: \fI\%Exception\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class TimeseriesDB.tsdb_error.TSDBStatus
+Bases: \fI\%enum.IntEnum\fP
+.sp
+An enumeration.
+.INDENT 7.0
+.TP
+.B INVALID_COMPONENT = <TSDBStatus.INVALID_COMPONENT: 4>
+.UNINDENT
+.INDENT 7.0
+.TP
+.B INVALID_KEY = <TSDBStatus.INVALID_KEY: 3>
+.UNINDENT
+.INDENT 7.0
+.TP
+.B INVALID_OPERATION = <TSDBStatus.INVALID_OPERATION: 2>
+.UNINDENT
+.INDENT 7.0
+.TP
+.B OK = <TSDBStatus.OK: 0>
+.UNINDENT
+.INDENT 7.0
+.TP
+.B PYPE_ERROR = <TSDBStatus.PYPE_ERROR: 5>
+.UNINDENT
+.INDENT 7.0
+.TP
+.B UNKNOWN_ERROR = <TSDBStatus.UNKNOWN_ERROR: 1>
+.UNINDENT
+.INDENT 7.0
+.TP
+.B encode()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B static encoded_length()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B classmethod from_bytes(data)
+.UNINDENT
+.UNINDENT
+.SS Module contents
+.INDENT 0.0
+.TP
+.B class TimeseriesDB.DatabaseServer(request, client_address, server)
+Bases: \fI\%socketserver.BaseRequestHandler\fP
+.sp
+Server that receives data and performs 3 operations based on the request:
+1. Finds the n most similiar timeseries to an existing timeseries
+2. Finds the n most similiar timeseries to a new timeseries
+3. Returns the timeseries from its ID
+.INDENT 7.0
+.TP
+.B data_received(data)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B handle()
+Handler for all incoming messages
+.UNINDENT
+.UNINDENT
+.SS cs207rbtree package
+.SS Submodules
+.SS cs207rbtree.RedBlackTree module
+.INDENT 0.0
+.TP
+.B class cs207rbtree.RedBlackTree.Color
+Bases: \fI\%object\fP
+.sp
+Class that defines the coloring of our red\-black tree, and
+the corresponding underlying values.
+.INDENT 7.0
+.TP
+.B BLACK = 1
+.UNINDENT
+.INDENT 7.0
+.TP
+.B RED = 0
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class cs207rbtree.RedBlackTree.DBDB(f)
+Bases: \fI\%object\fP
+.sp
+Database class to manage Storage and RedBlackTree operations.
+.sp
+_storage: Storage object to manage file writes/reads
+_tree: RedBlackTree object to manage a Red Black Tree
+.sp
+.nf
+.ft C
+>>> import os
+>>> fd = os.open("/tmp/test.dbdb", os.O_RDWR | os.O_CREAT)
+>>> f  = open(fd, \(aqr+b\(aq)
+>>> db = DBDB(f)
+>>> db.set("rahul", "aged")
+>>> db.set("kobe", "stillyoung")
+>>> db.get("rahul")
+\(aqaged\(aq
+>>> db.commit()
+>>> db.close()
+.ft P
+.fi
+.INDENT 7.0
+.TP
+.B close()
+Close the storage object.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B commit()
+Confirm storage is closed and commit.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B delete(key)
+Confirm storage is open and delete node with key.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B get(key)
+Confirm storage is open and get a value for a key.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B get_nodes_less_than(key)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B in_order_traversal()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B rootKey()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B set(key, value)
+Confirm storage is open and set a value for a key.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class cs207rbtree.RedBlackTree.RedBlackNode(left_ref, key, value_ref, right_ref, color=0)
+Bases: \fI\%object\fP
+.INDENT 7.0
+.TP
+.B A RedBlackNode object contains the data of a single node in a
+binary tree, and stores references to the data and its two
+child nodes.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B blacken()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B classmethod from_node(node, **kwargs)
+Clones a node, but with updates as specified by addtional arguments.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBnode\fP (\fItree node to be cloned\fP) \-\- 
+.IP \(bu 2
+\fB**kwargs\fP (\fItree node attributes to be updated\fP) \-\- 
+.UNINDENT
+.TP
+.B Returns
+
+.TP
+.B Return type
+An updated RedBlackNode object.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B is_black()
+Check is node is colored red
+.UNINDENT
+.INDENT 7.0
+.TP
+.B is_red()
+Check is node is colored black
+.UNINDENT
+.INDENT 7.0
+.TP
+.B store_refs(storage)
+Method for RedBlackNode object to save its contents to disk.
+Recursively stores the entire tree to disk.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBstorage\fP (\fIa Storage object\fP) \-\- (our Python representation of our data on disk)
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class cs207rbtree.RedBlackTree.RedBlackNodeRef(referent=None, address=0)
+Bases: \fI\%cs207rbtree.RedBlackTree.ValueRef\fP
+.INDENT 7.0
+.TP
+.B A RedBlackNodeRef object is a reference to a red\-black
+binary tree node on disk.
+.UNINDENT
+.sp
+Inherits from ValueRef.
+.INDENT 7.0
+.TP
+.B static bytes_to_referent(string)
+.INDENT 7.0
+.TP
+.B Deserializes the tree node (i.e., unpickles the tree node)
+typically after disk retrieval.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B Parameters
+\fBstring\fP (\fIvalue to be reconstituted\fP) \-\- 
+.TP
+.B Returns
+
+.TP
+.B Return type
+A reconstituted RedBlackNode object.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B prepare_to_store(storage)
+Have a node store its refs.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B static referent_to_bytes(referent)
+.INDENT 7.0
+.TP
+.B Serializes the tree node (i.e., pickles the tree node)
+in preparation for disk storage.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B Parameters
+\fBreferent\fP (\fInode to be encoded\fP) \-\- 
+.TP
+.B Returns
+
+.TP
+.B Return type
+A serialized tree node (e.g., a serialized BinaryNode object).
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class cs207rbtree.RedBlackTree.RedBlackTree(storage)
+Bases: \fI\%object\fP
+.sp
+Red Black Binary Tree class.
+Inherits from BinaryTree class, so is immutable as well
+.INDENT 7.0
+.INDENT 3.5
+(i.e., constructs new tree on changes).
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B balance(node)
+Add a new node to the tree, then balance.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBnode\fP (\fIRedBlackNode object\fP) \-\- 
+.TP
+.B Returns
+
+.TP
+.B Return type
+The node that was passed to the function.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B commit()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B get(key)
+Retrieves the value associated with the specified key.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBkey\fP (\fIindexes the value that we want to retrieve\fP) \-\- 
+.TP
+.B Returns
+
+.TP
+.B Return type
+The value associated with \fIkey\fP\&.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B get_nodes_less_than(key)
+Find all nodes that have a key value <= \(aqkey\(aq
+.UNINDENT
+.INDENT 7.0
+.TP
+.B recolor(node)
+Sets \fInode\fP color to red and the color of its children to black.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBnode\fP (\fIRedBlackNode object\fP) \-\- 
+.TP
+.B Returns
+
+.TP
+.B Return type
+The new recolored node.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B rotate_left(node)
+.INDENT 7.0
+.TP
+.B Rotates the specified node "to the left", in order to ensure compliance
+with red\-black tree invariants (see module README), in particular
+"No red node has a red parent." This method is used when \fInode\fP has
+a red parent.
+.TP
+.B A "left rotation" is when we switch the positions of \fInode\fP and
+its right child (call it RC) \-\- so \fInode\fP becomes the left child of RC.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B Parameters
+\fBnode\fP (\fIRedBlackNode object (or None if our key/value has\fP) \-\- not been packaged as such)
+.TP
+.B Returns
+
+.TP
+.B Return type
+A RedBlackNodeRef object that points to the new node.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B rotate_right(node)
+.INDENT 7.0
+.TP
+.B Rotates the specified node "to the right", in order to ensure compliance
+with red\-black tree invariants (see module README), in particular
+"No red node has a red parent." This method is used when \fInode\fP has
+a red parent.
+.TP
+.B A "right rotation" is when we switch the positions of \fInode\fP and
+its left child (call it LC) \-\- so \fInode\fP becomes the right child of LC.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B Parameters
+\fBnode\fP (\fIRedBlackNode object\fP) \-\- 
+.TP
+.B Returns
+
+.TP
+.B Return type
+A RedBlackNodeRef object that points to the new node.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B set(key, value)
+Sets a new value in the tree, causing a new tree to be created
+(b/c of immutability).
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBkey\fP (\fIindexes the value that we want to store\fP) \-\- 
+.IP \(bu 2
+\fBvalue\fP (the data we want to store, under \fIkey\fP) \-\- 
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B update(node, key, value_ref)
+Recursively update and balance along the way
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class cs207rbtree.RedBlackTree.Storage(f)
+Bases: \fI\%object\fP
+.sp
+Storage class to interact with the file on disk.
+Manages writing to file, locking/unlocking for editing, and closing the file."
+.INDENT 7.0
+.TP
+.B INTEGER_FORMAT = \(aq!Q\(aq
+.UNINDENT
+.INDENT 7.0
+.TP
+.B INTEGER_LENGTH = 8
+.UNINDENT
+.INDENT 7.0
+.TP
+.B SUPERBLOCK_SIZE = 4096
+.UNINDENT
+.INDENT 7.0
+.TP
+.B close()
+Unlock and close the file.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B closed
+Returns true if database is closed.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B commit_root_address(root_address)
+Atomically commit changes by writing the new root address to beginning
+of the next superblock and unlocking the file.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B get_root_address()
+Get the root address, as measured from the beginning of the file.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B lock()
+If not locked, lock the file for writing and return True.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B read(address)
+Read data from given address in file.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B unlock()
+If locked, flush and unlock the file
+.UNINDENT
+.INDENT 7.0
+.TP
+.B write(data)
+Write data to disk, returning the address at which you wrote it.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class cs207rbtree.RedBlackTree.ValueRef(referent=None, address=0)
+Bases: \fI\%object\fP
+.sp
+A ValueRef object is a reference to a string value on disk.
+.INDENT 7.0
+.TP
+.B address
+.UNINDENT
+.INDENT 7.0
+.TP
+.B static bytes_to_referent(bytes)
+.INDENT 7.0
+.TP
+.B Converts \fIbytes\fP to a string, typically after reading \fIbytes\fP
+from disk.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B Parameters
+\fBreferent\fP (\fIvalue (a string) to be encoded\fP) \-\- 
+.TP
+.B Returns
+encoded in UTF\-8.
+.TP
+.B Return type
+A bytes representation of the Unicode string,
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B get(storage)
+.INDENT 7.0
+.TP
+.B Reads whatever bytes are at the \fI_address\fP attribute,
+converts to a string,
+saves this string as \fI_referent\fP, and and returns it.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B Parameters
+\fBstorage\fP (\fIa Storage object\fP) \-\- (our Python representation of our data on disk)
+.TP
+.B Returns
+
+.TP
+.B Return type
+The string located at the \fI_address\fP attribute in \fIstorage\fP\&.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B prepare_to_store(storage)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B static referent_to_bytes(referent)
+Converts \fIreferent\fP to bytes, in preparation for disk storage.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBreferent\fP (\fIvalue (a string) to be encoded\fP) \-\- 
+.TP
+.B Returns
+encoded in UTF\-8.
+.TP
+.B Return type
+A bytes representation of the Unicode string,
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B store(storage)
+.INDENT 7.0
+.TP
+.B Converts whatever value is contained in the \fI_referent\fP
+attribute to bytes, saves it to disk within \fIstorage\fP,
+and records the storage address.\(ga, and and returns it.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B Parameters
+\fBstorage\fP (\fIa Storage object\fP) \-\- (our Python representation of our data on disk)
+.TP
+.B Returns
+
+.TP
+.B Return type
+None.
+.UNINDENT
+Notes
+.sp
+This method is called by BinaryNode.store_refs()
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B cs207rbtree.RedBlackTree.connect(dbname)
+.UNINDENT
+.SS cs207rbtree.setup module
+.sp
+Setup file for timeseries.
+.sp
+This file was generated with PyScaffold 2.5.6, a tool that easily
+puts up a scaffold for your new Python project. Learn more under:
+\fI\%http://pyscaffold.readthedocs.org/\fP
+.INDENT 0.0
+.TP
+.B cs207rbtree.setup.setup_package()
+.UNINDENT
+.SS cs207rbtree.skeleton module
+.sp
+This is a skeleton file that can serve as a starting point for a Python
+console script. To run this script uncomment the following line in the
+entry_points section in setup.cfg:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B console_scripts =
+cs207rbtree = cs207rbtree.skeleton:run
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Then run \fIpython setup.py install\fP which will install the command \fIcs207rbtree\fP
+inside your current environment.
+Besides console scripts, the header (i.e. until _logger...) of this file can
+also be used as template for Python modules.
+.sp
+Note: This skeleton file can be safely removed if not needed!
+.INDENT 0.0
+.TP
+.B cs207rbtree.skeleton.fib(n)
+Fibonacci example function
+.INDENT 7.0
+.TP
+.B Parameters
+\fBn\fP \-\- integer
+.TP
+.B Returns
+n\-th Fibonacci number
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B cs207rbtree.skeleton.main(args)
+.UNINDENT
+.INDENT 0.0
+.TP
+.B cs207rbtree.skeleton.parse_args(args)
+Parse command line parameters
+.INDENT 7.0
+.TP
+.B Parameters
+\fBargs\fP \-\- command line parameters as list of strings
+.TP
+.B Returns
+command line parameters as \fI\%argparse.Namespace\fP
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B cs207rbtree.skeleton.run()
+.UNINDENT
+.SS Module contents
+.SS timeseries package
+.SS Submodules
+.SS timeseries.ArrayTimeSeries module
+.INDENT 0.0
+.TP
+.B class timeseries.ArrayTimeSeries.ArrayTimeSeries(times, values)
+Bases: \fI\%timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface\fP
+.sp
+Class which stores a ordered set of numerical data using numpy arrays.
+Inherits from SizedContainerTimeSeriesInterface.
+.sp
+_times: sequence that represents time data
+_values: sequence that represents value data
+.sp
+PRE: times must be a monotonically increasing sequence
+.INDENT 7.0
+.TP
+.B interpolate(times_to_interpolate)
+Produces new ArrayTimeSeries with linearly interpolated values using
+piecewise\-linear functions with stationary boundary conditions.
+.sp
+self: ArrayTimeSeries instance
+times_to_interpolate: sorted sequence of times to be interpolated
+.sp
+ArrayTimeSeries instance with interpolated values
+.sp
+.nf
+.ft C
+>>> ats = ArrayTimeSeries(times=[0,1,2],values=[40,20,30])
+>>> ats.interpolate([0.5,1.5,3])
+ArrayTimeSeries(Length: 3, Times: array([ 0.5,  1.5,  3. ]), Values: array([ 30.,  25.,  30.]))
+.ft P
+.fi
+.UNINDENT
+.INDENT 7.0
+.TP
+.B mean(chunk=None)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B std(chunk=None)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B times()
+Returns a numpy array of ArrayTimeSeries times, i.e. self._times
+.UNINDENT
+.INDENT 7.0
+.TP
+.B values()
+Returns a numpy array of ArrayTimeSeries values, i.e. self._values
+.UNINDENT
+.UNINDENT
+.SS timeseries.SMTimeSeries module
+.INDENT 0.0
+.TP
+.B class timeseries.SMTimeSeries.SMTimeSeries(times=None, values=None, id=None, SM=None, get_from_SM=False, nosave=False)
+Bases: \fI\%timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface\fP
+.sp
+SMTimeSeries is an implementation of the SizedContainerTimeSeriesInterface.
+It uses a FileStorageManager to store the timeseries.
+.sp
+A SMTimeSeries instance can be made in one of three ways:
+1. giving times and values, optionally with an id and a storage manager:
+.INDENT 7.0
+.INDENT 3.5
+SMTimeSeries(times,values,id=id,SM=SM)
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.IP 2. 3
+.INDENT 3.0
+.TP
+.B from an existing storage manager:
+SMTimeSeries.from_db(SM,id)
+.UNINDENT
+.IP 3. 3
+.INDENT 3.0
+.TP
+.B from a timeseries implementing the SizedContainerTimeSeriesInterface:
+SMTimeSeries.from_ts(ts,id=id,SM=SM)
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B SM
+Return the storage manager used by the SMTimeSeries instance.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B classmethod from_db(SM, id)
+return a SMTimeSeries instance with timeseries from a storage manager at the given id,
+.UNINDENT
+.INDENT 7.0
+.TP
+.B classmethod from_ops(ts, SM=None)
+return a SMTimeSeries instance from operations among SMTimeSeries instances; do not save it.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B classmethod from_ts(ts, SM=None, id=None)
+return a SMTimeSeries instance from a given timeseries that implements the SizedContainerTimeSeriesInterface.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B id
+Return the id of the SMTimeSeries instance within its storage manager.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B interpolate(times_to_interpolate)
+Produces new TimeSeries with linearly interpolated values using
+piecewise\-linear functions with stationary boundary conditions
+.sp
+self: TimeSeries instance
+times_to_interpolate: sorted sequence of times to be interpolated
+.sp
+TimeSeries instance with interpolated times and values
+.UNINDENT
+.INDENT 7.0
+.TP
+.B mean(chunk=None)
+Return the mean of the values.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B std(chunk=None)
+Return the standard deviation of the values.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B times()
+Returns a numpy array of the TimeSeries times
+.UNINDENT
+.INDENT 7.0
+.TP
+.B values()
+Returns a numpy array of the TimeSeries values
+.UNINDENT
+.UNINDENT
+.SS timeseries.SimulatedTimeSeries module
+.INDENT 0.0
+.TP
+.B exception timeseries.SimulatedTimeSeries.InputError(message)
+Bases: \fI\%Exception\fP
+.sp
+Exception raised for errors in the input.
+.INDENT 7.0
+.TP
+.B message \-\- explanation of the error
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class timeseries.SimulatedTimeSeries.SimulatedTimeSeries(gen)
+Bases: \fI\%timeseries.timeSeriesABC.StreamTimeSeriesInterface\fP
+.sp
+Class for timeseries objects that have streaming
+input data arriving via an iterator.
+.INDENT 7.0
+.TP
+.B iteritems()
+Generator function returning (time,value) tuples
+.UNINDENT
+.INDENT 7.0
+.TP
+.B itertimes()
+Generator function returning the times only
+.UNINDENT
+.INDENT 7.0
+.TP
+.B itervalues()
+Generator function returning the values only
+.UNINDENT
+.INDENT 7.0
+.TP
+.B mean(chunk=20)
+Return the mean of the next chunk values of the generator.
+Returns a float.  Does not include previous values.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B online_mean()
+Return a SimulatedTimeSeries of the running mean.
+Note that this is computed only over the samples that
+are called from this method.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B online_std()
+Return a SimulatedTimeSeries of the running std.
+Note that this is computed only over the samples that
+are called from this method.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B produce(chunk=1)
+Return (time,value) as an ArrayTimeSeries object
+with number of items equal to \(aqchunk\(aq
+.UNINDENT
+.INDENT 7.0
+.TP
+.B std(chunk=20)
+Return the standard deviation of the next chunk values of the generator.
+Returns a float.  Does not include previous values.
+.UNINDENT
+.UNINDENT
+.SS timeseries.StorageManager module
+.INDENT 0.0
+.TP
+.B class timeseries.StorageManager.FileStorageManager(directory=\(aq./FSM_filestorage\(aq)
+Bases: \fI\%timeseries.StorageManager.StorageManagerInterface\fP
+.sp
+Implementation of the StorageManagerInterface that stores
+the timeseries on disk as numpy\(aqs .npy format.
+.INDENT 7.0
+.TP
+.B get(id: int) -> timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface
+Retrieve a stored timeseries at the provided unique id.
+Return a representation of the timeseries as an object
+that adheres to the SizedContainerTimeSeriesInterface.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B id
+ID of the most recently stored or accessed record
+.UNINDENT
+.INDENT 7.0
+.TP
+.B reload_index()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B size(id: int) -> int
+Retrieve the size of a stored timeseries
+at the provided unique id.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B store(id: int, t: timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface, overwrite=False) -> timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface
+Store a given timeseries, with unique id provided.
+The timeseries uses the SizedContainerTimeSeriesInterface.
+Return the given timeseries as an object
+that adheres to the SizedContainerTimeSeriesInterface.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class timeseries.StorageManager.StorageManagerInterface
+Bases: \fI\%object\fP
+.sp
+An interface for storing timeseries objects on disk
+and retrieving them from disk.
+.INDENT 7.0
+.TP
+.B get(id: int) -> timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface
+Retrieve a stored timeseries at the provided unique id.
+Return a representation of the timeseries as an object
+that adheres to the SizedContainerTimeSeriesInterface.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B size(id: int) -> int
+Retrieve the size of a stored timeseries
+at the provided unique id.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B store(id: int, t: timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface) -> timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface
+Store a given timeseries, with unique id provided.
+The timeseries uses the SizedContainerTimeSeriesInterface.
+Return the given timeseries as an object
+that adheres to the SizedContainerTimeSeriesInterface.
+.UNINDENT
+.UNINDENT
+.SS timeseries.Timeseries module
+.INDENT 0.0
+.TP
+.B class timeseries.Timeseries.TimeSeries(values, times=None)
+Bases: \fI\%timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface\fP
+.sp
+Class which stores a ordered set of numerical data using lists.
+Inherits from SizedContainerTimeSeriesInterface.
+.sp
+_times: sequence that represents time data
+_values: sequence that represents value data
+.sp
+PRE: times must be a monotonically increasing sequence
+.INDENT 7.0
+.TP
+.B interpolate(times_to_interpolate)
+Produces new TimeSeries with linearly interpolated values using
+piecewise\-linear functions with stationary boundary conditions
+.sp
+self: TimeSeries instance
+times_to_interpolate: sorted sequence of times to be interpolated
+.sp
+TimeSeries instance with interpolated times
+.sp
+.nf
+.ft C
+>>> ts = TimeSeries(times=[0,1,2],values=[40,20,30])
+>>> ts.interpolate([0.5,1.5,3])
+TimeSeries(Length: 3, Times: [0.5, 1.5, 3], Values: [30.0, 25.0, 30])
+.ft P
+.fi
+.UNINDENT
+.INDENT 7.0
+.TP
+.B mean(chunk=None)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B std(chunk=None)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B times()
+Returns a numpy array of the TimeSeries times
+.UNINDENT
+.INDENT 7.0
+.TP
+.B values()
+Returns a numpy array of the TimeSeries values
+.UNINDENT
+.UNINDENT
+.SS timeseries.binarysearch module
+.INDENT 0.0
+.TP
+.B timeseries.binarysearch.binary_search(da_array, needle)
+An algorithm that operates in O(lg(n)) to search for an element
+in an array sorted in ascending order.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBda_array\fP (\fI\%list\fP) \-\- a list of "comparable" items sorted in non\-descending order
+.IP \(bu 2
+\fBneedle\fP (\fIan item to find in the array; it may or may not\fP) \-\- be in the array
+.UNINDENT
+.TP
+.B Returns
+\fBindex\fP \-\- an integer representing the index of \fIneedle\fP if found, and \-1
+otherwise
+.TP
+.B Return type
+\fI\%int\fP
+.UNINDENT
+Notes.INDENT 7.0
+.TP
+.B PRE: \fIda_array\fP is a list that is sorted in non\-decreasing order (thus items in
+\fIda_array\fP must be comparable: implement < and ==)
+.TP
+.B POST:
+.INDENT 7.0
+.IP \(bu 2
+\fIda_array\fP is not changed by this function (immutable)
+.IP \(bu 2
+returns \fIindex\(ga=\-1 if \(ganeedle\fP is not in \fIda_array\fP
+.IP \(bu 2
+returns an int \fIindex \(ga in [0:len(da_array)] if
+\(gaindex\fP is in \fIda_array\fP
+.UNINDENT
+.TP
+.B INVARIANTS:
+.INDENT 7.0
+.IP \(bu 2
+If \fIneedle\fP in \fIda_array\fP, needle in \fIda_array[min_index:max_index]\fP
+is a loop invariant in the while loop below.
+.UNINDENT
+.UNINDENT
+Examples.sp
+.nf
+.ft C
+>>> binary_search([1,2,3,4,5], 2) #if needle in the array, return its index
+(1, \(aqFOUND\(aq)
+>>> binary_search([1,2,3,4,5], 1.5) #if needle not in array, return surrounding indices
+(0, 1)
+.ft P
+.fi
+.UNINDENT
+.SS timeseries.lazy module
+.INDENT 0.0
+.TP
+.B class timeseries.lazy.LazyOperation(function, *args, **kwargs)
+Bases: \fI\%object\fP
+.sp
+Isolate the function call from the function execution.
+out = LazyOperation(function,*args,**kwargs) defines the operation.
+out.eval() evaluates the operation.
+out.eval() = function(
+.nf
+*
+.fi
+args,**kwargs).
+.INDENT 7.0
+.TP
+.B eval()
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B timeseries.lazy.lazy(function)
+Make a function return a LazyOperation instance
+.UNINDENT
+.INDENT 0.0
+.TP
+.B timeseries.lazy.lazy_add(*args, **kwargs)
+.UNINDENT
+.INDENT 0.0
+.TP
+.B timeseries.lazy.lazy_mul(*args, **kwargs)
+.UNINDENT
+.SS timeseries.setup module
+.sp
+Setup file for timeseries.
+.sp
+This file was generated with PyScaffold 2.5.6, a tool that easily
+puts up a scaffold for your new Python project. Learn more under:
+\fI\%http://pyscaffold.readthedocs.org/\fP
+.INDENT 0.0
+.TP
+.B timeseries.setup.setup_package()
+.UNINDENT
+.SS timeseries.timeSeriesABC module
+.INDENT 0.0
+.TP
+.B class timeseries.timeSeriesABC.SizedContainerTimeSeriesInterface
+Bases: \fI\%timeseries.timeSeriesABC.TimeSeriesInterface\fP
+.sp
+Interface for sized\-container based TimeSeries.
+Inherits from TimeSeriesInterface.
+Times for TimeSeries stored in _times
+Values for TimeSeries stored in _values
+.INDENT 7.0
+.TP
+.B interpolate()
+Require notion of value interpolation for times not present originally
+for sized\-container based TimeSeries.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B items()
+Returns a list of (time, value) pairs
+.UNINDENT
+.INDENT 7.0
+.TP
+.B iteritems()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B itertimes()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B itervalues()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B times()
+Require ability to return stored values for sized\-container based TimeSeries.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B values()
+Require ability to return stored values for sized\-container based TimeSeries.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class timeseries.timeSeriesABC.StreamTimeSeriesInterface
+Bases: \fI\%timeseries.timeSeriesABC.TimeSeriesInterface\fP
+.sp
+Abstract Base Class for timeseries data
+that arrive streaming.
+.INDENT 7.0
+.TP
+.B online_mean()
+Return a SimulatedTimeSeries of the running mean.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B online_std()
+Return a SimulatedTimeSeries of the running standard deviation.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B produce(chunk=1) -> list
+Output a list of (time,value) tuples of length chunk
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B class timeseries.timeSeriesABC.TimeSeriesInterface
+Bases: \fI\%abc.ABC\fP
+.sp
+Interface for TimeSeries class which inherits from ABC
+.INDENT 7.0
+.TP
+.B identity(*args, **kwargs)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B iteritems()
+Iterate over (time, value) pairs.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B itertimes()
+Iterate over times.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B itervalues()
+Iterate over values.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B lazy
+Lazy identity property.
+self.lazy returns a LazyOperation instance of self.identity(), so that
+self.lazy.eval() is self.
+.INDENT 7.0
+.TP
+.B Returns
+\fBself.identity()\fP
+.TP
+.B Return type
+a LazyOperation instance
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B mean(chunk=None)
+Require ability to calculate the mean of values within a
+TimeSeriesInterface instance.
+Optional \fIchunk\fP argument to be used for subclass instances
+with no storage.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B std(chunk=None)
+Require ability to calculate the standard deviation of values within a
+TimeSeriesInterface instance.
+Optional \fIchunk\fP argument to be used for subclass instances
+with no storage.
+.UNINDENT
+.UNINDENT
+.SS Module contents
+.SH INDICES AND TABLES
+.INDENT 0.0
+.IP \(bu 2
+genindex
+.IP \(bu 2
+modindex
+.IP \(bu 2
+search
+.UNINDENT
+.SH COPYRIGHT
+2016, Sarah Anoke
+.\" Generated by docutils manpage writer.
+.

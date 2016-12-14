@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>timeseries.SMTimeSeries &mdash; cs207project 0.0.post0.dev372+n1d712dc documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.post0.dev372+n1d712dc',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cs207project 0.0.post0.dev372+n1d712dc documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for timeseries.SMTimeSeries</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">timeseries.timeSeriesABC</span> <span class="kn">import</span> <span class="n">SizedContainerTimeSeriesInterface</span>
+<span class="kn">from</span> <span class="nn">timeseries.ArrayTimeSeries</span> <span class="kn">import</span> <span class="n">ArrayTimeSeries</span>
+<span class="kn">from</span> <span class="nn">timeseries.StorageManager</span> <span class="kn">import</span> <span class="n">FileStorageManager</span>
+
+<div class="viewcode-block" id="SMTimeSeries"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.SMTimeSeries.SMTimeSeries">[docs]</a><span class="k">class</span> <span class="nc">SMTimeSeries</span><span class="p">(</span><span class="n">SizedContainerTimeSeriesInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SMTimeSeries is an implementation of the SizedContainerTimeSeriesInterface.</span>
+<span class="sd">    It uses a FileStorageManager to store the timeseries.</span>
+
+<span class="sd">    A SMTimeSeries instance can be made in one of three ways:</span>
+<span class="sd">    1. giving times and values, optionally with an id and a storage manager:</span>
+<span class="sd">        SMTimeSeries(times,values,id=id,SM=SM)</span>
+<span class="sd">    2. from an existing storage manager:</span>
+<span class="sd">        SMTimeSeries.from_db(SM,id)</span>
+<span class="sd">    3. from a timeseries implementing the SizedContainerTimeSeriesInterface:</span>
+<span class="sd">        SMTimeSeries.from_ts(ts,id=id,SM=SM)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">times</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">values</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">SM</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">get_from_SM</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">nosave</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="c1"># Set the storage manager; make a new one if not given.</span>
+        <span class="k">if</span> <span class="n">SM</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sm</span> <span class="o">=</span> <span class="n">SM</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sm</span> <span class="o">=</span> <span class="n">FileStorageManager</span><span class="p">()</span>
+
+        <span class="c1"># If the call came from from_db, get the ts from the storage manager.</span>
+        <span class="k">if</span> <span class="n">get_from_SM</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="k">elif</span> <span class="n">nosave</span><span class="p">:</span>
+            <span class="c1"># Initialize elsewhere (get self._ts and self._id), without saving into the database.</span>
+            <span class="k">pass</span>
+
+
+        <span class="c1"># If not, a timeseries was given.  It needs to be stored.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">times</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Require Times and Values; at least one was missing&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Write to the Storage Manager, but it takes an input that</span>
+                <span class="c1"># adheres to the SizedContainerTimeSeriesInterface.</span>
+                <span class="c1"># We make an intermediate ArrayTimeSeries object.</span>
+                <span class="n">ts_temp</span> <span class="o">=</span> <span class="n">ArrayTimeSeries</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">values</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">id</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sm</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span><span class="n">ts_temp</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="nb">id</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Make a new ID</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sm</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">ts_temp</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sm</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SMTimeSeries.from_db"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.SMTimeSeries.SMTimeSeries.from_db">[docs]</a>    <span class="k">def</span> <span class="nf">from_db</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="n">SM</span><span class="p">,</span><span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return a SMTimeSeries instance with timeseries from a storage manager at the given id, &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span><span class="n">SM</span><span class="o">=</span><span class="n">SM</span><span class="p">,</span><span class="n">get_from_SM</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SMTimeSeries.from_ts"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.SMTimeSeries.SMTimeSeries.from_ts">[docs]</a>    <span class="k">def</span> <span class="nf">from_ts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="n">ts</span><span class="p">,</span><span class="n">SM</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return a SMTimeSeries instance from a given timeseries that implements the SizedContainerTimeSeriesInterface.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">times</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">times</span><span class="p">(),</span><span class="n">values</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span><span class="n">SM</span><span class="o">=</span><span class="n">SM</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SMTimeSeries.from_ops"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.SMTimeSeries.SMTimeSeries.from_ops">[docs]</a>    <span class="k">def</span> <span class="nf">from_ops</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="n">ts</span><span class="p">,</span><span class="n">SM</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return a SMTimeSeries instance from operations among SMTimeSeries instances; do not save it.&quot;&quot;&quot;</span>
+        <span class="n">new_ts</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="n">SM</span><span class="o">=</span><span class="n">SM</span><span class="p">,</span><span class="n">nosave</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">new_ts</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="n">ts</span>
+        <span class="n">new_ts</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">new_ts</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">SM</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the storage manager used by the SMTimeSeries instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sm</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the id of the SMTimeSeries instance within its storage manager.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">_times</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">_values</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method for indexing into TimeSeries.</span>
+<span class="sd">        Returns: The value of self._values at the given index. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">__getitem__</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method for assignment into TimeSeries value storage.</span>
+<span class="sd">        Sets the given &#39;index&#39; of self._values to &#39;value&#39;. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">__setitem__</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method for determing length of TimeSeries self._values&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SMTimeSeries.values"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.SMTimeSeries.SMTimeSeries.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a numpy array of the TimeSeries values&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SMTimeSeries.times"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.SMTimeSeries.SMTimeSeries.times">[docs]</a>    <span class="k">def</span> <span class="nf">times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a numpy array of the TimeSeries times&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">times</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SMTimeSeries.interpolate"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.SMTimeSeries.SMTimeSeries.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">times_to_interpolate</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produces new TimeSeries with linearly interpolated values using</span>
+<span class="sd">        piecewise-linear functions with stationary boundary conditions</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">        self: TimeSeries instance</span>
+<span class="sd">        times_to_interpolate: sorted sequence of times to be interpolated</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        --------</span>
+<span class="sd">        TimeSeries instance with interpolated times and values</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">from_ops</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">times_to_interpolate</span><span class="p">),</span><span class="n">SM</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SM</span><span class="p">)</span></div>
+        <span class="c1">#return cls.from_ts(self._ts.interpolate(times_to_interpolate),SM=self.SM)</span>
+
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns: TimeSeries instance with negated values</span>
+<span class="sd">        but no change to times&quot;&quot;&quot;</span>
+        <span class="n">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">from_ops</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="p">,</span><span class="n">SM</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SM</span><span class="p">)</span>
+        <span class="c1">#return cls.from_ts(-self._ts,SM=self.SM)</span>
+
+    <span class="k">def</span> <span class="nf">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns: L2-norm of the TimeSeries values&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns: Returns True if all values in self._values are</span>
+<span class="sd">        zero. False, otherwise&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Description</span>
+<span class="sd">        -------------</span>
+<span class="sd">        If rhs is Real, add it to all elements of `_values`.</span>
+<span class="sd">        If rhs is a SizedContainerTimeSeriesInterface instance with the same</span>
+<span class="sd">        times, add the values element-wise.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        --------</span>
+<span class="sd">        A new TimeSeries instance with the same times but updated values&quot;&quot;&quot;</span>
+        <span class="n">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">from_ops</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">+</span><span class="n">rhs</span><span class="p">,</span><span class="n">SM</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SM</span><span class="p">)</span>
+        <span class="c1">#return cls.from_ts(self._ts+rhs,SM=self.SM)</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Description:</span>
+<span class="sd">        -----------</span>
+<span class="sd">        If rhs is Real, multiply it by all elements of `_values`.</span>
+<span class="sd">        If rhs is a TimeSeries instance with the same times, multiply values element-wise.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        --------</span>
+<span class="sd">        A new TimeSeries instance with the same times but updated `_values`.&quot;&quot;&quot;</span>
+        <span class="n">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">from_ops</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">*</span><span class="n">rhs</span><span class="p">,</span><span class="n">SM</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SM</span><span class="p">)</span>
+        <span class="c1">#return cls.from_ts(self._ts*rhs,SM=self.SM)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rhs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tests if two SizedContainerTimeSeriesInterface have same times and values&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">==</span> <span class="n">rhs</span>
+
+
+<div class="viewcode-block" id="SMTimeSeries.mean"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.SMTimeSeries.SMTimeSeries.mean">[docs]</a>    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the mean of the values.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SMTimeSeries.std"><a class="viewcode-back" href="../../api/timeseries.html#timeseries.SMTimeSeries.SMTimeSeries.std">[docs]</a>    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the standard deviation of the values.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Sarah Anoke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

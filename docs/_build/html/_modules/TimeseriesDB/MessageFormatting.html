@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>TimeseriesDB.MessageFormatting &mdash; cs207project 0.0.post0.dev372+n1d712dc documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.post0.dev372+n1d712dc',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cs207project 0.0.post0.dev372+n1d712dc documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for TimeseriesDB.MessageFormatting</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">timeseries</span> <span class="kn">as</span> <span class="nn">ts</span>
+<span class="kn">from</span> <span class="nn">TimeseriesDB.tsdb_error</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="n">LENGTH_FIELD_LENGTH</span> <span class="o">=</span> <span class="mi">4</span>
+
+<div class="viewcode-block" id="serialize"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.serialize">[docs]</a><span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="n">json_obj</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Turn a JSON object into bytes suitable for writing out to the network.</span>
+<span class="sd">    Includes a fixed-width length field to simplify reconstruction on the other</span>
+<span class="sd">    end of the wire.&#39;&#39;&#39;</span>
+    
+    <span class="n">json_bytes</span> <span class="o">=</span> <span class="n">json_obj</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+    <span class="n">json_bytes_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_bytes</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">json_bytes_len</span><span class="o">+</span><span class="n">LENGTH_FIELD_LENGTH</span><span class="p">,</span><span class="n">LENGTH_FIELD_LENGTH</span><span class="p">,</span><span class="s1">&#39;little&#39;</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">header</span><span class="o">+</span><span class="n">json_bytes</span>
+    <span class="k">return</span> <span class="n">msg</span>    </div>
+
+
+<div class="viewcode-block" id="Deserializer"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.Deserializer">[docs]</a><span class="k">class</span> <span class="nc">Deserializer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;A buffering and bytes-to-json engine.</span>
+<span class="sd">    Data can be received in arbitrary chunks of bytes, and we need a way to</span>
+<span class="sd">    reconstruct variable-length JSON objects from that interface. This class</span>
+<span class="sd">    buffers up bytes until it can detect that it has a full JSON object (via</span>
+<span class="sd">    a length field pulled off the wire). To use this, shove bytes in with the</span>
+<span class="sd">    append() function and call ready() to check if we&#39;ve reconstructed a JSON</span>
+<span class="sd">    object. If True, then call deserialize to return it. That object will be</span>
+<span class="sd">    removed from this buffer after it is returned.&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buf</span> <span class="o">=</span> <span class="n">b</span><span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buflen</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+<div class="viewcode-block" id="Deserializer.append"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.Deserializer.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Appends data to the buf&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buf</span> <span class="o">+=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_set_length</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_maybe_set_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extract the length of the buffer&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">buflen</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">LENGTH_FIELD_LENGTH</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">buflen</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">LENGTH_FIELD_LENGTH</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Deserializer.ready"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.Deserializer.ready">[docs]</a>    <span class="k">def</span> <span class="nf">ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;If we read in the full message, can proceed&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buflen</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span> <span class="o">&gt;=</span>    <span class="bp">self</span><span class="o">.</span><span class="n">buflen</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Deserializer.deserialize"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.Deserializer.deserialize">[docs]</a>    <span class="k">def</span> <span class="nf">deserialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Turns bytes into json object&quot;&quot;&quot;</span>
+        <span class="n">json_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="n">LENGTH_FIELD_LENGTH</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">buflen</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">buflen</span><span class="p">):]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buflen</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="c1"># There may be more data in the buffer already, so preserve it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_set_length</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#Note how now everything is assumed to be an OrderedDict</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">obj</span>
+        <span class="c1">#raise a Decode error if invalid JSON object</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span> 
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Invalid JSON object received:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">json_str</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">None</span></div></div>
+        
+    
+
+<div class="viewcode-block" id="TSDBOp"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp">[docs]</a><span class="k">class</span> <span class="nc">TSDBOp</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base Class for the different TSDB operations that inherits from a dictionary</span>
+<span class="sd">    and requires a dictionary &#39;op&#39; key with a valid operation in typemap&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;op&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span>
+
+<div class="viewcode-block" id="TSDBOp.to_json"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a TSDBOp objects into a JSON object &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">json_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">json_dict</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cannot convert object to JSON: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>        </div>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TSDBOp.from_json"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a JSON object into a TSDBOp object&quot;&quot;&quot;</span>
+        
+        <span class="c1">#json_dict must contain key &#39;op&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;op&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json_dict</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Not a TSDB Operation: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))</span>
+        <span class="c1">#can only support ops in our typemap</span>
+        <span class="k">if</span> <span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;op&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">typemap</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid TSDB Operation: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;op&#39;</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">typemap</span><span class="p">[</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;op&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json_dict</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TSDBOp_SimSearch_TS"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_TS">[docs]</a><span class="k">class</span> <span class="nc">TSDBOp_SimSearch_TS</span><span class="p">(</span><span class="n">TSDBOp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for performing similarity searches with a new timeseries&quot;&quot;&quot;</span>    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s1">&#39;simsearch_ts&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">v</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TSDBOp_SimSearch_TS.from_json"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_TS.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a JSON object into a TSDBOp_SimSearch_TS object&quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;n_closest&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json_dict</span><span class="p">:</span>
+            <span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;n_closest&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;courtesy&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json_dict</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;courtesy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">!=</span><span class="s1">&#39;please&#39;</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Impolite TSDB Operation: please include the courtesy &quot;please&quot; (key=&quot;courtesy&quot;,value=&quot;please&quot;&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Impolite TSDB Operation: please include the courtesy &quot;please&quot; (key=&quot;courtesy&quot;,value=&quot;please&quot;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">ArrayTimeSeries</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">])),</span><span class="n">n_closest</span><span class="o">=</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;n_closest&#39;</span><span class="p">])</span></div></div>
+
+<div class="viewcode-block" id="TSDBOp_SimSearch_ID"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_ID">[docs]</a><span class="k">class</span> <span class="nc">TSDBOp_SimSearch_ID</span><span class="p">(</span><span class="n">TSDBOp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for performing similarity searches with an existing timeseries&quot;&quot;&quot;</span>  
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idee</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s1">&#39;simsearch_id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idee</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">v</span>
+        
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TSDBOp_SimSearch_ID.from_json"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_ID.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a JSON object into a TSDBOp_Simsearch_ID object&quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;n_closest&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json_dict</span><span class="p">:</span>
+            <span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;n_closest&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;courtesy&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json_dict</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;courtesy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">!=</span><span class="s1">&#39;please&#39;</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Impolite TSDB Operation: please include the courtesy &quot;please&quot; (key=&quot;courtesy&quot;,value=&quot;please&quot;&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Impolite TSDB Operation: please include the courtesy &quot;please&quot; (key=&quot;courtesy&quot;,value=&quot;please&quot;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span><span class="n">n_closest</span><span class="o">=</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;n_closest&#39;</span><span class="p">])</span></div></div>
+
+<div class="viewcode-block" id="TSDBOp_TSfromID"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp_TSfromID">[docs]</a><span class="k">class</span> <span class="nc">TSDBOp_TSfromID</span><span class="p">(</span><span class="n">TSDBOp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for fetching timeseries based on ID&quot;&quot;&quot;</span>  
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idee</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s1">&#39;TSfromID&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idee</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TSDBOp_TSfromID.from_json"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp_TSfromID.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a JSON object into a TSDBOp_TSfromID object&quot;&quot;&quot;</span>
+         
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;courtesy&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json_dict</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;courtesy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">!=</span><span class="s1">&#39;please&#39;</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Impolite TSDB Operation: please include the courtesy &quot;please&quot; (key=&quot;courtesy&quot;,value=&quot;please&quot;&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Impolite TSDB Operation: please include the courtesy &quot;please&quot; (key=&quot;courtesy&quot;,value=&quot;please&quot;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span></div></div>
+
+<div class="viewcode-block" id="TSDBOp_Return"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp_Return">[docs]</a><span class="k">class</span> <span class="nc">TSDBOp_Return</span><span class="p">(</span><span class="n">TSDBOp</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">payload</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;payload&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span><span class="p">,</span> <span class="n">payload</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TSDBOp_Return.from_json"><a class="viewcode-back" href="../../api/TimeseriesDB.html#TimeseriesDB.MessageFormatting.TSDBOp_Return.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">):</span>  <span class="c1">#should not be used, this is to return to client</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">],</span> <span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;payload&#39;</span><span class="p">])</span></div></div>
+
+
+<span class="c1"># This simplifies reconstructing TSDBOp instances from network data.</span>
+<span class="n">typemap</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s1">&#39;simsearch_ts&#39;</span><span class="p">:</span> <span class="n">TSDBOp_SimSearch_TS</span><span class="p">,</span>
+  <span class="s1">&#39;simsearch_id&#39;</span><span class="p">:</span> <span class="n">TSDBOp_SimSearch_ID</span><span class="p">,</span>
+  <span class="s1">&#39;TSfromID&#39;</span><span class="p">:</span> <span class="n">TSDBOp_TSfromID</span>
+<span class="p">}</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Sarah Anoke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

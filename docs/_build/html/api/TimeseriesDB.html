@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>TimeseriesDB package &mdash; cs207project 0.0.post0.dev372+n1d712dc documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.post0.dev372+n1d712dc',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="cs207project 0.0.post0.dev372+n1d712dc documentation" href="../index.html" />
+    <link rel="up" title="Modules" href="modules.html" />
+    <link rel="next" title="cs207rbtree package" href="cs207rbtree.html" />
+    <link rel="prev" title="Similarity package" href="Similarity.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="timeseriesdb-package">
+<h1>TimeseriesDB package<a class="headerlink" href="#timeseriesdb-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-TimeseriesDB.DatabaseServer">
+<span id="timeseriesdb-databaseserver-module"></span><h2>TimeseriesDB.DatabaseServer module<a class="headerlink" href="#module-TimeseriesDB.DatabaseServer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="TimeseriesDB.DatabaseServer.DatabaseServer">
+<em class="property">class </em><code class="descclassname">TimeseriesDB.DatabaseServer.</code><code class="descname">DatabaseServer</code><span class="sig-paren">(</span><em>request</em>, <em>client_address</em>, <em>server</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/DatabaseServer.html#DatabaseServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.DatabaseServer.DatabaseServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/socketserver.html#socketserver.BaseRequestHandler" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">socketserver.BaseRequestHandler</span></code></a></p>
+<p>Server that receives data and performs 3 operations based on the request:
+1. Finds the n most similiar timeseries to an existing timeseries
+2. Finds the n most similiar timeseries to a new timeseries
+3. Returns the timeseries from its ID</p>
+<dl class="method">
+<dt id="TimeseriesDB.DatabaseServer.DatabaseServer.data_received">
+<code class="descname">data_received</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/DatabaseServer.html#DatabaseServer.data_received"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.DatabaseServer.DatabaseServer.data_received" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="TimeseriesDB.DatabaseServer.DatabaseServer.handle">
+<code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/DatabaseServer.html#DatabaseServer.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.DatabaseServer.DatabaseServer.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler for all incoming messages</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TimeseriesDB.MessageFormatting">
+<span id="timeseriesdb-messageformatting-module"></span><h2>TimeseriesDB.MessageFormatting module<a class="headerlink" href="#module-TimeseriesDB.MessageFormatting" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="TimeseriesDB.MessageFormatting.Deserializer">
+<em class="property">class </em><code class="descclassname">TimeseriesDB.MessageFormatting.</code><code class="descname">Deserializer</code><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#Deserializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.Deserializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>A buffering and bytes-to-json engine.
+Data can be received in arbitrary chunks of bytes, and we need a way to
+reconstruct variable-length JSON objects from that interface. This class
+buffers up bytes until it can detect that it has a full JSON object (via
+a length field pulled off the wire). To use this, shove bytes in with the
+append() function and call ready() to check if we&#8217;ve reconstructed a JSON
+object. If True, then call deserialize to return it. That object will be
+removed from this buffer after it is returned.</p>
+<dl class="method">
+<dt id="TimeseriesDB.MessageFormatting.Deserializer.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#Deserializer.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.Deserializer.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends data to the buf</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="TimeseriesDB.MessageFormatting.Deserializer.deserialize">
+<code class="descname">deserialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#Deserializer.deserialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.Deserializer.deserialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns bytes into json object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="TimeseriesDB.MessageFormatting.Deserializer.ready">
+<code class="descname">ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#Deserializer.ready"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.Deserializer.ready" title="Permalink to this definition">¶</a></dt>
+<dd><p>If we read in the full message, can proceed</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp">
+<em class="property">class </em><code class="descclassname">TimeseriesDB.MessageFormatting.</code><code class="descname">TSDBOp</code><span class="sig-paren">(</span><em>op</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/stdtypes.html#dict" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a></p>
+<p>Base Class for the different TSDB operations that inherits from a dictionary
+and requires a dictionary &#8216;op&#8217; key with a valid operation in typemap</p>
+<dl class="classmethod">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp.from_json">
+<em class="property">classmethod </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>json_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a JSON object into a TSDBOp object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><em>obj=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a TSDBOp objects into a JSON object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp_Return">
+<em class="property">class </em><code class="descclassname">TimeseriesDB.MessageFormatting.</code><code class="descname">TSDBOp_Return</code><span class="sig-paren">(</span><em>status</em>, <em>op</em>, <em>payload=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp_Return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp_Return" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TimeseriesDB.MessageFormatting.TSDBOp" title="TimeseriesDB.MessageFormatting.TSDBOp"><code class="xref py py-class docutils literal"><span class="pre">TimeseriesDB.MessageFormatting.TSDBOp</span></code></a></p>
+<dl class="classmethod">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp_Return.from_json">
+<em class="property">classmethod </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>json_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp_Return.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp_Return.from_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_ID">
+<em class="property">class </em><code class="descclassname">TimeseriesDB.MessageFormatting.</code><code class="descname">TSDBOp_SimSearch_ID</code><span class="sig-paren">(</span><em>idee</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp_SimSearch_ID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TimeseriesDB.MessageFormatting.TSDBOp" title="TimeseriesDB.MessageFormatting.TSDBOp"><code class="xref py py-class docutils literal"><span class="pre">TimeseriesDB.MessageFormatting.TSDBOp</span></code></a></p>
+<p>Class for performing similarity searches with an existing timeseries</p>
+<dl class="classmethod">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_ID.from_json">
+<em class="property">classmethod </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>json_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp_SimSearch_ID.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_ID.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a JSON object into a TSDBOp_Simsearch_ID object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_TS">
+<em class="property">class </em><code class="descclassname">TimeseriesDB.MessageFormatting.</code><code class="descname">TSDBOp_SimSearch_TS</code><span class="sig-paren">(</span><em>ts</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp_SimSearch_TS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_TS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TimeseriesDB.MessageFormatting.TSDBOp" title="TimeseriesDB.MessageFormatting.TSDBOp"><code class="xref py py-class docutils literal"><span class="pre">TimeseriesDB.MessageFormatting.TSDBOp</span></code></a></p>
+<p>Class for performing similarity searches with a new timeseries</p>
+<dl class="classmethod">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_TS.from_json">
+<em class="property">classmethod </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>json_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp_SimSearch_TS.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp_SimSearch_TS.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a JSON object into a TSDBOp_SimSearch_TS object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp_TSfromID">
+<em class="property">class </em><code class="descclassname">TimeseriesDB.MessageFormatting.</code><code class="descname">TSDBOp_TSfromID</code><span class="sig-paren">(</span><em>idee</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp_TSfromID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp_TSfromID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TimeseriesDB.MessageFormatting.TSDBOp" title="TimeseriesDB.MessageFormatting.TSDBOp"><code class="xref py py-class docutils literal"><span class="pre">TimeseriesDB.MessageFormatting.TSDBOp</span></code></a></p>
+<p>Class for fetching timeseries based on ID</p>
+<dl class="classmethod">
+<dt id="TimeseriesDB.MessageFormatting.TSDBOp_TSfromID.from_json">
+<em class="property">classmethod </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>json_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#TSDBOp_TSfromID.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.TSDBOp_TSfromID.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a JSON object into a TSDBOp_TSfromID object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="TimeseriesDB.MessageFormatting.serialize">
+<code class="descclassname">TimeseriesDB.MessageFormatting.</code><code class="descname">serialize</code><span class="sig-paren">(</span><em>json_obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/MessageFormatting.html#serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.MessageFormatting.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn a JSON object into bytes suitable for writing out to the network.
+Includes a fixed-width length field to simplify reconstruction on the other
+end of the wire.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-TimeseriesDB.generate_SMTimeseries">
+<span id="timeseriesdb-generate-smtimeseries-module"></span><h2>TimeseriesDB.generate_SMTimeseries module<a class="headerlink" href="#module-TimeseriesDB.generate_SMTimeseries" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="TimeseriesDB.generate_SMTimeseries.generate_time_series">
+<code class="descclassname">TimeseriesDB.generate_SMTimeseries.</code><code class="descname">generate_time_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/generate_SMTimeseries.html#generate_time_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.generate_SMTimeseries.generate_time_series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-TimeseriesDB.setup">
+<span id="timeseriesdb-setup-module"></span><h2>TimeseriesDB.setup module<a class="headerlink" href="#module-TimeseriesDB.setup" title="Permalink to this headline">¶</a></h2>
+<p>Setup file for TimeseriesDB.</p>
+<p>This file was generated with PyScaffold 2.5.6, a tool that easily
+puts up a scaffold for your new Python project. Learn more under:
+<a class="reference external" href="http://pyscaffold.readthedocs.org/">http://pyscaffold.readthedocs.org/</a></p>
+<dl class="function">
+<dt id="TimeseriesDB.setup.setup_package">
+<code class="descclassname">TimeseriesDB.setup.</code><code class="descname">setup_package</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/setup.html#setup_package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.setup.setup_package" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-TimeseriesDB.simsearch_init">
+<span id="timeseriesdb-simsearch-init-module"></span><h2>TimeseriesDB.simsearch_init module<a class="headerlink" href="#module-TimeseriesDB.simsearch_init" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="TimeseriesDB.simsearch_init.initialize_simsearch_parameters">
+<code class="descclassname">TimeseriesDB.simsearch_init.</code><code class="descname">initialize_simsearch_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/simsearch_init.html#initialize_simsearch_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.simsearch_init.initialize_simsearch_parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-TimeseriesDB.tsdb_error">
+<span id="timeseriesdb-tsdb-error-module"></span><h2>TimeseriesDB.tsdb_error module<a class="headerlink" href="#module-TimeseriesDB.tsdb_error" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="TimeseriesDB.tsdb_error.TSDBConnectionError">
+<em class="property">exception </em><code class="descclassname">TimeseriesDB.tsdb_error.</code><code class="descname">TSDBConnectionError</code><a class="reference internal" href="../_modules/TimeseriesDB/tsdb_error.html#TSDBConnectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBConnectionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/exceptions.html#Exception" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="TimeseriesDB.tsdb_error.TSDBError">
+<em class="property">exception </em><code class="descclassname">TimeseriesDB.tsdb_error.</code><code class="descname">TSDBError</code><a class="reference internal" href="../_modules/TimeseriesDB/tsdb_error.html#TSDBError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/exceptions.html#Exception" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="TimeseriesDB.tsdb_error.TSDBOperationError">
+<em class="property">exception </em><code class="descclassname">TimeseriesDB.tsdb_error.</code><code class="descname">TSDBOperationError</code><a class="reference internal" href="../_modules/TimeseriesDB/tsdb_error.html#TSDBOperationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBOperationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/exceptions.html#Exception" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus">
+<em class="property">class </em><code class="descclassname">TimeseriesDB.tsdb_error.</code><code class="descname">TSDBStatus</code><a class="reference internal" href="../_modules/TimeseriesDB/tsdb_error.html#TSDBStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/enum.html#enum.IntEnum" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">enum.IntEnum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus.INVALID_COMPONENT">
+<code class="descname">INVALID_COMPONENT</code><em class="property"> = &lt;TSDBStatus.INVALID_COMPONENT: 4&gt;</em><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus.INVALID_COMPONENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus.INVALID_KEY">
+<code class="descname">INVALID_KEY</code><em class="property"> = &lt;TSDBStatus.INVALID_KEY: 3&gt;</em><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus.INVALID_KEY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus.INVALID_OPERATION">
+<code class="descname">INVALID_OPERATION</code><em class="property"> = &lt;TSDBStatus.INVALID_OPERATION: 2&gt;</em><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus.INVALID_OPERATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus.OK">
+<code class="descname">OK</code><em class="property"> = &lt;TSDBStatus.OK: 0&gt;</em><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus.OK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus.PYPE_ERROR">
+<code class="descname">PYPE_ERROR</code><em class="property"> = &lt;TSDBStatus.PYPE_ERROR: 5&gt;</em><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus.PYPE_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus.UNKNOWN_ERROR">
+<code class="descname">UNKNOWN_ERROR</code><em class="property"> = &lt;TSDBStatus.UNKNOWN_ERROR: 1&gt;</em><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus.UNKNOWN_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus.encode">
+<code class="descname">encode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/tsdb_error.html#TSDBStatus.encode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus.encode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus.encoded_length">
+<em class="property">static </em><code class="descname">encoded_length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/tsdb_error.html#TSDBStatus.encoded_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus.encoded_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="TimeseriesDB.tsdb_error.TSDBStatus.from_bytes">
+<em class="property">classmethod </em><code class="descname">from_bytes</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/tsdb_error.html#TSDBStatus.from_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.tsdb_error.TSDBStatus.from_bytes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TimeseriesDB">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-TimeseriesDB" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="TimeseriesDB.DatabaseServer">
+<em class="property">class </em><code class="descclassname">TimeseriesDB.</code><code class="descname">DatabaseServer</code><span class="sig-paren">(</span><em>request</em>, <em>client_address</em>, <em>server</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/DatabaseServer.html#DatabaseServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.DatabaseServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.5/library/socketserver.html#socketserver.BaseRequestHandler" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">socketserver.BaseRequestHandler</span></code></a></p>
+<p>Server that receives data and performs 3 operations based on the request:
+1. Finds the n most similiar timeseries to an existing timeseries
+2. Finds the n most similiar timeseries to a new timeseries
+3. Returns the timeseries from its ID</p>
+<dl class="method">
+<dt id="TimeseriesDB.DatabaseServer.data_received">
+<code class="descname">data_received</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/DatabaseServer.html#DatabaseServer.data_received"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.DatabaseServer.data_received" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="TimeseriesDB.DatabaseServer.handle">
+<code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TimeseriesDB/DatabaseServer.html#DatabaseServer.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TimeseriesDB.DatabaseServer.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler for all incoming messages</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">TimeseriesDB package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-TimeseriesDB.DatabaseServer">TimeseriesDB.DatabaseServer module</a></li>
+<li><a class="reference internal" href="#module-TimeseriesDB.MessageFormatting">TimeseriesDB.MessageFormatting module</a></li>
+<li><a class="reference internal" href="#module-TimeseriesDB.generate_SMTimeseries">TimeseriesDB.generate_SMTimeseries module</a></li>
+<li><a class="reference internal" href="#module-TimeseriesDB.setup">TimeseriesDB.setup module</a></li>
+<li><a class="reference internal" href="#module-TimeseriesDB.simsearch_init">TimeseriesDB.simsearch_init module</a></li>
+<li><a class="reference internal" href="#module-TimeseriesDB.tsdb_error">TimeseriesDB.tsdb_error module</a></li>
+<li><a class="reference internal" href="#module-TimeseriesDB">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">Modules</a><ul>
+      <li>Previous: <a href="Similarity.html" title="previous chapter">Similarity package</a></li>
+      <li>Next: <a href="cs207rbtree.html" title="next chapter">cs207rbtree package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/TimeseriesDB.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Sarah Anoke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/api/TimeseriesDB.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
