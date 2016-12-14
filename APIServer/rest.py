@@ -104,8 +104,15 @@ def get_all_metadata():
     for metadata_var in [id,mean,blarg,std]:
         if metadata_var:
             # split with -
-            lower = float(metadata_var.split("-")[0])
-            upper = float(metadata_var.split("-")[1])
+            input_split = metadata_var.split(",")
+            lower = float(input_split[0])
+            if len(input_split)>1:
+                upper = float(metadata_var.split(",")[1])
+            else:
+                input_split = metadata_var.split(",")
+                lower = float(input_split[0])
+                if len(input_split)>1:
+                    upper = float(metadata_var.split(",")[1])
             if mean:
                 table = MetaTable.mean
             elif blarg:
@@ -155,13 +162,17 @@ def get_from_id(timeseries_id):
     # For an id, get metadata for that id from postgres and timeseries for
     # that id from database server
     try:
-        md_from_id = MetaTable.query.filter_by(id=timeseries_id).all()
+        md_from_id = MetaTable.query.filter(id==timeseries_id).all()
     except:
         time.sleep(1)
         try:
             time.sleep(1)
-            md_from_id = MetaTable.query.filter_by(id=timeseries_id).all()
-        except: abort(400)
+            md_from_id = MetaTable.query.filter(id==timeseries_id).all()
+        except:
+            try:
+                time.sleep(1)
+                md_from_id = MetaTable.query.filter(id==timeseries_id).all()
+            except: abort(400)
     requestDict = {'op':'TSfromID','id':timeseries_id,'courtesy':'please'}
     response = connectDBServer(requestDict)
     tsResponse = response['ts']
