@@ -25,9 +25,9 @@ class Rest_API_tests(unittest.TestCase):
         data = {}
         data['ts'] = [list(new_ts.times()), list(new_ts.values())]
         data['id'] = 1000
-        payload = json.dumps(data, ensure_ascii=False)
-        url = self.ip_url+'/simquery'
-        r = requests.post(url, json=payload)
+        #payload = json.dumps(data, ensure_ascii=False)
+        url = self.ip_url+'/timeseries'
+        r = requests.post(url, json=data)
         print("Status",r.status_code,url)
         print(r.text[0:50])
         sm.reload_index()
@@ -46,9 +46,9 @@ class Rest_API_tests(unittest.TestCase):
         new_ts =ts.from_db(sm,100)
         data = {}
         data['ts'] = [list(new_ts.times()), list(new_ts.values())]
-        payload = json.dumps(data, ensure_ascii=False)
+        #payload = json.dumps(data, ensure_ascii=False)
         url = self.ip_url+'/simquery'
-        r = requests.post(url, json=payload)
+        r = requests.post(url, json=data)
         print("Status",r.status_code,url)
         assert r.status_code<400
         print(r.text[0:50])

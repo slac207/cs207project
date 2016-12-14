@@ -76,12 +76,12 @@ def connectDBServer(requestDict):
     s2 = serialize(json.dumps(requestDict))
     s.send(s2)
     msg = s.recv(8192) # May not be able to fit into one packet.
-    print(msg)
+    #print(msg)
     ds = Deserializer()
     ds.append(msg)
     ds.ready()
     response = ds.deserialize()
-    print(response)
+    #print(response)
     return response
 
 @app.route('/timeseries', methods=['GET'])
@@ -149,9 +149,10 @@ def add_timeseries():
     log.info('Adding Timeseries to Database')
     #ts_dict = json.loads(request.json)
     ts_dict = request.json
-    print(ts_dict)
+    #print(ts_dict)
     sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
-    sm.reload_index()
+    #sm.reload_index()
+    print(ts_dict['id'])
     new_ts = ts(times=ts_dict['ts'][0],values=ts_dict['ts'][1])
     sm.store(t=new_ts,id=ts_dict['id'],overwrite=False)
     return request.json, 201
@@ -209,7 +210,6 @@ def get_simsearch_from_json():
     and returns the appropriate ids to timeseries.
     """
     if not request.json or 'ts' not in request.json:
-        print("not json!")
         abort(400)
     log.info('Getting IDs for most similar Timeseries from input id')
     # ts_dict = json.loads(request.json)
