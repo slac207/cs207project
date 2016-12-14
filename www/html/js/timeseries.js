@@ -121,7 +121,9 @@
    		  })
    		  .done(function (result) {
         
-        	simIDs.push(result.id);
+        	simIDs = result.id;
+        	console.log(simIDs)
+        	console.log(result.id)
 
       	});
      		
