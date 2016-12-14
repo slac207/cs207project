@@ -9,5 +9,3 @@ sudo cp ~/cs207project/provisioners/files/dbserver.service /etc/systemd/system/d
 sudo systemctl start dbserver
 sudo systemctl enable dbserver
 
-# Check that DBserver is running properly
-sudo systemctl status dbserver

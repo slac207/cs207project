@@ -57,7 +57,7 @@
 				<li>
 					How many similar time series do you want to see? <input type="text" name="n_closest" id="n_closest" maxlength=3 value=5>
 					<br />
-					<span style="font-size:0.7em;">[Specify an integer between 0 and 998.] </span>
+					<span style="font-size:0.7em;">[Specify an integer between 0 and 20.] </span>
 				</li>
 			</ul>
 			
@@ -87,11 +87,27 @@
 				<a name="tsStructure"></a> 
 				<strong>What should the time series file look like?</strong>
 				<br /> 
-				It should be a CSV file where the first "row" contains the times and the second "row" contains the values. See below of an example of what such a file would look like in Microsoft Excel. 
-				<br />
-				<div style="text-align:center;">
-					<img src="./files/dataExample.png" style="width:100%;" />
-				</div>
+				Your time series should have 100 data points, contained in a JSON file. A truncated example is below.
+				<pre>
+					{
+  "ts": [
+    [
+      0.0,
+      0.01,
+      0.02,
+      0.03,
+      0.04
+    ],
+    [
+      -274.22104672898723,
+      -777.7323828175225,
+      1039.4305828734414,
+      343.15472484402113,
+      -1549.3270805921006
+    ]
+  ]
+}
+				</pre>
 				
 			</p>
 			

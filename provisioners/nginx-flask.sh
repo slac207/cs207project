@@ -21,9 +21,6 @@ sudo cp ~/cs207project/provisioners/files/flaskproj.service /etc/systemd/system/
 sudo systemctl start flaskproj
 sudo systemctl enable flaskproj
 
-# Check that wWSGI process is running properly
-sudo systemctl status flaskproj
-
 
 printf "\n*******************************************************"
 printf "\n Set up nginx to communicate with uWSGI"

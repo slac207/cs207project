@@ -14,3 +14,6 @@ chmod a+x *.sh
 
 # Connect nginx with Flask via wWSGI
 ~/cs207project/provisioners/nginx-flask.sh
+
+# Confirm that installation worked
+~/cs207project/provisioners/status.sh
