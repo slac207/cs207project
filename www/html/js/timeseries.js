@@ -253,7 +253,7 @@
 						dataTarget = dataTemp[0].map(function (e, i) { 
 												return [e, dataTemp[1][i]];});
 									
-						tsData = {label: "uploaded timeseries", data: dataTarget, lines: {lineWidth:6}, colors: ['red']};
+						tsData = {label: "uploaded timeseries", data: dataTarget, lines: {lineWidth:6}};
 					
 						console.log('Appending uploaded time series to Flot data.');
 					
