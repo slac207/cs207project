@@ -210,34 +210,28 @@
 						.done(function (result) {
 		
 							simIDs = result.id;
-				
-							$.ajax({
-								url: simurl,
-								type: "GET",
-								dataType: "json",
-								success: function(data) {
-
-										// loop over all the IDs and collect their data
-										console.log("Looping over the retrieved ID numbers and collecting their data.");
 							
-										for(var i=0; i < simIDs.length; i++) {
+							// loop over all the IDs and collect their data
+							console.log("Looping over the retrieved ID numbers and collecting their data.");
+							
+							for(var i=0; i < simIDs.length; i++) {
 				
-											idNum   = simIDs[i];
-								
-											var dataurl = publicIP + "/timeseries/" + idNum;
-								
-											console.log('Retrieving data associated with TS ID#' + idNum + '.');
-											// solution from http://stackoverflow.com/questions/4201934/
-											//               jquery-ajax-pass-additional-argument-to-success-callback
-											$.ajax({
-												url: dataurl,
-												type: "GET",
-												dataType: "json",
-												success: onDataReceived
-											});
+								idNum   = simIDs[i];
+					
+								var dataurl = publicIP + "/timeseries/" + idNum;
+					
+								console.log('Retrieving data associated with TS ID#' + idNum + '.');
+								// solution from http://stackoverflow.com/questions/4201934/
+								//               jquery-ajax-pass-additional-argument-to-success-callback
+								$.ajax({
+									url: dataurl,
+									type: "GET",
+									dataType: "json",
+									success: onDataReceived
+								});
 				
-										}		
-							 }
+							}	
+
 						});
 			
 					// parse the uploaded file
