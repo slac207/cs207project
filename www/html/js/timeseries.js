@@ -164,7 +164,6 @@
 					
 					read.onloadend = function(){
     				console.log(read.result);
-    				console.log(JSON.parse("[" + read.result + "]"))
 					}
         	
         	
@@ -206,7 +205,9 @@
 					
 					console.log('Plotting the data of the uploaded TS.')
 					
-					dataTarget = //parsed uploaded fime
+					var dataTarget = read.result.ts[0].map(function (e, i) { 
+						return [e, read.result.ts[1][i]]; 
+					});
 					
 					tsData = {label: "uploaded timeseries", data: dataTarget};
 				
