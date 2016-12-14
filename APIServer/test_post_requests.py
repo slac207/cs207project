@@ -21,7 +21,8 @@ class Rest_API_tests(unittest.TestCase):
         for an id and a key for the timeseries, and returns the timeseries.
         """
         #print(os.getcwd())
-        sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
+        PATH = os.path.dirname(os.path.abspath(__file__))+'/'
+        sm = FileStorageManager(directory=PATH+'TimeseriesDB/FSM_filestorage')
         sm.reload_index()
         print(sm._index)
         new_ts =ts.from_db(sm,1)
@@ -30,7 +31,7 @@ class Rest_API_tests(unittest.TestCase):
         data['id'] = 1000
         payload = json.dumps(data, ensure_ascii=False)
         #print(data)
-        url = self.ip_url+'/timeseries'
+        url = self.ip_url+'/timeseries' 
         r = requests.post(url, json=payload)
         print("Status",r.status_code,url)
         print(r.text[0:50])
