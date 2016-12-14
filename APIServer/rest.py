@@ -132,8 +132,6 @@ def get_all_metadata():
             return jsonify(dict(metadata=result.all()))
     if level:
         # split with ","
-        if "," not in level:
-            abort(400)
         all_options = level.split(",")
         result=MetaTable.query.filter(MetaTable.level.in_(all_options))
         return jsonify(dict(metadata=result.all()))
@@ -191,7 +189,7 @@ def get_simsearch_from_id():
     (default is 5 closest).
     """
     ts_id = request.args.get('id', type=int)
-    if ts_id>999 or ts_id<0:
+    if ts_id>999 or ts_id<1:
         abort(400)
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_id','id':int(ts_id),'n_closest':n_closest,'courtesy':'please'}

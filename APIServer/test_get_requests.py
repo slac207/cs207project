@@ -5,7 +5,8 @@ import json, requests
 import unittest
 class Rest_API_tests(unittest.TestCase):
     def setUp(self):
-        self.ip_url = 'http://54.173.105.55'
+        r = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4')
+        self.ip_url = "http://"+r.text #'http://54.173.105.55'
 
     def test_query1(self):
         """
@@ -30,11 +31,11 @@ class Rest_API_tests(unittest.TestCase):
         url = self.ip_url+'/timeseries/-12'
         r = requests.get(url)
         print("Status",r.status_code,url)
-        #assert r.status_code==400
+        assert r.status_code==404
         url = self.ip_url+'/timeseries/54353'
         r = requests.get(url)
         print("Status",r.status_code,url)
-        #assert r.status_code==400
+        assert r.status_code==400
         url = self.ip_url+'/timeseries/54.3'
         r = requests.get(url)
         print("Status",r.status_code,url)
@@ -84,7 +85,7 @@ class Rest_API_tests(unittest.TestCase):
         url = self.ip_url+'/timeseries?mean_in=-100.4--45.2'
         r = requests.get(url)
         print("Status",r.status_code,url)
-        #assert r.status_code==400
+        assert r.status_code==400
 
     def test_query5(self):
         """

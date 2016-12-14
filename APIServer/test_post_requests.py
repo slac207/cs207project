@@ -5,12 +5,13 @@ import json, requests
 from timeseries.StorageManager import FileStorageManager
 from timeseries.SMTimeSeries import SMTimeSeries as ts
 from json import JSONEncoder
+import unittest
 
 
 class Rest_API_tests(unittest.TestCase):
     def setUp(self):
         r = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4')
-        self.ip_url = r.text #'http://54.173.105.55'
+        self.ip_url = "http://"+r.text #'http://54.173.105.55'
 
     def test_query2(self):
         """
@@ -23,12 +24,16 @@ class Rest_API_tests(unittest.TestCase):
         new_ts =ts.from_db(sm,100)
         data = {}
         data['ts'] = [list(new_ts.times()), list(new_ts.values())]
+        data['id'] = 1000
         payload = json.dumps(data, ensure_ascii=False)
         url = self.ip_url+'/simquery'
         r = requests.post(url, json=payload)
         print("Status",r.status_code,url)
         print(r.text[0:50])
-        #assert r.status_code<400
+        sm.reload_index()
+        stored_ts =ts.from_db(sm,1000)
+        assert stored_ts.isinstance(SMTimeSeries)
+        assert r.status_code<400
 
     def test_query6(self):
         """
@@ -45,5 +50,12 @@ class Rest_API_tests(unittest.TestCase):
         url = self.ip_url+'/simquery'
         r = requests.post(url, json=payload)
         print("Status",r.status_code,url)
-        #assert r.status_code<400
+        assert r.status_code<400
         print(r.text[0:50])
+
+if __name__=='__main__':
+    try:  # pragma: no cover
+        unittest.main()  # pragma: no cover
+    except SystemExit as inst:  # pragma: no cover
+        if inst.args[0] is True:  # pragma: no cover
+            raise  # pragma: no cover
