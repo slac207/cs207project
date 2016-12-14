@@ -45,12 +45,12 @@ class Rest_API_tests(unittest.TestCase):
         Takes a timeseries as an input in a JSON, carries out the similarity query,
         and returns the appropriate ids to timeseries.
         """
-        sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
-        sm.reload_index()
-        print(sm._index)
-        new_ts =ts.from_db(sm,100)
+        #sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
+        #sm.reload_index()
+        #print(sm._index)
+        #new_ts =ts.from_db(sm,100)
         data = {}
-        data['ts'] = [list(new_ts.times()), list(new_ts.values())]
+        data['ts'] = [list([1,2,3,4,5]), list(10,20,30,40,50)]
         #payload = json.dumps(data, ensure_ascii=False)
         url = self.ip_url+'/simquery'
         r = requests.post(url, json=data)

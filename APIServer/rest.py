@@ -151,7 +151,7 @@ def add_timeseries():
     #ts_dict = request.json
     #print(ts_dict)
     sm = FileStorageManager(directory='./TimeseriesDB/FSM_filestorage')
-    #sm.reload_index()
+    sm.reload_index()
     print(ts_dict['id'])
     new_ts = ts(times=ts_dict['ts'][0],values=ts_dict['ts'][1])
     print(new_ts)
@@ -192,7 +192,7 @@ def get_simsearch_from_id():
     (default is 5 closest).
     """
     ts_id = request.args.get('id', type=int)
-    if ts_id>999 or ts_id<1:
+    if ts_id>999 or ts_id<0:
         abort(400)
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_id','id':int(ts_id),'n_closest':n_closest,'courtesy':'please'}
