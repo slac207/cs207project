@@ -54,8 +54,8 @@
 			
 			console.log('Adding in ticking progress bar.');
 			$( "#progressbar" ).progressbar({
-  			value: false
-			});
+  				value: false
+			}); 
 			
 			// reset everything in preparation for new data
 			console.log('Resetting helper variables in preparation for new data.');
@@ -146,6 +146,9 @@
 				
 			} else if ( document.getElementById("fileSelect").files.length > 0  ) {
 			
+				// DECIDE WHETHER WE NEED A SIMQUERY
+				// if the user hasn't provided a number of similar TS, or the
+				//   number is zero, we won't bother sending off a simquery
 				if (numSim === '' | numSim === 0) {
 				
 					console.log("Locally received data uploaded by user.");			
@@ -176,8 +179,7 @@
 				
 						$.plot("#placeholder", data, options);	
 
-					}
-			});				
+					}			
 				
 				} else {
 			
@@ -197,9 +199,9 @@
 						processData: false, // Don't process the files
 						contentType: false, // Set content type to false as jQuery will tell the server its a query string request
 						error: function(jqXHR, textStatus, errorThrown) {
-					 // Handle errors here
-						console.log('ERRORS: ' + textStatus);
-						 }
+					 			// Handle errors here
+									console.log('ERRORS: ' + textStatus);
+						}
 					})
 						.done(function (result) {
 		
@@ -301,8 +303,7 @@
 				metadataTable += tableRow;
 				
 				// keeps track of where we are in the array of TS IDs to plot
-				counter++;
-				
+				counter++;			
 							
 				if (counter == simIDs.length - 1) {
 					console.log("Destroy the progress bar -- we don't need it anymore.");
