@@ -171,7 +171,7 @@ def get_from_id(timeseries_id):
     if timeseries_id<0 or timeseries_id>999:
         abort(400)
     try:
-        md_from_id = MetaTable.query.filter(id==timeseries_id).all()
+        md_from_id = MetaTable.query.filter_by(id=timeseries_id).all()
     except:
         abort(400)
     requestDict = {'op':'TSfromID','id':timeseries_id,'courtesy':'please'}
@@ -192,7 +192,7 @@ def get_simsearch_from_id():
     """
     ts_id = request.args.get('id', type=int)
     if ts_id>999 or ts_id<0:
-        abort 400
+        abort(400)
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_id','id':int(ts_id),'n_closest':n_closest,'courtesy':'please'}
     print("REQUEST IS", requestDict)

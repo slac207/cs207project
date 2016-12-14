@@ -15,9 +15,9 @@
 				show: true
 			},
 			grid: {
-        hoverable: true
-      }
-		};
+        		hoverable: true
+      		}
+	};
 
 		// GLOBAL VARIABLES AND FUNCTIONS
 		
@@ -26,7 +26,8 @@
 		var dataTarget = [];
 		
 		// IP address to access our UI
-		var publicIP = 'http://54.157.228.231';
+		// (empty for relative URLs)
+		var publicIP = '';
 		
 		// building blocks of metadata table
 		var tableTop = "<table id='metadata'>";
@@ -36,7 +37,6 @@
 		
 		// helps with managing the uploaded time series
 		var files;
-		var uploadButton = document.getElementById('tsQuery');
 		
 		// initialize the timeseries plot (will be empty)
 		console.log('Initializing flot plot (empty plot).');
@@ -188,7 +188,7 @@
     				dataTarget = dataTemp[0].map(function (e, i) { 
 											return [e, dataTemp[1][i]];});
 									
-    				tsData = {label: "uploaded timeseries", data: dataTarget};
+    				tsData = {label: "uploaded timeseries", data: dataTarget, lines: {lineWidth:6}, colors: ['red']};
     				
     				console.log('Appending uploaded time series to Flot data.');
 					
