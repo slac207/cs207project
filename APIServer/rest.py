@@ -17,9 +17,9 @@ from timeseries.StorageManager import FileStorageManager
 from timeseries.SMTimeSeries import SMTimeSeries as ts
 import time
 
-
+# Create logger
 log = logging.getLogger(__name__)
-
+# Define JSON Encoder
 class ProductJSONEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj.__class__, DeclarativeMeta):
@@ -89,21 +89,26 @@ def get_all_metadata():
     """
     QUERY 1 and 4:
     Sends back a json with metadata from all the time series
+    Support range queries.
     """
     # Need to access the postgres table and select all
     log.info('Getting all Metadata')
     #return jsonify(dict(metadata=5))
-    id = request.args.get('id_in', type=str)
-    mean = request.args.get('mean_in', type=str)
-    blarg = request.args.get('blarg_in', type=str)
-    level = request.args.get('level_in', type=str)
-    std = request.args.get('std_in', type=str)
+    try:
+        id = request.args.get('id_in', type=str)
+        mean = request.args.get('mean_in', type=str)
+        blarg = request.args.get('blarg_in', type=str)
+        level = request.args.get('level_in', type=str)
+        std = request.args.get('std_in', type=str)
+    except: abort(400)
     log.info('Getting all Tasks')
     # filters metadata in the postgres server and sends back all metatdata
     # that meet the condition
     for metadata_var in [id,mean,blarg,std]:
         if metadata_var:
             # split with -
+            if "," not in metadata_var:
+                abort(400)
             input_split = metadata_var.split(",")
             lower = float(input_split[0])
             if len(input_split)>1:
@@ -127,6 +132,8 @@ def get_all_metadata():
             return jsonify(dict(metadata=result.all()))
     if level:
         # split with ","
+        if "," not in level:
+            abort(400)
         all_options = level.split(",")
         result=MetaTable.query.filter(MetaTable.level.in_(all_options))
         return jsonify(dict(metadata=result.all()))
@@ -161,24 +168,17 @@ def get_from_id(timeseries_id):
     """
     # For an id, get metadata for that id from postgres and timeseries for
     # that id from database server
+    if timeseries_id<0 or timeseries_id>999:
+        abort(400)
     try:
         md_from_id = MetaTable.query.filter(id==timeseries_id).all()
     except:
-        time.sleep(1)
-        try:
-            time.sleep(1)
-            md_from_id = MetaTable.query.filter(id==timeseries_id).all()
-        except:
-            try:
-                time.sleep(1)
-                md_from_id = MetaTable.query.filter(id==timeseries_id).all()
-            except: abort(400)
+        abort(400)
     requestDict = {'op':'TSfromID','id':timeseries_id,'courtesy':'please'}
     response = connectDBServer(requestDict)
     tsResponse = response['ts']
     response['metadata'] = md_from_id
     log.info('Getting Timeseries from id')
-    #return tsResponse
     return jsonify(response)
 
 @app.route('/simquery', methods=['GET'])
@@ -191,14 +191,16 @@ def get_simsearch_from_id():
     (default is 5 closest).
     """
     ts_id = request.args.get('id', type=int)
+    if ts_id>999 or ts_id<0:
+        abort 400
     n_closest = request.args.get('topn', 5, type=int)
-    requestDict = {'op':'simsearch_id','id':ts_id,'n_closest':n_closest,'courtesy':'please'}
+    requestDict = {'op':'simsearch_id','id':int(ts_id),'n_closest':n_closest,'courtesy':'please'}
     print("REQUEST IS", requestDict)
     response = connectDBServer(requestDict)
     #tsResponse = response['id']
     log.info('Getting IDs for most similar Timeseries from input id')
     #return tsResponse
-    return jsonify(response),201
+    return jsonify(response)
 
 
 @app.route('/simquery', methods=['POST'])
@@ -218,14 +220,11 @@ def get_simsearch_from_json():
     n_closest = request.args.get('topn', 5, type=int)
     requestDict = {'op':'simsearch_ts','ts':ts_dict['ts'],'n_closest':n_closest,'courtesy':'please'}
     response = connectDBServer(requestDict)
-    #tsResponse = response['id']
-    #return tsResponse
-    return jsonify(response), 201
+    return jsonify(response), 200
 
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
-
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

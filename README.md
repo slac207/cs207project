@@ -7,32 +7,36 @@
 # CS207 Final Project
 
 ## Purpose
-This package contains the code to create a Web UI which supports similarity searches of timeseries by id, similarity searches of newly provided timeseries, timeseries metadata queries, timeseries retrieval based on id, and addition of a new timeseries into our database. 
+This package contains the code to create a Web UI which supports similarity searches of timeseries by id, similarity searches of newly provided timeseries, timeseries metadata queries, timeseries retrieval based on id, and addition of a new timeseries into our database.
 
 ## Installation
 Before running any files, `python setup.py install` must be run from the top level directory, cs207project.
 
 ## Contents
 
-### `cs207rbtree` (directory) 
+### `cs207rbtree` (directory)
 Contains a `pip install`able implementation of a Red Black Tree.
 
 - See README in [cs207rbtree](https://github.com/slac207/cs207project/tree/master/cs207rbtree) for directory contents
 
-### `timeseries` (directory) 
+### `timeseries` (directory)
 Contains our time series implementation.
 
 - See [timeseries README](https://github.com/slac207/cs207project/blob/master/timeseries/README.md) for directory contents, usage, and testing
 
-### `Similarity`(directory) 
+### `Similarity`(directory)
 Contains our similarity search implementation
 - See [Similarity README](https://github.com/slac207/cs207project/blob/master/Similarity/README.md) for directory contents, usage, and testing
 
-### `TimeseriesDB`(directory) 
-Contains our multi-threaded socket server implementation 
+### `TimeseriesDB`(directory)
+Contains our multi-threaded socket server implementation
 - See [TimeseriesDB README](https://github.com/slac207/cs207project/blob/master/TimeseriesDB/README.md) for directory contents, usage, and testing
 
-### `tests` (directory) 
+### `APIServer`(directory)
+Contains our REST API, Postgres, and Flask implementation
+- See [APIServer README](https://github.com/slac207/cs207project/blob/master/APIServer/README.md) for directory contents, usage, and testing
+
+### `tests` (directory)
 Contains our test suite. Each test file is pointed to in the respective module README linked above.
 
 
@@ -45,21 +49,21 @@ Contains our test suite. Each test file is pointed to in the respective module R
 
 ## Code Review
 
-For substantial project tasks, two people will be assigned. 
+For substantial project tasks, two people will be assigned.
 
 *Person 1* is the actual implementer, and will write basic test functions for their code.
 
-*Person 2* will review the code of *Person 1*, and write additional test functions as needed. 
+*Person 2* will review the code of *Person 1*, and write additional test functions as needed.
 
 
-## Comment Standards 
+## Comment Standards
 
-According to  [PEP 8](https://www.python.org/dev/peps/pep-0008/#code-lay-out) **docstrings** should be included 
+According to  [PEP 8](https://www.python.org/dev/peps/pep-0008/#code-lay-out) **docstrings** should be included
 > for all public modules, functions, classes, and methods. Docstrings are not necessary for non-public methods, but you should have a comment that describes what the method does. This comment should appear after the `def` line.
 
 At our October 21 group meeting, we decided to make sure we have comments
 
-1. at the start of a class definition (to explain the purpose of the class) 
+1. at the start of a class definition (to explain the purpose of the class)
 2. within the constructor (i.e., the `__init__()` definition (to explain nonobvious aspects of object construction)
 3. at the start of user-facing functions (to explain nonobvious aspects of function construction)
 
