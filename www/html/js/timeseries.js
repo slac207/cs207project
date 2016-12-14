@@ -148,7 +148,7 @@
 			
 				if (numSim === '' | numSim === 0) {
 				
-					console.log("Locally received data uploaded by user.")			
+					console.log("Locally received data uploaded by user.");			
 					console.log( document.getElementById("fileSelect").files[0] );
 			
 					// parse the uploaded file
@@ -170,9 +170,9 @@
 					
 						data.push(tsData);
 					
-						console.log(tsData)
+						console.log(tsData);
 					
-						console.log('Plotting the data of the uploaded TS.')		
+						console.log('Plotting the data of the uploaded TS.');		
 				
 						$.plot("#placeholder", data, options);	
 
