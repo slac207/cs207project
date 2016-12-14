@@ -310,13 +310,14 @@
 					tableRow    += "<td>" +series.metadata[0].level + "</td>";
 					tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
 				
+					console.log("Adding ID #" + series.metadata[0].id + "to metadata table.")
 					metadataTable += tableRow;
 								
 					console.log("Put together + display the metadata table.");
 					metadataTable += tableBottom;
 					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;	
-					//console.log("Destroy the progress bar -- we don't need it anymore.");
-					//$("#progressbar").progressbar( "destroy" );	
+					console.log("Destroy the progress bar -- we don't need it anymore.");
+					$("#progressbar").progressbar( "destroy" );	
 					
 				} else if ( counter == simIDs.length - 1 ) {
 				
@@ -326,6 +327,7 @@
 					tableRow    += "<td>" +series.metadata[0].level + "</td>";
 					tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
 				
+					console.log("Adding ID #" + series.metadata[0].id + "to metadata table.")
 					metadataTable += tableRow;
 								
 					console.log("Put together + display the metadata table.");
@@ -343,6 +345,7 @@
 					tableRow    += "<td>" +series.metadata[0].level + "</td>";
 					tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
 				
+					console.log("Adding ID #" + series.metadata[0].id + "to metadata table.")
 					metadataTable += tableRow;
 				
 				}
