@@ -170,7 +170,7 @@
     				//console.log(JSON.parse(read.result).ts)
     				dataTarget.push( JSON.parse(read.result).ts[0].map(function (e, i) { 
 											return [e, JSON.parse(read.result).ts[1][i]]; 
-									}); )
+									}) )
 						
 					}
         	
