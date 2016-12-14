@@ -82,7 +82,7 @@
 				// DECIDE WHETHER WE NEED A SIMQUERY
 				// if the user hasn't provided a number of similar TS, or the
 				//   number is zero, we won't bother sending off a simquery
-				if (numSim === '' | numSim === 0) {
+				if (numSim == '' | numSim == 0) {
 					
 					// add on the ID number of the target TS
 					simIDs.push(timeSeriesID);
