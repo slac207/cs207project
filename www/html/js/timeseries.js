@@ -74,6 +74,7 @@
 			var idNum = {};
 			var counter = 0;
 			metadataTable = tableTop + tableHeader;
+			var dataTarget;
 
 			// retrieve the time series specified by the user, and the number of 
 			//   most similar time series
@@ -162,10 +163,14 @@
 					
 					
 					
+					
 					read.onloadend = function(){
     				console.log(read.result);
     				console.log(JSON.parse(read.result))
     				console.log(JSON.parse(read.result).ts)
+    				dataTarget = JSON.parse(read.result).ts[0].map(function (e, i) { 
+								return [e, JSON.parse(read.result).ts[1][i]]; 
+						});
 					}
         	
         	
