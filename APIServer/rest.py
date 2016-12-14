@@ -154,7 +154,8 @@ def add_timeseries():
     #sm.reload_index()
     print(ts_dict['id'])
     new_ts = ts(times=ts_dict['ts'][0],values=ts_dict['ts'][1])
-    sm.store(t=new_ts,id=ts_dict['id'],overwrite=False)
+    print(new_ts)
+    sm.store(t=new_ts,id=ts_dict['id'],overwrite=True)
     sm.reload_index()
     return request.json, 201
     #return jsonify({'op': 'OK', 'task': prod}), 201
