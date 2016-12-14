@@ -192,8 +192,15 @@
 				dataType: "json",
 				success: function(data) {
 						
+						if (document.getElementById("fileSelect").files.length > 0) {
 						
+							// do nothing
+						
+						} else {
+
         			getSimIDs(data)
+        			
+        		}
         		
         		simIDs.push(timeSeriesID);
 
