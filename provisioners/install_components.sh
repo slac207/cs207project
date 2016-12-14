@@ -24,19 +24,21 @@ source ~/venvs/flaskproj/bin/activate
 printf "\n*******************************************************"
 printf "\nInstall CS207 project packages ...\n"
 cd ~/cs207project
+# This should install dependencies as well as our package.
 pip install -e .
 #python setup.py install
 
 # install numpy, scipy, pandas, portalocker
 printf "\n*******************************************************"
 printf "\nInstalling numpy, scipy, pandas, portalocker ...\n"
+# most of these were already installed through dependencies above.
 pip install numpy scipy pandas portalocker 
 pip install psycopg2
 
-# install flask and SQLAlchemy
+# install flask, SQLAlchemy, uWSGI, and requests
 printf "\n*******************************************************"
-printf "\nInstalling Flask and SQL Alchemy ...\n"
-pip install flask Flask-SQLAlchemy uwsgi numpy
+printf "\nInstalling Flask, SQL Alchemy, uWSGI, requests ...\n"
+pip install flask Flask-SQLAlchemy uwsgi requests
 
 # install PostgreSQL
 printf "\n*******************************************************"
@@ -45,8 +47,8 @@ sudo apt-get install postgresql postgresql-contrib
 
 # set-up a Postgres table;
 printf "\n*******************************************************"
-printf "\nAt the postgres =# prompt, enter the following commands:\n"
-printf "alter user postgres password 'password'; create user ubuntu createdb createuser password 'cs207password'; create database ubuntu owner ubuntu; \q"
+printf "\nAt the postgres =# prompt, enter the following commands:\n\n\n"
+printf "alter user postgres password 'password'; create user ubuntu createdb createuser password 'cs207password'; create database ubuntu owner ubuntu; \q \n\n\n"
 sudo -u postgres psql
 echo "PostgreSQL installed"
 
