@@ -72,7 +72,7 @@
 			//   most similar time series
 			var timeSeriesID = document.getElementById("tsID").value;
 			var numSim = document.getElementById("n_closest").value;
-			console.log('Retrieved timeseries ID ', timeSeriesID, 'and will retrieve the ', numSim, 'most similar timeseries.');
+			console.log('Retrieved timeseries ID #' + timeSeriesID + 'and will retrieve the ' + numSim + 'most similar timeseries.');
 
 			// CONSTRUCT OUR QUERY
 			// if the user has specified an ID, use that; 
@@ -306,19 +306,32 @@
 				
 				metadataTable += tableRow;
 				
-				console.log(tableRow)
-				console.log(metadataTable)
-				
 				// keeps track of where we are in the array of TS IDs to plot
-				counter++;			
+				counter++;		
+				
+				// if we've reached the target TS ID, we're done putting together the 
+				//   metadata table. 
+				// highlight the row of the targt TS ID and show the table to the world
+				if( series.metadata[0].id == timeSeriesID ) {	
+				
+					var tableRow = "<tr style='background-color:yellow;'><td>" + series.metadata[0].id + "</td>";
+					tableRow    += "<td>" +series.metadata[0].mean  + "</td>";
+					tableRow    += "<td>" +series.metadata[0].std   + "</td>";
+					tableRow    += "<td>" +series.metadata[0].level + "</td>";
+					tableRow    += "<td>" +series.metadata[0].blarg + "</td></tr>";
+				
+					metadataTable += tableRow;
+				
+					// keeps track of where we are in the array of TS IDs to plot
+					counter++;		
+				
+					console.log("Put together + display the metadata table.");
+					metadataTable += tableBottom;
+					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;	}
 							
 				if (counter == simIDs.length - 1) {
 					console.log("Destroy the progress bar -- we don't need it anymore.");
 					$("#progressbar").progressbar( "destroy" );
-					
-					console.log("Put together + display the metadata table.");
-					metadataTable += tableBottom;
-					document.getElementById('timeseriesMetadata').innerHTML = metadataTable;
 				}
 				
 			}	
